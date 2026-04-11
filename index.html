@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limorina Color Checker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="A premium Material Design 3 color analysis tool for designers and developers. Check HEX, RGB, CMYK, HSL, tints, shades, and harmonies.">
+</head>
+<body class="light-mode">
+    <header class="top-app-bar">
+        <div class="header-content">
+            <h1 class="headline-medium" id="app-title">Limorina Color Checker</h1>
+            <div class="app-bar-actions">
+                <button id="help-btn" class="icon-button" title="User Guide">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+                <button id="lang-toggle" class="icon-button" title="Switch Language">
+                    <span class="material-symbols-outlined">language</span>
+                </button>
+                <button id="export-hub-btn" class="icon-button" title="Export Palette">
+                    <span class="material-symbols-outlined">ios_share</span>
+                </button>
+                <button id="theme-toggle" class="icon-button" title="Toggle Dark/Light Mode">
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Column 1: Input & Codes -->
+        <section class="column" id="col-input">
+            <div class="card card-filled">
+                <h2 class="title-medium" data-i18n="input_color">Input Color</h2>
+                <div class="color-input-container">
+                    <div id="color-preview" class="main-preview"></div>
+                    <div class="input-group">
+                        <label for="hex-input" class="label-large">HEX</label>
+                        <div class="hex-wrapper">
+                            <span>#</span>
+                            <input type="text" id="hex-input" value="6750A4" maxlength="6">
+                            <input type="color" id="color-picker" value="#6750A4">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="code-outputs">
+                    <div class="code-card">
+                        <span class="label-small">RGB</span>
+                        <div class="code-row">
+                            <code id="rgb-output">rgb(103, 80, 164)</code>
+                            <button class="icon-button small-btn copy-btn" data-target="rgb-output">
+                                <span class="material-symbols-outlined">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="code-card">
+                        <span class="label-small">HSL</span>
+                        <div class="code-row">
+                            <code id="hsl-output">256°, 34%, 48%</code>
+                            <button class="icon-button small-btn copy-btn" data-target="hsl-output">
+                                <span class="material-symbols-outlined">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="code-card">
+                        <span class="label-small">CMYK</span>
+                        <div class="code-row">
+                            <code id="cmyk-output">37, 51, 0, 36</code>
+                            <button class="icon-button small-btn copy-btn" data-target="cmyk-output">
+                                <span class="material-symbols-outlined">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wcag-section mt-l">
+                    <h3 class="label-large" data-i18n="accessibility">WCAG Accessibility</h3>
+                    <div class="wcag-grid">
+                        <div class="wcag-item">
+                            <span class="label-small" data-i18n="on_white">On White</span>
+                            <div class="wcag-result-row">
+                                <span id="wcag-white-ratio" class="title-medium" style="margin-bottom:0">21.0:1</span>
+                                <div id="wcag-white-badges" class="badges"></div>
+                            </div>
+                        </div>
+                        <div class="wcag-item">
+                            <span class="label-small" data-i18n="on_black">On Black</span>
+                            <div class="wcag-result-row">
+                                <span id="wcag-black-ratio" class="title-medium" style="margin-bottom:0">1.0:1</span>
+                                <div id="wcag-black-badges" class="badges"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Column 2: Tints, Shades, Tones -->
+        <section class="column" id="col-variations">
+            <div class="card card-outlined">
+                <h2 class="title-medium" data-i18n="variations">Tints, Shades & Tones</h2>
+                
+                <div class="variation-section">
+                    <h3 class="label-large" data-i18n="tints">Tints (Mix with White)</h3>
+                    <div class="color-row-scroll" id="tints-row">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <div class="variation-section">
+                    <h3 class="label-large" data-i18n="shades">Shades (Mix with Black)</h3>
+                    <div class="color-row-scroll" id="shades-row">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <div class="variation-section">
+                    <h3 class="label-large" data-i18n="tones">Tones (Mix with Grey)</h3>
+                    <div class="color-row-scroll" id="tones-row">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Column 3: Harmonies -->
+        <section class="column" id="col-harmonies">
+            <div class="card card-elevated">
+                <h2 class="title-medium" data-i18n="harmonies">Color Harmonies</h2>
+                
+                <div id="harmonies-container">
+                    <!-- Harmony groups like Complementary, Analogous, etc. -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <!-- Export Hub Modal -->
+    <div id="export-modal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="headline-small" data-i18n="export_hub">Export Hub</h2>
+                <button id="close-modal" class="icon-button small-btn">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="css">CSS</button>
+                <button class="tab-btn" data-tab="tailwind">Tailwind</button>
+                <button class="tab-btn" data-tab="json">JSON</button>
+            </div>
+            <div class="modal-body">
+                <div id="export-content-css" class="tab-content active">
+                    <pre><code id="code-css"></code></pre>
+                </div>
+                <div id="export-content-tailwind" class="tab-content">
+                    <pre><code id="code-tailwind"></code></pre>
+                </div>
+                <div id="export-content-json" class="tab-content">
+                    <pre><code id="code-json"></code></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="copy-export" class="button-filled">
+                    <span class="material-symbols-outlined">content_copy</span>
+                    <span data-i18n="copy_all">Copy All</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="headline-small" data-i18n="help_title">User Guide & Glossary</h2>
+                <button id="close-help" class="icon-button small-btn">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body guide-body">
+                <section class="guide-section">
+                    <h3 class="title-small" data-i18n="guide_color_formats_title">1. Color Formats</h3>
+                    <p class="body-medium" data-i18n="guide_color_formats_desc">How color is represented in code.</p>
+                    <ul class="guide-list">
+                        <li><strong>HEX:</strong> <span data-i18n="desc_hex">6-digit code (e.g. #6750A4). Standard for web design.</span></li>
+                        <li><strong>RGB:</strong> <span data-i18n="desc_rgb">Red, Green, Blue (0-255). Used for screen displays.</span></li>
+                        <li><strong>HSL:</strong> <span data-i18n="desc_hsl">Hue (color), Saturation (intensity), Lightness (brightness). Great for designers.</span></li>
+                        <li><strong>CMYK:</strong> <span data-i18n="desc_cmyk">Cyan, Magenta, Yellow, Black (0-100%). Used for physical printing.</span></li>
+                    </ul>
+                </section>
+
+                <section class="guide-section">
+                    <h3 class="title-small" data-i18n="guide_variations_title">2. Color Variations</h3>
+                    <ul class="guide-list">
+                        <li><strong>Tints:</strong> <span data-i18n="desc_tints">Colors mixed with White. Increases light.</span></li>
+                        <li><strong>Shades:</strong> <span data-i18n="desc_shades">Colors mixed with Black. Decreases light.</span></li>
+                        <li><strong>Tones:</strong> <span data-i18n="desc_tones">Colors mixed with Grey. Mutes the color.</span></li>
+                    </ul>
+                </section>
+
+                <section class="guide-section">
+                    <h3 class="title-small" data-i18n="guide_wcag_title">3. Accessibility (WCAG)</h3>
+                    <p class="body-medium" data-i18n="guide_wcag_desc">WCAG ensures colors are readable for everyone, including those with visual impairments.</p>
+                    <ul class="guide-list">
+                        <li><strong>Contrast Ratio:</strong> <span data-i18n="desc_ratio">Brightness difference. Higher is better.</span></li>
+                        <li><strong>AA:</strong> <span data-i18n="desc_aa">Standard compliance (4.5:1 ratio). Recommended for all websites.</span></li>
+                        <li><strong>AAA:</strong> <span data-i18n="desc_aaa">Enhanced compliance (7:1 ratio). Highest accessibility tier.</span></li>
+                    </ul>
+                </section>
+
+                <section class="guide-section">
+                    <h3 class="title-small" data-i18n="guide_harmonies_title">4. Color Harmonies</h3>
+                    <p class="body-medium" data-i18n="guide_harmonies_desc">Predefined rules for picking colors that look good together based on the color wheel.</p>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button id="close-help-confirm" class="button-filled">
+                    <span data-i18n="got_it">Got it!</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
