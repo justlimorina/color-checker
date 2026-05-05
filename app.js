@@ -39,7 +39,19 @@ const translations = {
         desc_aaa: "Enhanced compliance (7:1 ratio). Highest accessibility tier.",
         guide_harmonies_title: "4. Color Harmonies",
         guide_harmonies_desc: "Predefined rules for picking colors that look good together based on the color wheel.",
-        got_it: "Got it!"
+        got_it: "Got it!",
+        ui_prototype: "UI Prototype Preview",
+        cb_simulator: "Color Blindness Simulator",
+        btn_solid: "Solid Button",
+        btn_outline: "Outline Button",
+        sample_card: "Surface Card",
+        sample_text_heading: "Sample Text Heading",
+        sample_text_secondary: "Secondary description text",
+        export_btn_image: "Export Palette Image",
+        cb_protanopia: "Protanopia",
+        cb_deuteranopia: "Deuteranopia",
+        cb_tritanopia: "Tritanopia",
+        cb_achromatopsia: "Achromatopsia"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -81,11 +93,131 @@ const translations = {
         desc_aaa: "Mức cao nhất (tỉ lệ 7:1). Khả năng tiếp cận tối đa.",
         guide_harmonies_title: "4. Nguyên tắc phối màu",
         guide_harmonies_desc: "Các quy luật chọn màu sắc hài hòa dựa trên vòng tròn màu sắc.",
-        got_it: "Đã hiểu!"
+        got_it: "Đã hiểu!",
+        ui_prototype: "Xem trước giao diện UI",
+        cb_simulator: "Trình mô phỏng mù màu",
+        btn_solid: "Nút đặc",
+        btn_outline: "Nút viền",
+        sample_card: "Thẻ giao diện",
+        sample_text_heading: "Tiêu đề mẫu",
+        sample_text_secondary: "Mô tả phụ",
+        export_btn_image: "Xuất ảnh bảng màu",
+        cb_protanopia: "Mù đỏ (Protanopia)",
+        cb_deuteranopia: "Mù xanh lá (Deuteranopia)",
+        cb_tritanopia: "Mù xanh lam (Tritanopia)",
+        cb_achromatopsia: "Mù toàn sắc (Achromatopsia)"
+    },
+    ja: {
+        app_title: "Limorina カラーチェッカー",
+        input_color: "色を入力",
+        variations: "ティント、シェード、トーン",
+        tints: "ティント（白を混ぜる）",
+        shades: "シェード（黒を混ぜる）",
+        tones: "トーン（灰色を混ぜる）",
+        harmonies: "カラーハーモニー",
+        copied: "クリップボードにコピーしました！",
+        complementary: "補色",
+        analogous: "類似色",
+        triadic: "トライアド",
+        tetradic: "テトラード",
+        monochromatic: "単色",
+        accessibility: "WCAGアクセシビリティ",
+        best_text: "最適なテキスト色",
+        saved_palette: "保存されたパレット",
+        save_btn: "パレットに保存",
+        on_white: "白背景",
+        on_black: "黒背景",
+        export_hub: "書き出しハブ",
+        copy_all: "すべてコピー",
+        help_title: "ユーザーガイド",
+        guide_color_formats_title: "1. カラーフォーマット",
+        guide_color_formats_desc: "コードでの色の表現方法。",
+        desc_hex: "6桁のコード（例：#6750A4）。Webデザインの標準。",
+        desc_rgb: "赤、緑、青 (0-255)。ディスプレイ用。",
+        desc_hsl: "色相、彩度、明度。直感的な調整が可能。",
+        desc_cmyk: "シアン、マゼンタ、イエロー、ブラック (0-100%)。印刷用。",
+        guide_variations_title: "2. カラーバリエーション",
+        desc_tints: "白を混ぜた色。明るさが増します。",
+        desc_shades: "黒を混ぜた色。暗さが増します。",
+        desc_tones: "灰色を混ぜた色。色が落ち着きます。",
+        guide_wcag_title: "3. アクセシビリティ (WCAG)",
+        guide_wcag_desc: "視覚障害者を含むすべての人が読みやすい色であることを確認します。",
+        desc_ratio: "明るさの差。高いほど良い。",
+        desc_aa: "標準的な基準 (4.5:1)。すべてのWebサイトで推奨。",
+        desc_aaa: "高度な基準 (7:1)。最高のアクセシビリティ。",
+        guide_harmonies_title: "4. カラーハーモニー",
+        guide_harmonies_desc: "色相環に基づいた調和のとれた色の組み合わせルール。",
+        got_it: "了解しました！",
+        ui_prototype: "UIプロトタイプ",
+        cb_simulator: "色覚シミュレーター",
+        btn_solid: "塗りつぶしボタン",
+        btn_outline: "アウトラインボタン",
+        sample_card: "サーフェスカード",
+        sample_text_heading: "サンプル見出し",
+        sample_text_secondary: "説明テキスト",
+        export_btn_image: "パレット画像を書き出す",
+        cb_protanopia: "赤色覚異常 (Protanopia)",
+        cb_deuteranopia: "緑色覚異常 (Deuteranopia)",
+        cb_tritanopia: "青色覚異常 (Tritanopia)",
+        cb_achromatopsia: "全色覚異常 (Achromatopsia)"
+    },
+    zh: {
+        app_title: "Limorina 色彩检查器",
+        input_color: "输入颜色",
+        variations: "色彩变体",
+        tints: "浅色（混合白色）",
+        shades: "深色（混合黑色）",
+        tones: "色调（混合灰色）",
+        harmonies: "色彩搭配",
+        copied: "已复制到剪贴板！",
+        complementary: "互补色",
+        analogous: "相邻色",
+        triadic: "三角色",
+        tetradic: "矩形色",
+        monochromatic: "单色",
+        accessibility: "WCAG 无障碍",
+        best_text: "最佳文字颜色",
+        saved_palette: "已保存调色板",
+        save_btn: "保存到调色板",
+        on_white: "白底",
+        on_black: "黑底",
+        export_hub: "导出中心",
+        copy_all: "复制全部",
+        help_title: "用户指南",
+        guide_color_formats_title: "1. 颜色格式",
+        guide_color_formats_desc: "代码中的颜色表示方式。",
+        desc_hex: "6位代码（例如 #6750A4）。网页设计标准。",
+        desc_rgb: "红、绿、蓝 (0-255)。用于屏幕显示。",
+        desc_hsl: "色相、饱和度、亮度。更符合设计直觉。",
+        desc_cmyk: "青、品红、黄、黑 (0-100%)。用于印刷。",
+        guide_variations_title: "2. 颜色变体",
+        desc_tints: "混合白色的颜色。增加亮度。",
+        desc_shades: "混合黑色的颜色。降低亮度。",
+        desc_tones: "混合灰色的颜色。使色彩更柔和。",
+        guide_wcag_title: "3. 无障碍 (WCAG)",
+        guide_wcag_desc: "确保所有人（包括视力障碍者）都能清晰阅读内容。",
+        desc_ratio: "亮度差异。越高越好。",
+        desc_aa: "标准合规性 (4.5:1)。建议所有网站使用。",
+        desc_aaa: "高级合规性 (7:1)。最高无障碍级别。",
+        guide_harmonies_title: "4. 色彩搭配",
+        guide_harmonies_desc: "基于色轮的预定义和谐配色规则。",
+        got_it: "知道了！",
+        ui_prototype: "UI 原型预览",
+        cb_simulator: "色盲模拟器",
+        btn_solid: "实心按钮",
+        btn_outline: "描边按钮",
+        sample_card: "表面卡片",
+        sample_text_heading: "示例文字标题",
+        sample_text_secondary: "副描述文本",
+        export_btn_image: "导出调色板图片",
+        cb_protanopia: "红色盲 (Protanopia)",
+        cb_deuteranopia: "绿色盲 (Deuteranopia)",
+        cb_tritanopia: "蓝色盲 (Tritanopia)",
+        cb_achromatopsia: "全色盲 (Achromatopsia)"
     }
 };
 
-let currentLang = 'en';
+let currentLang = localStorage.getItem('app_lang') || 'en';
 
 // --- Color Utilities ---
 const ColorUtils = {
@@ -240,7 +372,8 @@ const dom = {
     tonesRow: document.getElementById('tones-row'),
     harmoniesContainer: document.getElementById('harmonies-container'),
     themeToggle: document.getElementById('theme-toggle'),
-    langToggle: document.getElementById('lang-toggle'),
+    langBtn: document.getElementById('lang-btn'),
+    langMenu: document.getElementById('lang-menu'),
     exportHubBtn: document.getElementById('export-hub-btn'),
     exportModal: document.getElementById('export-modal'),
     helpBtn: document.getElementById('help-btn'),
@@ -254,6 +387,10 @@ const dom = {
     wcagWhiteRatio: document.getElementById('wcag-white-ratio'),
     wcagBlackRatio: document.getElementById('wcag-black-ratio'),
     wcagWhiteBadges: document.getElementById('wcag-white-badges'),
+    wcagBlackBadges: document.getElementById('wcag-black-badges'),
+    oklchOutput: document.getElementById('oklch-output'),
+    colorNameDisplay: document.getElementById('color-name-display'),
+    bestTextColor: document.getElementById('best-text-color'),
     saveBtn: document.getElementById('save-to-palette'),
     paletteContainer: document.getElementById('palette-colors'),
     exportImageBtn: document.getElementById('export-image-btn'),
@@ -292,7 +429,11 @@ function renderAll() {
     dom.oklchOutput.textContent = `${Math.round(state.oklch.l)}%, ${state.oklch.c.toFixed(2)}, ${Math.round(state.oklch.h)}`;
 
     // Update Color Name
-    dom.colorNameDisplay.textContent = ColorUtils.getColorName(state.hex);
+    const colorName = ColorUtils.getColorName(state.hex);
+    dom.colorNameDisplay.textContent = colorName;
+    const isDark = ColorUtils.getLuminance(state.rgb.r, state.rgb.g, state.rgb.b) < 0.5;
+    dom.colorNameDisplay.style.color = isDark ? 'white' : 'black';
+    dom.colorNameDisplay.style.textShadow = isDark ? '0 2px 4px rgba(0,0,0,0.5)' : 'none';
 
     // Update Mixer Inputs
     updateMixerInputs();
@@ -341,22 +482,23 @@ function updateUISamples() {
 
 function renderColorBlindness() {
     const types = [
-        { name: 'Protanopia', desc: 'No Red' },
-        { name: 'Deuteranopia', desc: 'No Green' },
-        { name: 'Tritanopia', desc: 'No Blue' },
-        { name: 'Achromatopsia', desc: 'No Color' }
+        { key: 'cb_protanopia', type: 'protanopia' },
+        { key: 'cb_deuteranopia', type: 'deuteranopia' },
+        { key: 'cb_tritanopia', type: 'tritanopia' },
+        { key: 'cb_achromatopsia', type: 'achromatopsia' }
     ];
 
     dom.cbSimulator.innerHTML = '';
-    types.forEach(type => {
-        const transformed = ColorUtils.simulateBlindness(state.rgb, type.name.toLowerCase());
+    types.forEach(t => {
+        const transformed = ColorUtils.simulateBlindness(state.rgb, t.type);
         const hex = ColorUtils.rgbToHex(transformed.r, transformed.g, transformed.b);
-        
+        const label = translations[currentLang][t.key];
+
         const item = document.createElement('div');
         item.className = 'cb-item';
         item.innerHTML = `
             <div class="cb-preview" style="background-color: #${hex}"></div>
-            <span class="label-tiny">${type.name}</span>
+            <span class="label-tiny">${label}</span>
         `;
         dom.cbSimulator.appendChild(item);
     });
@@ -522,14 +664,32 @@ function createHarmonyBox(r, g, b) {
 }
 
 // --- Localization ---
-function toggleLang() {
-    currentLang = currentLang === 'en' ? 'vi' : 'en';
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('app_lang', currentLang);
+    
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        el.textContent = translations[currentLang][key];
+        if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
     });
+
+    document.querySelectorAll('[data-i18n-target]').forEach(el => {
+        const key = el.getAttribute('data-i18n-target');
+        if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
+    });
+
     dom.appTitle.textContent = translations[currentLang].app_title;
-    renderAll();
+    
+    // Update active state in menu
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.toggle('active', item.getAttribute('data-lang') === lang);
+    });
+
+    // Re-render dynamic elements that depend on language
+    if (state.hex) {
+        renderColorBlindness();
+        renderHarmonies();
+    }
 }
 
 // --- Clipboard ---
@@ -585,7 +745,21 @@ dom.themeToggle.onclick = () => {
     document.body.classList.toggle('dark-mode');
     dom.themeToggle.children[0].textContent = document.body.classList.contains('dark-mode') ? 'light_mode' : 'dark_mode';
 };
-dom.langToggle.onclick = toggleLang;
+dom.langBtn.onclick = (e) => {
+    e.stopPropagation();
+    dom.langMenu.classList.toggle('show');
+};
+
+document.addEventListener('click', () => {
+    dom.langMenu.classList.remove('show');
+});
+
+document.querySelectorAll('.menu-item').forEach(item => {
+    item.onclick = () => {
+        setLanguage(item.getAttribute('data-lang'));
+        dom.langMenu.classList.remove('show');
+    };
+});
 dom.saveBtn.onclick = saveToPalette;
 dom.exportImageBtn.onclick = exportPaletteImage;
 
@@ -686,5 +860,6 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 
 // Init
 updateColorState(state.activeHex);
+setLanguage(currentLang);
 dom.hexInput.value = state.activeHex;
 dom.colorPicker.value = `#${state.activeHex}`;

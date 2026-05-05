@@ -21,15 +21,23 @@
     <header class="top-app-bar">
         <div class="header-content">
             <div class="header-left">
-                <h1 class="headline-medium" id="app-title">Color Checker Pro</h1>
+                <h1 class="headline-medium" id="app-title">Limorina Color Checker</h1>
             </div>
             <div class="app-bar-actions">
                 <button id="help-btn" class="icon-button" title="User Guide">
                     <span class="material-symbols-outlined">help</span>
                 </button>
-                <button id="lang-toggle" class="icon-button" title="Switch Language">
-                    <span class="material-symbols-outlined">language</span>
-                </button>
+                <div class="dropdown">
+                    <button id="lang-btn" class="icon-button" title="Switch Language">
+                        <span class="material-symbols-outlined">language</span>
+                    </button>
+                    <div id="lang-menu" class="dropdown-menu">
+                        <button class="menu-item" data-lang="en">English</button>
+                        <button class="menu-item" data-lang="vi">Tiếng Việt</button>
+                        <button class="menu-item" data-lang="ja">日本語</button>
+                        <button class="menu-item" data-lang="zh">简体中文</button>
+                    </div>
+                </div>
                 <button id="export-hub-btn" class="icon-button" title="Export Palette">
                     <span class="material-symbols-outlined">ios_share</span>
                 </button>
@@ -101,7 +109,7 @@
                     </button>
                     <button id="export-image-btn" class="button-tonal full-width mt-s">
                         <span class="material-symbols-outlined">image</span>
-                        <span>Export Palette Image</span>
+                        <span data-i18n="export_btn_image">Export Palette Image</span>
                     </button>
                 </div>
             </div>
@@ -186,30 +194,30 @@
 
             <!-- UI Prototype -->
             <div class="card card-outlined mt-l">
-                <h2 class="title-medium">UI Prototype Preview</h2>
+                <h2 class="title-medium" data-i18n="ui_prototype">UI Prototype Preview</h2>
                 <div class="ui-samples-grid">
                     <div class="ui-sample-item">
-                        <button class="sample-btn-primary">Solid Button</button>
+                        <button class="sample-btn-primary" data-i18n-target="btn_solid">Solid Button</button>
                     </div>
                     <div class="ui-sample-item">
-                        <button class="sample-btn-outline">Outline Button</button>
+                        <button class="sample-btn-outline" data-i18n-target="btn_outline">Outline Button</button>
                     </div>
                     <div class="ui-sample-item">
                         <div class="sample-card">
-                            <span class="label-small">Surface Card</span>
+                            <span class="label-small" data-i18n="sample_card">Surface Card</span>
                             <div class="sample-dot"></div>
                         </div>
                     </div>
                     <div class="ui-sample-item">
-                        <div class="sample-text">Sample Text Heading</div>
-                        <p class="label-small">Secondary description text</p>
+                        <div class="sample-text" data-i18n="sample_text_heading">Sample Text Heading</div>
+                        <p class="label-small" data-i18n="sample_text_secondary">Secondary description text</p>
                     </div>
                 </div>
             </div>
 
             <!-- Color Blindness -->
             <div class="card card-tonal mt-l">
-                <h2 class="title-medium">Color Blindness Simulator</h2>
+                <h2 class="title-medium" data-i18n="cb_simulator">Color Blindness Simulator</h2>
                 <div class="cb-grid" id="cb-simulator">
                     <!-- JS Generated -->
                 </div>
@@ -290,7 +298,31 @@
                 </button>
             </div>
             <div class="modal-body guide-body">
-                <!-- Guide content... -->
+                <section class="guide-section">
+                    <h3 class="title-small" data-i18n="guide_color_formats_title">1. Color Formats</h3>
+                    <p class="body-medium" data-i18n="guide_color_formats_desc">Different ways to represent color in digital design.</p>
+                    <ul class="guide-list">
+                        <li><strong>HEX:</strong> <span data-i18n="desc_hex">Standard web format.</span></li>
+                        <li><strong>RGB:</strong> <span data-i18n="desc_rgb">Screen-based format.</span></li>
+                        <li><strong>HSL:</strong> <span data-i18n="desc_hsl">Human-centric format.</span></li>
+                    </ul>
+                </section>
+                <section class="guide-section mt-m">
+                    <h3 class="title-small" data-i18n="guide_variations_title">2. Color Variations</h3>
+                    <ul class="guide-list">
+                        <li><strong>Tints:</strong> <span data-i18n="desc_tints">Mix with White.</span></li>
+                        <li><strong>Shades:</strong> <span data-i18n="desc_shades">Mix with Black.</span></li>
+                        <li><strong>Tones:</strong> <span data-i18n="desc_tones">Mix with Grey.</span></li>
+                    </ul>
+                </section>
+                <section class="guide-section mt-m">
+                    <h3 class="title-small" data-i18n="guide_wcag_title">3. Accessibility (WCAG)</h3>
+                    <p class="body-medium" data-i18n="guide_wcag_desc">Ensuring readability for everyone.</p>
+                    <ul class="guide-list">
+                        <li><strong>AA:</strong> <span data-i18n="desc_aa">Recommended standard.</span></li>
+                        <li><strong>AAA:</strong> <span data-i18n="desc_aaa">Enhanced readability.</span></li>
+                    </ul>
+                </section>
             </div>
             <div class="modal-footer">
                 <button id="close-help-confirm" class="button-filled">
