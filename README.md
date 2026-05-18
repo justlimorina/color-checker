@@ -132,3 +132,24 @@ color-checker/
 
 Released under the **Creative Commons Attribution 4.0 International (CC BY 4.0)**.  
 See [LICENSE](LICENSE) for the full text.
+
+---
+
+## 📣 Third-Party Attributions
+
+### ntc.js — Name That Color
+- **Author:** Chirag Mehta — [http://chir.ag/projects/ntc](http://chir.ag/projects/ntc)
+- **License:** [Creative Commons Attribution 2.5](https://creativecommons.org/licenses/by/2.5/)
+- **Usage:** Used to identify the nearest human-readable name for any RGB color value. The original copyright header is preserved in `ntc.js` as required.
+
+> Per the Creative Commons Attribution 2.5 license, credit must be given to the original creator. This notice fulfills that requirement.
+
+---
+
+## 🙏 Acknowledgements
+
+- [Material Design 3](https://m3.material.io/) — Design system guidelines
+- [Google Fonts](https://fonts.google.com/) — Outfit & Roboto typefaces
+- [Material Symbols](https://fonts.google.com/icons) — Icon set
+- [WCAG 2.1](https://www.w3.org/TR/WCAG21/) — Accessibility contrast standards
+- [OKLCH color space](https://oklch.com/) — Perceptually uniform color for Tailwind v4 export

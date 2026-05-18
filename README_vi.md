@@ -132,3 +132,24 @@ color-checker/
  
 Dự án này được phát hành theo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.  
 Xem file [LICENSE](LICENSE) để biết toàn văn.
+
+---
+
+## 📣 Ghi công thành phần bên thứ ba
+
+### ntc.js — Name That Color
+- **Tác giả:** Chirag Mehta — [http://chir.ag/projects/ntc](http://chir.ag/projects/ntc)
+- **Giấy phép:** [Creative Commons Attribution 2.5](https://creativecommons.org/licenses/by/2.5/)
+- **Mục đích sử dụng:** Dùng để xác định tên đọc được bằng ngôn ngữ tự nhiên cho bất kỳ giá trị màu RGB nào. Header bản quyền gốc được giữ nguyên trong file `ntc.js` theo đúng yêu cầu của giấy phép.
+
+> Theo giấy phép Creative Commons Attribution 2.5, bắt buộc phải ghi công tác giả gốc. Thông báo này đáp ứng yêu cầu đó.
+
+---
+
+## 🙏 Lời cảm ơn
+
+- [Material Design 3](https://m3.material.io/) — Hướng dẫn hệ thống thiết kế
+- [Google Fonts](https://fonts.google.com/) — Font Outfit & Roboto
+- [Material Symbols](https://fonts.google.com/icons) — Bộ biểu tượng
+- [WCAG 2.1](https://www.w3.org/TR/WCAG21/) — Tiêu chuẩn tương phản khả năng tiếp cận
+- [OKLCH color space](https://oklch.com/) — Không gian màu đồng đều về mặt cảm nhận, dùng cho xuất Tailwind v4
