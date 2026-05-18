@@ -12,7 +12,7 @@
         rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/styles.css">
     <meta name="description"
         content="Advanced Material Design 3 color analysis tool. Featuring OKLCH, color blindness simulation, and UI prototyping.">
 </head>
@@ -21,7 +21,15 @@
     <header class="top-app-bar">
         <div class="header-content">
             <div class="header-left">
-                <h1 class="headline-medium" id="app-title">Limorina Color Checker</h1>
+                <button id="sidebar-toggle-btn" class="icon-button" title="Toggle Sidebar">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div class="header-title-wrapper">
+                    <svg class="app-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                        <path d="M 24 2 C 24 16 34 14 38 10 C 30 18 34 22 46 24 C 34 26 30 30 38 38 C 34 34 24 32 24 46 C 24 32 14 34 10 38 C 18 30 14 26 2 24 C 14 22 18 18 10 10 C 14 14 24 16 24 2 Z" fill="var(--md-sys-color-primary)"/>
+                    </svg>
+                    <h1 class="headline-medium" id="app-title">Limorina Color Checker</h1>
+                </div>
             </div>
             <div class="app-bar-actions">
                 <button id="help-btn" class="icon-button" title="User Guide">
@@ -48,208 +56,332 @@
         </div>
     </header>
 
+    <!-- Sidebar Navigation Backdrop for Mobile -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="title-medium mb-0">Menu</h2>
+            <button id="close-sidebar-btn" class="icon-button small-btn">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav mt-l">
+            <button class="nav-item active" data-page="page-home">
+                <span class="material-symbols-outlined">home</span>
+                <span data-i18n="nav_home">Home</span>
+            </button>
+            <button class="nav-item" data-page="page-history">
+                <span class="material-symbols-outlined">history</span>
+                <span data-i18n="color_history">Color History</span>
+            </button>
+            <button class="nav-item" data-page="page-contrast">
+                <span class="material-symbols-outlined">contrast</span>
+                <span data-i18n="custom_contrast">Custom Contrast Checker</span>
+            </button>
+        </nav>
+    </aside>
+
     <main class="main-container">
-        <!-- Column 1: Primary Control -->
-        <section class="column" id="col-primary">
-            <div class="card card-filled">
-                <h2 class="title-medium" data-i18n="input_color">Input Color</h2>
+        
+        <!-- PAGE: HOME -->
+        <div id="page-home" class="page active">
+            <div class="home-grid">
+                <!-- Column 1: Primary Control -->
+                <section class="column" id="col-primary">
+                    <div class="card card-filled">
+                        <h2 class="title-medium" data-i18n="input_color">Input Color</h2>
 
-                <div class="main-preview-container">
-                    <div id="color-preview" class="main-preview">
-                        <div id="color-name-display" class="color-name-overlay"></div>
+                        <div class="main-preview-container">
+                            <div id="color-preview" class="main-preview">
+                                <div id="color-name-display" class="color-name-overlay"></div>
+                            </div>
+                        </div>
+
+                        <div class="mixer-section mt-m">
+                            <!-- HEX Input -->
+                            <div class="input-group">
+                                <label for="hex-input" class="label-large">HEX</label>
+                                <div class="hex-wrapper">
+                                    <span>#</span>
+                                    <input type="text" id="hex-input" value="6750A4" maxlength="6">
+                                    <input type="color" id="color-picker" value="#6750A4">
+                                </div>
+                            </div>
+
+                            <!-- RGB Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny">R</label>
+                                    <input type="number" id="rgb-r" min="0" max="255" value="103">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">G</label>
+                                    <input type="number" id="rgb-g" min="0" max="255" value="80">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">B</label>
+                                    <input type="number" id="rgb-b" min="0" max="255" value="164">
+                                </div>
+                            </div>
+
+                            <!-- HSL Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny">H</label>
+                                    <input type="number" id="hsl-h" min="0" max="360" value="256">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">S</label>
+                                    <input type="number" id="hsl-s" min="0" max="100" value="34">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">L</label>
+                                    <input type="number" id="hsl-l" min="0" max="100" value="48">
+                                </div>
+                            </div>
+                            
+                            <!-- OKLCH Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Lightness">OK-L</label>
+                                    <input type="number" id="oklch-l" min="0" max="100" value="48" step="1">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Chroma">OK-C</label>
+                                    <input type="number" id="oklch-c" min="0" max="0.4" value="0.15" step="0.01">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Hue">OK-H</label>
+                                    <input type="number" id="oklch-h" min="0" max="360" value="256" step="1">
+                                </div>
+                            </div>
+                            
+                            <!-- LAB Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Lightness">LAB-L</label>
+                                    <input type="number" id="lab-l" min="0" max="100" value="48" step="1">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="A axis (Green to Red)">LAB-A</label>
+                                    <input type="number" id="lab-a" min="-128" max="127" value="0" step="1">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="B axis (Blue to Yellow)">LAB-B</label>
+                                    <input type="number" id="lab-b" min="-128" max="127" value="0" step="1">
+                                </div>
+                            </div>
+
+                            <button id="save-to-palette" class="button-filled full-width mt-m">
+                                <span class="material-symbols-outlined">bookmark_add</span>
+                                <span data-i18n="save_btn">Save to Palette</span>
+                            </button>
+                            <button id="export-image-btn" class="button-tonal full-width mt-s">
+                                <span class="material-symbols-outlined">image</span>
+                                <span data-i18n="export_btn_image">Export Palette Image</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mixer-section mt-m">
-                    <!-- HEX Input -->
-                    <div class="input-group">
-                        <label for="hex-input" class="label-large">HEX</label>
-                        <div class="hex-wrapper">
-                            <span>#</span>
-                            <input type="text" id="hex-input" value="6750A4" maxlength="6">
-                            <input type="color" id="color-picker" value="#6750A4">
+                    <!-- Saved Palette -->
+                    <div class="card card-tonal mt-l">
+                        <h2 class="title-medium" data-i18n="saved_palette">Saved Palette</h2>
+                        <div id="palette-colors" class="palette-grid">
+                            <!-- Saved colors -->
                         </div>
                     </div>
 
-                    <!-- RGB Mixer -->
-                    <div class="mixer-row mt-s">
-                        <div class="mixer-item">
-                            <label class="label-tiny">R</label>
-                            <input type="number" id="rgb-r" min="0" max="255" value="103">
+                    <!-- Color Codes List -->
+                    <div class="card card-outlined mt-l">
+                        <div class="code-outputs">
+                            <div class="code-card">
+                                <span class="label-small">RGB</span>
+                                <div class="code-row">
+                                    <code id="rgb-output">rgb(103, 80, 164)</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="rgb-output">
+                                        <span class="material-symbols-outlined">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="code-card">
+                                <span class="label-small">HSL</span>
+                                <div class="code-row">
+                                    <code id="hsl-output">256°, 34%, 48%</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="hsl-output">
+                                        <span class="material-symbols-outlined">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="code-card">
+                                <span class="label-small">OKLCH</span>
+                                <div class="code-row">
+                                    <code id="oklch-output">48%, 0.15, 256</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="oklch-output">
+                                        <span class="material-symbols-outlined">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="code-card">
+                                <span class="label-small">CMYK</span>
+                                <div class="code-row">
+                                    <code id="cmyk-output">37, 51, 0, 36</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="cmyk-output">
+                                        <span class="material-symbols-outlined">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mixer-item">
-                            <label class="label-tiny">G</label>
-                            <input type="number" id="rgb-g" min="0" max="255" value="80">
+                    </div>
+                </section>
+
+                <!-- Column 2: Analysis & Samples -->
+                <section class="column" id="col-analysis">
+                    <!-- Accessibility -->
+                    <div class="card card-elevated">
+                        <h2 class="title-medium" data-i18n="accessibility">WCAG Accessibility</h2>
+                        <div class="wcag-grid">
+                            <div class="wcag-item">
+                                <span class="label-small" data-i18n="on_white">On White</span>
+                                <div class="wcag-result-row">
+                                    <span id="wcag-white-ratio" class="title-medium mb-0">21.0:1</span>
+                                    <div id="wcag-white-badges" class="badges"></div>
+                                </div>
+                            </div>
+                            <div class="wcag-item">
+                                <span class="label-small" data-i18n="on_black">On Black</span>
+                                <div class="wcag-result-row">
+                                    <span id="wcag-black-ratio" class="title-medium mb-0">1.0:1</span>
+                                    <div id="wcag-black-badges" class="badges"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mixer-item">
-                            <label class="label-tiny">B</label>
-                            <input type="number" id="rgb-b" min="0" max="255" value="164">
+                        <div class="best-text-section mt-m">
+                            <h3 class="label-large" data-i18n="best_text">Best Text Color</h3>
+                            <div id="best-text-color" class="best-text-preview">Aa Bb Cc 123</div>
                         </div>
                     </div>
 
-                    <!-- HSL Mixer -->
-                    <div class="mixer-row mt-s">
-                        <div class="mixer-item">
-                            <label class="label-tiny">H</label>
-                            <input type="number" id="hsl-h" min="0" max="360" value="256">
+                    <!-- UI Prototype -->
+                    <div id="ui-samples-card" class="card card-outlined mt-l" style="transition: all 0.3s ease;">
+                        <div class="toggle-container mb-m">
+                            <h2 class="title-medium mb-0" data-i18n="ui_prototype">UI Prototype Preview</h2>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="label-small" data-i18n="advanced_preview">Advanced</span>
+                                <div id="advanced-preview-toggle" class="toggle-btn"></div>
+                            </div>
                         </div>
-                        <div class="mixer-item">
-                            <label class="label-tiny">S</label>
-                            <input type="number" id="hsl-s" min="0" max="100" value="34">
-                        </div>
-                        <div class="mixer-item">
-                            <label class="label-tiny">L</label>
-                            <input type="number" id="hsl-l" min="0" max="100" value="48">
+                        
+                        <div class="ui-samples-grid">
+                            <div class="ui-sample-item">
+                                <button class="sample-btn-primary" data-i18n-target="btn_solid">Solid Button</button>
+                            </div>
+                            <div class="ui-sample-item">
+                                <button class="sample-btn-outline" data-i18n-target="btn_outline">Outline Button</button>
+                            </div>
+                            <div class="ui-sample-item">
+                                <div class="sample-card">
+                                    <span class="label-small" data-i18n="sample_card">Surface Card</span>
+                                    <div class="sample-dot"></div>
+                                </div>
+                            </div>
+                            <div class="ui-sample-item">
+                                <div class="sample-text" data-i18n="sample_text_heading">Sample Text Heading</div>
+                                <p class="label-small" data-i18n="sample_text_secondary">Secondary description text</p>
+                            </div>
                         </div>
                     </div>
 
-                    <button id="save-to-palette" class="button-filled full-width mt-m">
-                        <span class="material-symbols-outlined">bookmark_add</span>
-                        <span data-i18n="save_btn">Save to Palette</span>
-                    </button>
-                    <button id="export-image-btn" class="button-tonal full-width mt-s">
-                        <span class="material-symbols-outlined">image</span>
-                        <span data-i18n="export_btn_image">Export Palette Image</span>
-                    </button>
-                </div>
+                    <!-- Color Blindness -->
+                    <div class="card card-tonal mt-l">
+                        <h2 class="title-medium" data-i18n="cb_simulator">Color Blindness Simulator</h2>
+                        <div class="cb-grid" id="cb-simulator">
+                            <!-- JS Generated -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Column 3: Discovery -->
+                <section class="column" id="col-discovery">
+                    <div class="card card-outlined">
+                        <h2 class="title-medium" data-i18n="variations">Tints, Shades & Tones</h2>
+
+                        <div class="variation-section">
+                            <h3 class="label-large" data-i18n="tints">Tints</h3>
+                            <div class="color-row-scroll" id="tints-row"></div>
+                        </div>
+
+                        <div class="variation-section">
+                            <h3 class="label-large" data-i18n="shades">Shades</h3>
+                            <div class="color-row-scroll" id="shades-row"></div>
+                        </div>
+
+                        <div class="variation-section">
+                            <h3 class="label-large" data-i18n="tones">Tones</h3>
+                            <div class="color-row-scroll" id="tones-row"></div>
+                        </div>
+                    </div>
+
+                    <div class="card card-elevated mt-l">
+                        <h2 class="title-medium" data-i18n="harmonies">Color Harmonies</h2>
+                        <div id="harmonies-container"></div>
+                    </div>
+                </section>
             </div>
+        </div>
 
-            <!-- Saved Palette -->
-            <div class="card card-tonal mt-l">
-                <h2 class="title-medium" data-i18n="saved_palette">Saved Palette</h2>
-                <div id="palette-colors" class="palette-grid">
-                    <!-- Saved colors -->
-                </div>
-            </div>
-
-            <!-- Color Codes List -->
-            <div class="card card-outlined mt-l">
-                <div class="code-outputs">
-                    <div class="code-card">
-                        <span class="label-small">RGB</span>
-                        <div class="code-row">
-                            <code id="rgb-output">rgb(103, 80, 164)</code>
-                            <button class="icon-button small-btn copy-btn" data-target="rgb-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="code-card">
-                        <span class="label-small">HSL</span>
-                        <div class="code-row">
-                            <code id="hsl-output">256°, 34%, 48%</code>
-                            <button class="icon-button small-btn copy-btn" data-target="hsl-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="code-card">
-                        <span class="label-small">OKLCH</span>
-                        <div class="code-row">
-                            <code id="oklch-output">48%, 0.15, 256</code>
-                            <button class="icon-button small-btn copy-btn" data-target="oklch-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="code-card">
-                        <span class="label-small">CMYK</span>
-                        <div class="code-row">
-                            <code id="cmyk-output">37, 51, 0, 36</code>
-                            <button class="icon-button small-btn copy-btn" data-target="cmyk-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Column 2: Analysis & Samples -->
-        <section class="column" id="col-analysis">
-            <!-- Accessibility -->
+        <!-- PAGE: HISTORY -->
+        <div id="page-history" class="page">
             <div class="card card-elevated">
-                <h2 class="title-medium" data-i18n="accessibility">WCAG Accessibility</h2>
-                <div class="wcag-grid">
-                    <div class="wcag-item">
-                        <span class="label-small" data-i18n="on_white">On White</span>
-                        <div class="wcag-result-row">
-                            <span id="wcag-white-ratio" class="title-medium mb-0">21.0:1</span>
-                            <div id="wcag-white-badges" class="badges"></div>
-                        </div>
-                    </div>
-                    <div class="wcag-item">
-                        <span class="label-small" data-i18n="on_black">On Black</span>
-                        <div class="wcag-result-row">
-                            <span id="wcag-black-ratio" class="title-medium mb-0">1.0:1</span>
-                            <div id="wcag-black-badges" class="badges"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="best-text-section mt-m">
-                    <h3 class="label-large" data-i18n="best_text">Best Text Color</h3>
-                    <div id="best-text-color" class="best-text-preview">Aa Bb Cc 123</div>
-                </div>
-            </div>
-
-            <!-- UI Prototype -->
-            <div class="card card-outlined mt-l">
-                <h2 class="title-medium" data-i18n="ui_prototype">UI Prototype Preview</h2>
-                <div class="ui-samples-grid">
-                    <div class="ui-sample-item">
-                        <button class="sample-btn-primary" data-i18n-target="btn_solid">Solid Button</button>
-                    </div>
-                    <div class="ui-sample-item">
-                        <button class="sample-btn-outline" data-i18n-target="btn_outline">Outline Button</button>
-                    </div>
-                    <div class="ui-sample-item">
-                        <div class="sample-card">
-                            <span class="label-small" data-i18n="sample_card">Surface Card</span>
-                            <div class="sample-dot"></div>
-                        </div>
-                    </div>
-                    <div class="ui-sample-item">
-                        <div class="sample-text" data-i18n="sample_text_heading">Sample Text Heading</div>
-                        <p class="label-small" data-i18n="sample_text_secondary">Secondary description text</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Color Blindness -->
-            <div class="card card-tonal mt-l">
-                <h2 class="title-medium" data-i18n="cb_simulator">Color Blindness Simulator</h2>
-                <div class="cb-grid" id="cb-simulator">
+                <h2 class="headline-medium mb-m" data-i18n="color_history">Color History</h2>
+                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="color_history_desc">Your recently generated colors are automatically saved here.</p>
+                <div id="history-container" class="history-page-grid">
                     <!-- JS Generated -->
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Column 3: Discovery -->
-        <section class="column" id="col-discovery">
-            <div class="card card-outlined">
-                <h2 class="title-medium" data-i18n="variations">Tints, Shades & Tones</h2>
-
-                <div class="variation-section">
-                    <h3 class="label-large" data-i18n="tints">Tints</h3>
-                    <div class="color-row-scroll" id="tints-row"></div>
+        <!-- PAGE: CUSTOM CONTRAST -->
+        <div id="page-contrast" class="page">
+            <div class="card card-outlined" style="max-width: 800px; margin: 0 auto;">
+                <h2 class="headline-medium mb-m" data-i18n="custom_contrast">Custom Contrast Checker</h2>
+                
+                <div class="custom-contrast-box large">
+                    <div class="contrast-input-group">
+                        <label class="label-large mb-s" data-i18n="background_color">Background</label>
+                        <div class="hex-wrapper">
+                            <span>#</span>
+                            <input type="text" id="custom-bg-hex" value="FFFFFF" maxlength="6">
+                            <input type="color" id="custom-bg-picker" value="#FFFFFF">
+                        </div>
+                    </div>
+                    <div class="contrast-icon">
+                        <span class="material-symbols-outlined" style="font-size: 32px;">sync_alt</span>
+                    </div>
+                    <div class="contrast-input-group">
+                        <label class="label-large mb-s" data-i18n="foreground_color">Foreground</label>
+                        <div class="hex-wrapper">
+                            <span>#</span>
+                            <input type="text" id="custom-fg-hex" value="000000" maxlength="6">
+                            <input type="color" id="custom-fg-picker" value="#000000">
+                        </div>
+                    </div>
                 </div>
-
-                <div class="variation-section">
-                    <h3 class="label-large" data-i18n="shades">Shades</h3>
-                    <div class="color-row-scroll" id="shades-row"></div>
-                </div>
-
-                <div class="variation-section">
-                    <h3 class="label-large" data-i18n="tones">Tones</h3>
-                    <div class="color-row-scroll" id="tones-row"></div>
+                
+                <div id="custom-contrast-preview" class="custom-contrast-preview large">The quick brown fox jumps over the lazy dog.</div>
+                
+                <div class="wcag-result-card mt-l">
+                    <div class="result-header">
+                        <span class="title-medium mb-0">Contrast Ratio</span>
+                        <span id="custom-contrast-ratio" class="headline-large" style="color: var(--md-sys-color-primary);">21.0:1</span>
+                    </div>
+                    <div id="custom-contrast-badges" class="badges large-badges mt-m"></div>
                 </div>
             </div>
+        </div>
 
-            <div class="card card-elevated mt-l">
-                <h2 class="title-medium" data-i18n="harmonies">Color Harmonies</h2>
-                <div id="harmonies-container"></div>
-            </div>
-        </section>
     </main>
 
     <div id="toast" class="toast">Copied to clipboard!</div>
@@ -305,6 +437,8 @@
                         <li><strong>HEX:</strong> <span data-i18n="desc_hex">Standard web format.</span></li>
                         <li><strong>RGB:</strong> <span data-i18n="desc_rgb">Screen-based format.</span></li>
                         <li><strong>HSL:</strong> <span data-i18n="desc_hsl">Human-centric format.</span></li>
+                        <li><strong>OKLCH:</strong> <span data-i18n="oklch_desc">Modern web color space.</span></li>
+                        <li><strong>LAB:</strong> <span data-i18n="lab_desc">Perceptual uniform color space.</span></li>
                     </ul>
                 </section>
                 <section class="guide-section mt-m">
@@ -332,8 +466,8 @@
         </div>
     </div>
 
-    <script src="ntc.js"></script>
-    <script src="app.js"></script>
+    <script src="assets/script/ntc.js"></script>
+    <script type="module" src="assets/script/app.js"></script>
 </body>
 
 </html>
