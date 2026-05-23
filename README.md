@@ -30,10 +30,33 @@ A professional-grade color analysis and design tool built with Material Design 3
 - **Complementary**, **Analogous**, **Triadic**, **Tetradic**, **Monochromatic**.
 - Click any harmony swatch to instantly switch to that color.
 
-### ♿ WCAG Accessibility & Freestyle Contrast
+### ♿ WCAG Accessibility, Freestyle Contrast & Matrix
 - Contrast ratios against **White** and **Black** backgrounds.
 - **Freestyle Contrast Page:** A standalone page to analyze contrast between custom foreground and background colors with WCAG pass/fail badges.
+- **Contrast Matrix:** A cross-comparison matrix table checking the WCAG contrast ratios of all your saved colors against each other, as well as against pure White and Black.
 - Automatic **Best Text Color** recommendation (White or Black).
+
+### 🌈 CSS Gradient Generator
+- Draw linear or radial gradients dynamically from your active color.
+- Tweak rotation angles in real time using a smooth slider.
+- **Dual Input Syncing:** Edit gradient colors using either text HEX boxes or absolute color pickers.
+- Quick one-click action to copy clean, raw CSS code to your clipboard.
+
+### 🎨 MD3 Theme Builder
+- Instantly generate a complete suite of standard Material Design 3 color tokens (Primary, Secondary, Surface, Outline, Error, and their variants).
+- Visualized in a responsive grid illustrating each token's background and on-color interaction.
+- One-click export to copy the generated `:root` CSS variables block directly into your stylesheet.
+
+### 🖼️ Image Extractor & Palette Export
+- Drag-and-drop or upload images to automatically extract a 6-color dominant palette using a proximity-aware algorithm.
+- Click any extracted color to set it as the active color.
+- **Export Palette Image:** Exports your saved palette or extracted image palette as a clean, horizontal color strip (palette strip) with clearly labeled HEX values below each swatch, adjusting its width dynamically.
+
+### 📤 Export Hub
+- Export color data as:
+  - **CSS custom properties** (`:root` variables)
+  - **Tailwind v4** `@theme` block using OKLCH values
+  - **JSON** object with all color formats
 
 ### 👁️ Color Blindness Simulator
 - Simulates 4 types of color vision deficiency using transformation matrices:
@@ -50,14 +73,6 @@ A professional-grade color analysis and design tool built with Material Design 3
 - **Saved Palette:** Save up to **10 colors** persisted via `localStorage`.
 - **Color History Page:** Automatically tracks and displays recently browsed colors in a dedicated history grid.
 
-### 🖼️ Simplified Palette Image Export
-- Exports a clean, horizontal color strip (palette strip) with clearly labeled HEX values below each swatch, adjusting its width dynamically based on your palette size.
-
-### 📤 Export Hub
-- Export color data as:
-  - **CSS custom properties** (`:root` variables)
-  - **Tailwind v4** `@theme` block using OKLCH values
-  - **JSON** object with all color formats
 
 ### 🌐 Multi-language Support
 - Floating language menu supporting:
