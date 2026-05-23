@@ -863,9 +863,12 @@ pre {
 
 .palette-item:hover .remove-btn { opacity: 1; }
 
+.mt-s { margin-top: var(--spacing-s); }
 .mt-m { margin-top: var(--spacing-m); }
-
 .mt-l { margin-top: var(--spacing-l); }
+.mb-s { margin-bottom: var(--spacing-s); }
+.mb-m { margin-bottom: var(--spacing-m); }
+.mb-l { margin-bottom: var(--spacing-l); }
 .mb-0 { margin-bottom: 0 !important; }
 
 /* Guide Content */

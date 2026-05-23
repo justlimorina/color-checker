@@ -368,6 +368,8 @@ export function initGradientGenerator() {
     const angleGroup = document.getElementById('grad-angle-group');
     const color1 = document.getElementById('grad-color-1');
     const color2 = document.getElementById('grad-color-2');
+    const hex1 = document.getElementById('grad-hex-1');
+    const hex2 = document.getElementById('grad-hex-2');
     const preview = document.getElementById('gradient-preview');
     const code = document.getElementById('gradient-code');
     const copyBtn = document.getElementById('copy-gradient-btn');
@@ -411,8 +413,37 @@ export function initGradientGenerator() {
         updateGradient();
     };
     
-    color1.oninput = updateGradient;
-    color2.oninput = updateGradient;
+    color1.oninput = (e) => {
+        if (hex1) hex1.value = e.target.value.substring(1).toUpperCase();
+        updateGradient();
+    };
+    
+    color2.oninput = (e) => {
+        if (hex2) hex2.value = e.target.value.substring(1).toUpperCase();
+        updateGradient();
+    };
+    
+    if (hex1) {
+        hex1.oninput = (e) => {
+            let val = e.target.value.replace('#', '');
+            if (val.length === 3) val = val.split('').map(c => c + c).join('');
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                color1.value = `#${val.toUpperCase()}`;
+                updateGradient();
+            }
+        };
+    }
+    
+    if (hex2) {
+        hex2.oninput = (e) => {
+            let val = e.target.value.replace('#', '');
+            if (val.length === 3) val = val.split('').map(c => c + c).join('');
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                color2.value = `#${val.toUpperCase()}`;
+                updateGradient();
+            }
+        };
+    }
     
     copyBtn.onclick = () => {
         navigator.clipboard.writeText(code.textContent).then(() => {
@@ -421,9 +452,12 @@ export function initGradientGenerator() {
     };
     
     color1.value = `#${state.hex}`;
+    if (hex1) hex1.value = state.hex.toUpperCase();
     const h1 = (state.hsl.h + 45) % 360;
     const rgb1 = ColorUtils.hslToRgb(h1, state.hsl.s, state.hsl.l);
-    color2.value = `#${ColorUtils.rgbToHex(rgb1.r, rgb1.g, rgb1.b)}`;
+    const hexVal2 = ColorUtils.rgbToHex(rgb1.r, rgb1.g, rgb1.b).toUpperCase();
+    color2.value = `#${hexVal2}`;
+    if (hex2) hex2.value = hexVal2;
     updateGradient();
 }
 
