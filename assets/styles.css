@@ -90,6 +90,23 @@ body {
     line-height: 1.5;
     transition: background-color var(--transition-standard), color var(--transition-standard);
     min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background: radial-gradient(circle at 50% 0%, var(--gradient-color-1, transparent) 0%, transparent 60%),
+                radial-gradient(circle at 0% 100%, var(--gradient-color-2, transparent) 0%, transparent 70%),
+                radial-gradient(circle at 100% 100%, var(--gradient-color-3, transparent) 0%, transparent 70%);
+    opacity: 0.25;
+    transition: background 0.8s ease-out;
+    pointer-events: none;
 }
 
 /* Typography */
@@ -112,13 +129,16 @@ body {
 /* Top App Bar */
 .top-app-bar {
     height: 64px;
-    background-color: var(--md-sys-color-surface);
+    background-color: color-mix(in srgb, var(--md-sys-color-surface) 80%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     position: sticky;
     top: 0;
     z-index: 100;
     display: flex;
     align-items: center;
     padding: 0 var(--spacing-m);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .header-content {
@@ -272,6 +292,8 @@ body {
     padding: var(--spacing-l);
     height: fit-content;
     transition: transform var(--transition-standard), box-shadow var(--transition-standard);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .card-filled {
@@ -883,17 +905,21 @@ pre {
     position: fixed;
     bottom: var(--spacing-xl);
     left: 50%;
-    transform: translateX(-50%) translateY(100px);
+    transform: translateX(-50%) translateY(150px);
+    opacity: 0;
+    pointer-events: none;
     background-color: var(--md-sys-color-on-surface);
     color: var(--md-sys-color-surface);
     padding: var(--spacing-m) var(--spacing-xl);
     border-radius: var(--md-sys-shape-corner-full);
-    transition: transform 0.3s ease-out;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     z-index: 1000;
 }
 
 .toast.show {
     transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* Sidebar Styles */
@@ -942,6 +968,7 @@ pre {
     font-size: 1rem;
     font-weight: 500;
     transition: background-color 0.2s, color 0.2s;
+    text-align: left;
 }
 
 .nav-item:hover {
@@ -1332,4 +1359,84 @@ body.sidebar-open .sidebar-overlay {
         font-size: 0.75rem;
         padding: 4px 8px;
     }
+}
+
+/* ==========================================================================
+   RIPPLE EFFECT
+   ========================================================================== */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    background-color: currentColor;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   IMAGE EXTRACTOR
+   ========================================================================== */
+.image-drop-zone {
+    border: 2px dashed var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    padding: var(--spacing-xl);
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--transition-standard), border-color var(--transition-standard);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background-color: var(--md-sys-color-surface-container-low);
+}
+
+.image-drop-zone:hover, .image-drop-zone.dragover {
+    background-color: var(--md-sys-color-surface-variant);
+    border-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-primary);
+}
+
+/* ==========================================================================
+   CONTRAST MATRIX & GRADIENT GENERATOR
+   ========================================================================== */
+.matrix-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+.matrix-table th, .matrix-table td {
+    padding: var(--spacing-m);
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 500;
+}
+.matrix-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+}
+.gradient-layout {
+    display: flex;
+    gap: var(--spacing-l);
+    flex-wrap: wrap;
+}
+.gradient-controls {
+    flex: 1;
+    min-width: 300px;
+}
+.gradient-preview-area {
+    flex: 2;
+    min-width: 300px;
 }

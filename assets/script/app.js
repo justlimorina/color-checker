@@ -16,6 +16,7 @@ export function updateColorState(hex, skipHistory = false) {
     state.oklab = ColorUtils.rgbToOklab(state.rgb.r, state.rgb.g, state.rgb.b);
     
     localStorage.setItem('active_hex', state.hex);
+    window.history.replaceState(null, '', `?color=${state.hex}`);
     
     if (!skipHistory) {
         addToHistory(state.hex);

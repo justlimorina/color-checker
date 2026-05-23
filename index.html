@@ -82,6 +82,22 @@
                 <span class="material-symbols-outlined">contrast</span>
                 <span data-i18n="custom_contrast">Custom Contrast Checker</span>
             </button>
+            <button class="nav-item" data-page="page-matrix">
+                <span class="material-symbols-outlined">grid_on</span>
+                <span data-i18n="contrast_matrix">Contrast Matrix</span>
+            </button>
+            <button class="nav-item" data-page="page-gradient">
+                <span class="material-symbols-outlined">gradient</span>
+                <span data-i18n="gradient_generator">Gradient Generator</span>
+            </button>
+            <button class="nav-item" data-page="page-theme">
+                <span class="material-symbols-outlined">palette</span>
+                <span data-i18n="theme_builder">MD3 Theme Builder</span>
+            </button>
+            <button class="nav-item" data-page="page-image">
+                <span class="material-symbols-outlined">image_search</span>
+                <span data-i18n="image_extractor">Image Extractor</span>
+            </button>
         </nav>
     </aside>
 
@@ -97,15 +113,17 @@
 
                         <div class="main-preview-container">
                             <div id="color-preview" class="main-preview">
-                                <div id="color-name-display" class="color-name-overlay"></div>
                             </div>
                         </div>
 
                         <div class="mixer-section mt-m">
                             <!-- HEX Input -->
                             <div class="input-group">
-                                <label for="hex-input" class="label-large">HEX</label>
-                                <div class="hex-wrapper">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <label for="hex-input" class="label-large mb-0">HEX</label>
+                                    <span id="color-name-display" class="label-small" style="color: var(--md-sys-color-on-primary-container); background: var(--md-sys-color-primary-container); padding: 2px 8px; border-radius: 12px; font-weight: 700;"></span>
+                                </div>
+                                <div class="hex-wrapper" style="margin-top: 0;">
                                     <span>#</span>
                                     <input type="text" id="hex-input" value="6750A4" maxlength="6">
                                     <input type="color" id="color-picker" value="#6750A4">
@@ -380,6 +398,115 @@
                     </div>
                     <div id="custom-contrast-badges" class="badges large-badges mt-m"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- PAGE: IMAGE EXTRACTOR -->
+        <div id="page-image" class="page">
+            <div class="card card-elevated" style="max-width: 800px; margin: 0 auto;">
+                <h2 class="headline-medium mb-m" data-i18n="image_extractor">Image Extractor</h2>
+                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="image_extractor_desc">Upload an image to extract a color palette from it.</p>
+                <div id="image-drop-zone" class="image-drop-zone">
+                    <span class="material-symbols-outlined" style="font-size: 48px;">add_photo_alternate</span>
+                    <p class="title-medium mt-s" data-i18n="drop_image_here">Drag & Drop an image here or click to upload</p>
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                </div>
+                <div style="display: flex; gap: var(--spacing-l); margin-top: var(--spacing-m); flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <canvas id="image-canvas" style="display: none; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px var(--md-sys-color-shadow);"></canvas>
+                    </div>
+                    <div style="width: 250px;">
+                        <div id="extracted-palette" class="palette-grid" style="display: none; grid-template-columns: repeat(3, 1fr);"></div>
+                    </div>
+                </div>
+                <div id="image-action-buttons" style="display: none; gap: var(--spacing-m); margin-top: var(--spacing-m);">
+                    <button id="reset-image-btn" class="button-tonal" style="flex: 1;">
+                        <span class="material-symbols-outlined">restart_alt</span>
+                        <span data-i18n="upload_another">Upload Another</span>
+                    </button>
+                    <button id="export-extracted-palette-btn" class="button-filled" style="flex: 1;">
+                        <span class="material-symbols-outlined">image</span>
+                        <span data-i18n="export_btn_image">Export Palette Image</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: CONTRAST MATRIX -->
+        <div id="page-matrix" class="page">
+            <div class="card card-elevated">
+                <h2 class="headline-medium mb-m" data-i18n="contrast_matrix">Contrast Matrix</h2>
+                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="matrix_desc">Compare all saved colors against each other for WCAG accessibility.</p>
+                
+                <div style="overflow-x: auto;">
+                    <table id="matrix-table" class="matrix-table">
+                        <!-- JS Generated -->
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: GRADIENT GENERATOR -->
+        <div id="page-gradient" class="page">
+            <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
+                <h2 class="headline-medium mb-m" data-i18n="gradient_generator">CSS Gradient Generator</h2>
+                
+                <div class="gradient-layout">
+                    <div class="gradient-controls">
+                        <div class="input-group mb-m">
+                            <label class="label-large" data-i18n="gradient_type">Type</label>
+                            <div class="modal-tabs mt-s" style="border:none;">
+                                <button class="tab-btn active" id="grad-linear" style="flex:1;" data-i18n="grad_linear">Linear</button>
+                                <button class="tab-btn" id="grad-radial" style="flex:1;" data-i18n="grad_radial">Radial</button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group mb-m" id="grad-angle-group">
+                            <label class="label-large"><span data-i18n="gradient_angle">Angle</span> (<span id="grad-angle-val">90</span>°)</label>
+                            <input type="range" id="grad-angle" min="0" max="360" value="90" style="width: 100%; margin-top: 8px;">
+                        </div>
+
+                        <div class="input-group mb-m">
+                            <label class="label-large mb-s" data-i18n="gradient_colors">Colors</label>
+                            <div class="mixer-row">
+                                <div class="hex-wrapper" style="flex:1;">
+                                    <input type="color" id="grad-color-1" value="#624E9A" style="width:100%; height:40px; padding:0; border-radius:8px;">
+                                </div>
+                                <div class="hex-wrapper" style="flex:1;">
+                                    <input type="color" id="grad-color-2" value="#EADDFF" style="width:100%; height:40px; padding:0; border-radius:8px;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="copy-gradient-btn" class="button-filled full-width mt-l">
+                            <span class="material-symbols-outlined">content_copy</span>
+                            <span data-i18n="copy_css">Copy CSS</span>
+                        </button>
+                    </div>
+                    
+                    <div class="gradient-preview-area">
+                        <div id="gradient-preview" style="width: 100%; height: 300px; border-radius: 24px; background: linear-gradient(90deg, #624E9A, #EADDFF); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);"></div>
+                        <pre class="mt-m" style="background: var(--md-sys-color-surface-variant); padding: 16px; border-radius: 12px;"><code id="gradient-code">background: linear-gradient(90deg, #624E9A, #EADDFF);</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: THEME BUILDER -->
+        <div id="page-theme" class="page">
+            <div class="card card-elevated">
+                <h2 class="headline-medium mb-m" data-i18n="theme_builder">MD3 Theme Builder</h2>
+                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="theme_desc">Your complete Material Design 3 theme generated from the primary color.</p>
+                
+                <div id="theme-colors-grid" class="palette-grid mt-m" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
+                    <!-- JS generated -->
+                </div>
+                
+                <button id="export-theme-btn" class="button-filled mt-l">
+                    <span class="material-symbols-outlined">code</span>
+                    <span data-i18n="export_theme_css">Export Theme CSS</span>
+                </button>
+                <pre id="theme-code-preview" class="mt-m" style="display:none; background: var(--md-sys-color-surface-variant); padding: 16px; border-radius: 12px; overflow-x: auto; font-size: 12px;"></pre>
             </div>
         </div>
 

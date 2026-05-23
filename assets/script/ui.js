@@ -17,9 +17,6 @@ export function renderAll() {
     // Update Color Name
     const colorName = ColorUtils.getColorName(state.hex);
     dom.colorNameDisplay.textContent = colorName;
-    const isDark = ColorUtils.getLuminance(state.rgb.r, state.rgb.g, state.rgb.b) < 0.5;
-    dom.colorNameDisplay.style.color = isDark ? 'white' : 'black';
-    dom.colorNameDisplay.style.textShadow = isDark ? '0 2px 4px rgba(0,0,0,0.5)' : 'none';
 
     // Update Mixer Inputs
     updateMixerInputs();
@@ -116,15 +113,24 @@ export function updateDynamicTheme() {
     
     const primary = state.rgb;
     
+    // Set Gradient Colors
+    document.documentElement.style.setProperty('--gradient-color-1', `#${state.hex}`);
+    const mixColorForGrad = isDark ? { r: 0, g: 0, b: 0 } : { r: 255, g: 255, b: 255 };
+    const mixedGrad = ColorUtils.mixColors(primary, mixColorForGrad, 40);
+    document.documentElement.style.setProperty('--gradient-color-2', `#${ColorUtils.rgbToHex(mixedGrad.r, mixedGrad.g, mixedGrad.b)}`);
+    const h1 = (state.hsl.h + 45) % 360;
+    const rgb1 = ColorUtils.hslToRgb(h1, state.hsl.s, state.hsl.l);
+    document.documentElement.style.setProperty('--gradient-color-3', `#${ColorUtils.rgbToHex(rgb1.r, rgb1.g, rgb1.b)}`);
+
     if (!isDark) {
         const white = { r: 255, g: 255, b: 255 };
-        const mixHex = (w) => {
+        const mixHex = (w, alpha = 0.85) => {
             const m = ColorUtils.mixColors(primary, white, w);
-            return `#${ColorUtils.rgbToHex(m.r, m.g, m.b)}`;
+            return `rgba(${m.r}, ${m.g}, ${m.b}, ${alpha})`;
         };
 
         // Tint surfaces with primary color
-        document.documentElement.style.setProperty('--md-sys-color-surface', mixHex(98));
+        document.documentElement.style.setProperty('--md-sys-color-surface', mixHex(98, 0.9));
         document.documentElement.style.setProperty('--md-sys-color-surface-container-low', mixHex(96));
         document.documentElement.style.setProperty('--md-sys-color-surface-container', mixHex(94));
         document.documentElement.style.setProperty('--md-sys-color-surface-container-high', mixHex(92));
@@ -134,17 +140,17 @@ export function updateDynamicTheme() {
         // Tint containers
         document.documentElement.style.setProperty('--md-sys-color-primary-container', mixHex(80));
         document.documentElement.style.setProperty('--md-sys-color-secondary-container', mixHex(85));
-        document.documentElement.style.setProperty('--md-sys-color-on-primary-container', mixHex(10));
-        document.documentElement.style.setProperty('--md-sys-color-on-secondary-container', mixHex(20));
+        document.documentElement.style.setProperty('--md-sys-color-on-primary-container', `#${ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(primary, white, 10)))}`);
+        document.documentElement.style.setProperty('--md-sys-color-on-secondary-container', `#${ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(primary, white, 20)))}`);
     } else {
         const black = { r: 0, g: 0, b: 0 };
-        const mixHex = (w) => {
+        const mixHex = (w, alpha = 0.85) => {
             const m = ColorUtils.mixColors(primary, black, w);
-            return `#${ColorUtils.rgbToHex(m.r, m.g, m.b)}`;
+            return `rgba(${m.r}, ${m.g}, ${m.b}, ${alpha})`;
         };
 
         // Tint dark surfaces with primary color
-        document.documentElement.style.setProperty('--md-sys-color-surface', mixHex(95));
+        document.documentElement.style.setProperty('--md-sys-color-surface', mixHex(95, 0.9));
         document.documentElement.style.setProperty('--md-sys-color-surface-container-low', mixHex(93));
         document.documentElement.style.setProperty('--md-sys-color-surface-container', mixHex(90));
         document.documentElement.style.setProperty('--md-sys-color-surface-container-high', mixHex(85));

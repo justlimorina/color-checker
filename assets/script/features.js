@@ -138,3 +138,359 @@ export function applyAdvancedPreview() {
         document.querySelectorAll('.sample-text').forEach(el => el.style.color = `#${state.hex}`);
     }
 }
+
+export function initImageExtractor() {
+    const dropZone = document.getElementById('image-drop-zone');
+    const fileInput = document.getElementById('image-upload');
+    const canvas = document.getElementById('image-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const paletteContainer = document.getElementById('extracted-palette');
+    const resetBtn = document.getElementById('reset-image-btn');
+    const actionBtns = document.getElementById('image-action-buttons');
+    const exportBtn = document.getElementById('export-extracted-palette-btn');
+
+    if(!dropZone) return;
+
+    dropZone.onclick = () => fileInput.click();
+    
+    dropZone.ondragover = (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    };
+    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if(e.dataTransfer.files && e.dataTransfer.files[0]) {
+            processImage(e.dataTransfer.files[0]);
+        }
+    };
+
+    fileInput.onchange = (e) => {
+        if(e.target.files && e.target.files[0]) {
+            processImage(e.target.files[0]);
+        }
+    };
+
+    if(resetBtn) {
+        resetBtn.onclick = () => {
+            dropZone.style.display = 'flex';
+            canvas.style.display = 'none';
+            paletteContainer.style.display = 'none';
+            if (actionBtns) actionBtns.style.display = 'none';
+            else resetBtn.style.display = 'none';
+            fileInput.value = '';
+        };
+    }
+
+    function processImage(file) {
+        if(!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                dropZone.style.display = 'none';
+                canvas.style.display = 'block';
+                paletteContainer.style.display = 'grid';
+                if(actionBtns) actionBtns.style.display = 'flex';
+                else if(resetBtn) resetBtn.style.display = 'flex';
+                
+                const MAX_WIDTH = 500;
+                let width = img.width;
+                let height = img.height;
+                if(width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                extractPalette(ctx, width, height);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function extractPalette(ctx, width, height) {
+        const imageData = ctx.getImageData(0, 0, width, height).data;
+        const colorCounts = {};
+        
+        for(let i=0; i<imageData.length; i+=16) { 
+            const r = Math.round(imageData[i]/16)*16;
+            const g = Math.round(imageData[i+1]/16)*16;
+            const b = Math.round(imageData[i+2]/16)*16;
+            const a = imageData[i+3];
+            if(a < 128) continue; 
+            const rgb = `${r},${g},${b}`;
+            colorCounts[rgb] = (colorCounts[rgb] || 0) + 1;
+        }
+
+        const sorted = Object.keys(colorCounts).sort((a,b) => colorCounts[b] - colorCounts[a]);
+        
+        const palette = [];
+        for(const rgbStr of sorted) {
+            const [r,g,b] = rgbStr.split(',').map(Number);
+            let tooClose = false;
+            for(const p of palette) {
+                const dist = Math.sqrt(Math.pow(p.r-r,2) + Math.pow(p.g-g,2) + Math.pow(p.b-b,2));
+                if(dist < 50) { tooClose = true; break; }
+            }
+            if(!tooClose) {
+                palette.push({r,g,b});
+                if(palette.length >= 6) break;
+            }
+        }
+
+        paletteContainer.innerHTML = '';
+        import('./utils.js').then(({ColorUtils}) => {
+            if (exportBtn) {
+                exportBtn.onclick = () => {
+                    const canvasExp = document.createElement('canvas');
+                    const colorCount = palette.length;
+                    const stripWidth = Math.max(150, 600 / colorCount);
+                    canvasExp.width = stripWidth * colorCount;
+                    canvasExp.height = 300;
+                    const ctxExp = canvasExp.getContext('2d');
+        
+                    ctxExp.fillStyle = '#FFFFFF';
+                    ctxExp.fillRect(0, 0, canvasExp.width, canvasExp.height);
+        
+                    palette.forEach((c, i) => {
+                        const hex = ColorUtils.rgbToHex(c.r, c.g, c.b);
+                        ctxExp.fillStyle = `#${hex}`;
+                        ctxExp.fillRect(i * stripWidth, 0, stripWidth, 230);
+                        ctxExp.fillStyle = '#333333';
+                        ctxExp.font = 'bold 20px Outfit, sans-serif';
+                        ctxExp.textAlign = 'center';
+                        ctxExp.fillText(`#${hex}`, i * stripWidth + stripWidth / 2, 270);
+                    });
+                    const link = document.createElement('a');
+                    link.download = `extracted-palette.png`;
+                    link.href = canvasExp.toDataURL();
+                    link.click();
+                };
+            }
+
+            import('./app.js').then(({updateColorState}) => {
+                palette.forEach(c => {
+                    const hex = ColorUtils.rgbToHex(c.r, c.g, c.b);
+                    const item = document.createElement('div');
+                    item.className = 'palette-item';
+                    item.style.backgroundColor = `#${hex}`;
+                    item.title = `#${hex}`;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'history-hex-label';
+                    label.textContent = `#${hex}`;
+                    item.appendChild(label);
+                    
+                    item.onclick = () => {
+                        updateColorState(hex);
+                        const homeBtn = document.querySelector('[data-page="page-home"]');
+                        if(homeBtn) homeBtn.click();
+                    };
+                    paletteContainer.appendChild(item);
+                });
+            });
+        });
+    }
+}
+
+export function initContrastMatrix() {
+    const matrixBtn = document.querySelector('[data-page="page-matrix"]');
+    if(matrixBtn) {
+        matrixBtn.addEventListener('click', renderContrastMatrix);
+    }
+}
+
+export function renderContrastMatrix() {
+    const table = document.getElementById('matrix-table');
+    if(!table) return;
+    
+    if(state.palette.length === 0) {
+        table.innerHTML = '<tr><td style="padding: 32px;">No colors in palette. Save some colors first!</td></tr>';
+        return;
+    }
+    
+    const colors = ['FFFFFF', '000000', ...state.palette.map(p => typeof p === 'string' ? p : p.hex)];
+    
+    let html = '<tr><th>Bg \\ Fg</th>';
+    colors.forEach(c => {
+        const rgb = ColorUtils.hexToRgb(c);
+        const l = ColorUtils.getLuminance(rgb.r, rgb.g, rgb.b);
+        html += `<th style="background-color: #${c}; color: ${l < 0.5 ? '#fff' : '#000'}; border: 1px solid rgba(128,128,128,0.2);">#${c}</th>`;
+    });
+    html += '</tr>';
+    
+    colors.forEach(bg => {
+        const bgRgb = ColorUtils.hexToRgb(bg);
+        const bgL = ColorUtils.getLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
+        html += `<tr><th style="background-color: #${bg}; color: ${bgL < 0.5 ? '#fff' : '#000'}; border: 1px solid rgba(128,128,128,0.2);">#${bg}</th>`;
+        
+        colors.forEach(fg => {
+            if(bg === fg) {
+                html += `<td style="background-color: #${bg}; border: 1px solid rgba(128,128,128,0.2);"> - </td>`;
+                return;
+            }
+            const ratio = ColorUtils.getContrastRatio(bgRgb, ColorUtils.hexToRgb(fg));
+            const pass = ratio >= 4.5;
+            const passLarge = ratio >= 3.0;
+            
+            let badgeHtml = '';
+            if(pass) badgeHtml = '<span style="color: #2e7d32; font-weight: bold;">AA</span>';
+            else if(passLarge) badgeHtml = '<span style="color: #ed6c02; font-weight: bold;">AA (Large)</span>';
+            else badgeHtml = '<span style="color: #d32f2f; font-weight: bold;">Fail</span>';
+            
+            html += `<td style="background-color: #${bg}; color: #${fg}; border: 1px solid rgba(128,128,128,0.2);">
+                <div class="matrix-cell">
+                    <strong>${ratio.toFixed(1)}</strong>
+                    ${badgeHtml}
+                </div>
+            </td>`;
+        });
+        html += '</tr>';
+    });
+    
+    table.innerHTML = html;
+}
+
+export function initGradientGenerator() {
+    let type = 'linear';
+    let angle = 90;
+    
+    const btnLinear = document.getElementById('grad-linear');
+    const btnRadial = document.getElementById('grad-radial');
+    const angleSlider = document.getElementById('grad-angle');
+    const angleVal = document.getElementById('grad-angle-val');
+    const angleGroup = document.getElementById('grad-angle-group');
+    const color1 = document.getElementById('grad-color-1');
+    const color2 = document.getElementById('grad-color-2');
+    const preview = document.getElementById('gradient-preview');
+    const code = document.getElementById('gradient-code');
+    const copyBtn = document.getElementById('copy-gradient-btn');
+    
+    if(!btnLinear) return;
+    
+    function updateGradient() {
+        const c1 = color1.value;
+        const c2 = color2.value;
+        
+        let css = '';
+        if(type === 'linear') {
+            css = `background: linear-gradient(${angle}deg, ${c1}, ${c2});`;
+        } else {
+            css = `background: radial-gradient(circle, ${c1}, ${c2});`;
+        }
+        
+        preview.style.cssText = `${css} width: 100%; height: 300px; border-radius: 24px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);`;
+        code.textContent = css;
+    }
+    
+    btnLinear.onclick = () => {
+        type = 'linear';
+        btnLinear.classList.add('active');
+        btnRadial.classList.remove('active');
+        angleGroup.style.display = 'block';
+        updateGradient();
+    };
+    
+    btnRadial.onclick = () => {
+        type = 'radial';
+        btnRadial.classList.add('active');
+        btnLinear.classList.remove('active');
+        angleGroup.style.display = 'none';
+        updateGradient();
+    };
+    
+    angleSlider.oninput = (e) => {
+        angle = e.target.value;
+        angleVal.textContent = angle;
+        updateGradient();
+    };
+    
+    color1.oninput = updateGradient;
+    color2.oninput = updateGradient;
+    
+    copyBtn.onclick = () => {
+        navigator.clipboard.writeText(code.textContent).then(() => {
+            import('./ui.js').then(({showToast}) => showToast());
+        });
+    };
+    
+    color1.value = `#${state.hex}`;
+    const h1 = (state.hsl.h + 45) % 360;
+    const rgb1 = ColorUtils.hslToRgb(h1, state.hsl.s, state.hsl.l);
+    color2.value = `#${ColorUtils.rgbToHex(rgb1.r, rgb1.g, rgb1.b)}`;
+    updateGradient();
+}
+
+export function initThemeBuilder() {
+    const themeBtn = document.querySelector('[data-page="page-theme"]');
+    if(themeBtn) {
+        themeBtn.addEventListener('click', renderThemeBuilder);
+    }
+}
+
+export function renderThemeBuilder() {
+    const grid = document.getElementById('theme-colors-grid');
+    const preview = document.getElementById('theme-code-preview');
+    const btn = document.getElementById('export-theme-btn');
+    if(!grid || !preview) return;
+    
+    const tokens = [
+        '--md-sys-color-primary', '--md-sys-color-on-primary',
+        '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
+        '--md-sys-color-secondary', '--md-sys-color-on-secondary',
+        '--md-sys-color-secondary-container', '--md-sys-color-on-secondary-container',
+        '--md-sys-color-tertiary', '--md-sys-color-on-tertiary',
+        '--md-sys-color-error', '--md-sys-color-on-error',
+        '--md-sys-color-background', '--md-sys-color-on-background',
+        '--md-sys-color-surface', '--md-sys-color-on-surface',
+        '--md-sys-color-surface-variant', '--md-sys-color-on-surface-variant',
+        '--md-sys-color-outline',
+        '--md-sys-color-surface-container-low',
+        '--md-sys-color-surface-container',
+        '--md-sys-color-surface-container-high',
+        '--md-sys-color-surface-container-highest'
+    ];
+    
+    const computed = window.getComputedStyle(document.documentElement);
+    let cssStr = `:root {\n`;
+    grid.innerHTML = '';
+    
+    tokens.forEach(token => {
+        let val = computed.getPropertyValue(token).trim();
+        if(!val) return;
+        
+        cssStr += `    ${token}: ${val};\n`;
+        
+        const item = document.createElement('div');
+        item.style.backgroundColor = `var(${token})`;
+        item.style.padding = '8px';
+        item.style.borderRadius = '12px';
+        item.style.border = '1px solid rgba(128,128,128,0.2)';
+        item.style.display = 'flex';
+        item.style.flexDirection = 'column';
+        item.style.height = '100px';
+        item.title = `${token}: ${val}`;
+        
+        item.innerHTML = `<span style="font-size:10px; opacity:0.9; background:rgba(0,0,0,0.4); color:#fff; padding:2px 4px; border-radius:4px; margin-top:auto; word-break:break-all;">${token.replace('--md-sys-color-', '')}</span>`;
+        
+        grid.appendChild(item);
+    });
+    
+    cssStr += `}`;
+    
+    if(btn) {
+        btn.onclick = () => {
+            preview.style.display = 'block';
+            preview.textContent = cssStr;
+            navigator.clipboard.writeText(cssStr).then(() => {
+                import('./ui.js').then(({showToast}) => showToast());
+            });
+        };
+    }
+}

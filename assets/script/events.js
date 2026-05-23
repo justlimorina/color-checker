@@ -4,8 +4,14 @@ import { setLanguage, updateExportContent, showToast, exportPaletteImage, update
 import { ColorUtils } from './utils.js';
 import { toggleSidebar, closeSidebar } from './sidebar.js';
 import { updateCustomContrast, toggleAdvancedPreview } from './features.js';
+import { initImageExtractor, initContrastMatrix, initGradientGenerator, initThemeBuilder } from './features.js';
 
 export function attachEvents() {
+    initRipple();
+    initImageExtractor();
+    initContrastMatrix();
+    initGradientGenerator();
+    initThemeBuilder();
     dom.hexInput.oninput = (e) => updateColorState(e.target.value);
     dom.colorPicker.oninput = (e) => updateColorState(e.target.value.substring(1));
     
@@ -139,4 +145,37 @@ export function attachEvents() {
     if (dom.advancedPreviewToggle) {
         dom.advancedPreviewToggle.onclick = toggleAdvancedPreview;
     }
+}
+
+function initRipple() {
+    document.addEventListener('mousedown', function (e) {
+        const target = e.target.closest('button, .nav-item');
+        if (!target) return;
+        
+        const style = window.getComputedStyle(target);
+        if (style.position === 'static') {
+            target.style.position = 'relative';
+        }
+        target.style.overflow = 'hidden';
+
+        const circle = document.createElement('span');
+        const diameter = Math.max(target.clientWidth, target.clientHeight);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - target.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${e.clientY - target.getBoundingClientRect().top - radius}px`;
+        circle.classList.add('ripple');
+
+        const existingRipple = target.querySelector('.ripple');
+        if (existingRipple) {
+            existingRipple.remove();
+        }
+
+        target.appendChild(circle);
+        
+        setTimeout(() => {
+            circle.remove();
+        }, 600);
+    });
 }
