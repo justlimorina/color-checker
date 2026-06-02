@@ -724,7 +724,16 @@ code {
     display: flex;
     gap: var(--spacing-s);
     margin-bottom: var(--spacing-m);
-    border-bottom: 1px solid var(--md-sys-color-outline);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+    max-width: 100%;
+}
+
+.modal-tabs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome/Safari */
 }
 
 .tab-btn {
@@ -735,6 +744,8 @@ code {
     color: var(--md-sys-color-on-surface);
     font-weight: 500;
     position: relative;
+    flex-shrink: 0; /* Prevent tabs from shrinking/squishing */
+    transition: color var(--transition-standard);
 }
 
 .tab-btn.active::after {
