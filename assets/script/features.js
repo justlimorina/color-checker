@@ -518,9 +518,7 @@ export function initThemeBuilder() {
 
 export function renderThemeBuilder() {
     const grid = document.getElementById('theme-colors-grid');
-    const preview = document.getElementById('theme-code-preview');
-    const btn = document.getElementById('export-theme-btn');
-    if(!grid || !preview) return;
+    if(!grid) return;
     
     const tokens = [
         '--md-sys-color-primary', '--md-sys-color-on-primary',
@@ -539,15 +537,12 @@ export function renderThemeBuilder() {
         '--md-sys-color-surface-container-highest'
     ];
     
-    const computed = window.getComputedStyle(document.documentElement);
-    let cssStr = `:root {\n`;
     grid.innerHTML = '';
     
     tokens.forEach(token => {
+        const computed = window.getComputedStyle(document.documentElement);
         let val = computed.getPropertyValue(token).trim();
         if(!val) return;
-        
-        cssStr += `    ${token}: ${val};\n`;
         
         const item = document.createElement('div');
         item.style.backgroundColor = `var(${token})`;
@@ -563,18 +558,6 @@ export function renderThemeBuilder() {
         
         grid.appendChild(item);
     });
-    
-    cssStr += `}`;
-    
-    if(btn) {
-        btn.onclick = () => {
-            preview.style.display = 'block';
-            preview.textContent = cssStr;
-            navigator.clipboard.writeText(cssStr).then(() => {
-                import('./ui.js').then(({showToast}) => showToast());
-            });
-        };
-    }
 }
 
 export function initPaletteGenerator() {
