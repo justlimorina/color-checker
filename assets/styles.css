@@ -772,8 +772,8 @@ code {
 
 pre {
     margin: 0;
-    white-space: pre-wrap;
-    word-break: break-all;
+    white-space: pre;
+    overflow-x: auto;
     font-family: monospace;
     font-size: 13px;
 }
