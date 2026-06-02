@@ -47,9 +47,6 @@
                         <button class="menu-item" data-lang="zh">简体中文</button>
                     </div>
                 </div>
-                <button id="export-hub-btn" class="icon-button" title="Export Palette">
-                    <span class="material-symbols-outlined">ios_share</span>
-                </button>
                 <button id="theme-toggle" class="icon-button" title="Toggle Dark/Light Mode">
                     <span class="material-symbols-outlined">dark_mode</span>
                 </button>
@@ -82,6 +79,10 @@
                 <span class="material-symbols-outlined">image_search</span>
                 <span data-i18n="image_extractor">Image Extractor</span>
             </button>
+            <button class="nav-item" data-page="page-theme">
+                <span class="material-symbols-outlined">palette</span>
+                <span data-i18n="theme_builder">MD3 Theme Builder</span>
+            </button>
             <button class="nav-item" data-page="page-contrast">
                 <span class="material-symbols-outlined">contrast</span>
                 <span data-i18n="custom_contrast">Custom Contrast Checker</span>
@@ -97,10 +98,6 @@
             <button class="nav-item" data-page="page-gradient">
                 <span class="material-symbols-outlined">gradient</span>
                 <span data-i18n="gradient_generator">Gradient Generator</span>
-            </button>
-            <button class="nav-item" data-page="page-theme">
-                <span class="material-symbols-outlined">palette</span>
-                <span data-i18n="theme_builder">MD3 Theme Builder</span>
             </button>
         </nav>
     </aside>
@@ -581,57 +578,54 @@
                 </button>
                 <pre id="theme-code-preview" class="mt-m" style="display:none; background: var(--md-sys-color-surface-variant); padding: 16px; border-radius: 12px; overflow-x: auto; font-size: 12px;"></pre>
             </div>
+
+            <!-- Export Hub Section -->
+            <div class="card card-elevated mt-l">
+                <h2 class="headline-medium mb-m" data-i18n="export_hub">Export Hub</h2>
+                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="export_desc">Export color data and CSS/SCSS/Android/SwiftUI code templates.</p>
+                
+                <div class="modal-tabs">
+                    <button class="tab-btn active" data-tab="css">CSS</button>
+                    <button class="tab-btn" data-tab="tailwind">Tailwind</button>
+                    <button class="tab-btn" data-tab="scss">SCSS</button>
+                    <button class="tab-btn" data-tab="android">Android</button>
+                    <button class="tab-btn" data-tab="swiftui">SwiftUI</button>
+                    <button class="tab-btn" data-tab="json">JSON</button>
+                </div>
+                <div class="modal-body" style="overflow-y: auto; max-height: 400px; display: flex; flex-direction: column;">
+                    <div id="export-content-css" class="tab-content active">
+                        <pre><code id="code-css"></code></pre>
+                    </div>
+                    <div id="export-content-tailwind" class="tab-content">
+                        <pre><code id="code-tailwind"></code></pre>
+                    </div>
+                    <div id="export-content-scss" class="tab-content">
+                        <pre><code id="code-scss"></code></pre>
+                    </div>
+                    <div id="export-content-android" class="tab-content">
+                        <pre><code id="code-android"></code></pre>
+                    </div>
+                    <div id="export-content-swiftui" class="tab-content">
+                        <pre><code id="code-swiftui"></code></pre>
+                    </div>
+                    <div id="export-content-json" class="tab-content">
+                        <pre><code id="code-json"></code></pre>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding-top: var(--spacing-m); display: flex; justify-content: flex-end;">
+                    <button id="copy-export" class="button-filled">
+                        <span class="material-symbols-outlined">content_copy</span>
+                        <span data-i18n="copy_all">Copy All Template</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
     </main>
 
     <div id="toast" class="toast">Copied to clipboard!</div>
 
-    <!-- Modals (Export, Help) -->
-    <div id="export-modal" class="modal-backdrop">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h2 class="headline-small" data-i18n="export_hub">Export Hub</h2>
-                <button id="close-modal" class="icon-button small-btn">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <div class="modal-tabs">
-                <button class="tab-btn active" data-tab="css">CSS</button>
-                <button class="tab-btn" data-tab="tailwind">Tailwind</button>
-                <button class="tab-btn" data-tab="scss">SCSS</button>
-                <button class="tab-btn" data-tab="android">Android</button>
-                <button class="tab-btn" data-tab="swiftui">SwiftUI</button>
-                <button class="tab-btn" data-tab="json">JSON</button>
-            </div>
-            <div class="modal-body">
-                <div id="export-content-css" class="tab-content active">
-                    <pre><code id="code-css"></code></pre>
-                </div>
-                <div id="export-content-tailwind" class="tab-content">
-                    <pre><code id="code-tailwind"></code></pre>
-                </div>
-                <div id="export-content-scss" class="tab-content">
-                    <pre><code id="code-scss"></code></pre>
-                </div>
-                <div id="export-content-android" class="tab-content">
-                    <pre><code id="code-android"></code></pre>
-                </div>
-                <div id="export-content-swiftui" class="tab-content">
-                    <pre><code id="code-swiftui"></code></pre>
-                </div>
-                <div id="export-content-json" class="tab-content">
-                    <pre><code id="code-json"></code></pre>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="copy-export" class="button-filled">
-                    <span class="material-symbols-outlined">content_copy</span>
-                    <span data-i18n="copy_all">Copy All</span>
-                </button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Help Modal -->
     <div id="help-modal" class="modal-backdrop">

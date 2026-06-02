@@ -49,6 +49,9 @@ export function renderAll() {
         if(dom.customFgHex) dom.customFgHex.value = state.hex;
         updateCustomContrast();
     }
+    
+    // 8. Update Export Content
+    updateExportContent();
 }
 
 export function updateMixerInputs() {

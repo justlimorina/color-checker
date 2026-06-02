@@ -91,13 +91,6 @@ export function attachEvents() {
         }
     });
 
-    dom.exportHubBtn.onclick = () => {
-        updateExportContent();
-        dom.exportModal.classList.add('show');
-    };
-
-    dom.closeModal.onclick = () => dom.exportModal.classList.remove('show');
-
     dom.helpBtn.onclick = () => dom.helpModal.classList.add('show');
     dom.closeHelp.onclick = dom.closeHelpConfirm.onclick = () => dom.helpModal.classList.remove('show');
 
