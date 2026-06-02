@@ -16,7 +16,7 @@ export function addToHistory(hex) {
     }
     
     state.history.unshift(hex);
-    if (state.history.length > 20) {
+    if (state.history.length > 30) {
         state.history.pop();
     }
     
