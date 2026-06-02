@@ -18,7 +18,11 @@ export const state = {
     currentLang: localStorage.getItem('app_lang') || 'en',
     customContrastBg: "FFFFFF",
     customContrastFg: "000000",
-    advancedPreviewActive: false
+    advancedPreviewActive: false,
+    generatorColors: [],
+    generatorLocks: [false, false, false, false, false],
+    generatorRule: "complementary",
+    matrixMode: "wcag"
 };
 
 export const dom = {}; // Populated in app.js after DOMContentLoaded

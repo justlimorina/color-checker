@@ -90,6 +90,10 @@
                 <span class="material-symbols-outlined">grid_on</span>
                 <span data-i18n="contrast_matrix">Contrast Matrix</span>
             </button>
+            <button class="nav-item" data-page="page-generator">
+                <span class="material-symbols-outlined">auto_awesome</span>
+                <span data-i18n="smart_palette">Smart Palette</span>
+            </button>
             <button class="nav-item" data-page="page-gradient">
                 <span class="material-symbols-outlined">gradient</span>
                 <span data-i18n="gradient_generator">Gradient Generator</span>
@@ -125,7 +129,10 @@
                                 </div>
                                 <div class="hex-wrapper" style="margin-top: 0;">
                                     <span>#</span>
-                                    <input type="text" id="hex-input" value="6750A4" maxlength="6">
+                                    <input type="text" id="hex-input" value="6750A4" maxlength="6" style="width: calc(100% - 76px);">
+                                    <button id="eyedropper-btn" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                        <span class="material-symbols-outlined" style="font-size: 20px;">colorize</span>
+                                    </button>
                                     <input type="color" id="color-picker" value="#6750A4">
                                 </div>
                             </div>
@@ -268,12 +275,22 @@
                                     <span id="wcag-white-ratio" class="title-medium mb-0">21.0:1</span>
                                     <div id="wcag-white-badges" class="badges"></div>
                                 </div>
+                                <div class="apca-result-row mt-xs">
+                                    <span class="label-small" data-i18n="apca_lc">Lc Score:</span>
+                                    <span id="apca-white-ratio" class="apca-ratio-val">106</span>
+                                    <span id="apca-white-badge" class="badge">Pass</span>
+                                </div>
                             </div>
                             <div class="wcag-item">
                                 <span class="label-small" data-i18n="on_black">On Black</span>
                                 <div class="wcag-result-row">
                                     <span id="wcag-black-ratio" class="title-medium mb-0">1.0:1</span>
                                     <div id="wcag-black-badges" class="badges"></div>
+                                </div>
+                                <div class="apca-result-row mt-xs">
+                                    <span class="label-small" data-i18n="apca_lc">Lc Score:</span>
+                                    <span id="apca-black-ratio" class="apca-ratio-val">0</span>
+                                    <span id="apca-black-badge" class="badge">Fail</span>
                                 </div>
                             </div>
                         </div>
@@ -392,11 +409,19 @@
                 <div id="custom-contrast-preview" class="custom-contrast-preview large">The quick brown fox jumps over the lazy dog.</div>
                 
                 <div class="wcag-result-card mt-l">
-                    <div class="result-header">
-                        <span class="title-medium mb-0">Contrast Ratio</span>
-                        <span id="custom-contrast-ratio" class="headline-large" style="color: var(--md-sys-color-primary);">21.0:1</span>
+                    <div class="custom-contrast-results">
+                        <div class="contrast-result-col">
+                            <span class="title-medium mb-0">WCAG Contrast Ratio</span>
+                            <span id="custom-contrast-ratio" class="headline-large" style="color: var(--md-sys-color-primary);">21.0:1</span>
+                            <div id="custom-contrast-badges" class="badges large-badges mt-m"></div>
+                        </div>
+                        <div class="contrast-result-divider"></div>
+                        <div class="contrast-result-col">
+                            <span class="title-medium mb-0" data-i18n="apca_contrast">APCA Contrast</span>
+                            <span id="custom-apca-ratio" class="headline-large" style="color: var(--md-sys-color-primary);">106</span>
+                            <div class="mt-m"><span id="custom-apca-badge" class="badge large-badge">Pass</span></div>
+                        </div>
                     </div>
-                    <div id="custom-contrast-badges" class="badges large-badges mt-m"></div>
                 </div>
             </div>
         </div>
@@ -436,12 +461,56 @@
         <div id="page-matrix" class="page">
             <div class="card card-elevated">
                 <h2 class="headline-medium mb-m" data-i18n="contrast_matrix">Contrast Matrix</h2>
-                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="matrix_desc">Compare all saved colors against each other for WCAG accessibility.</p>
+                
+                <div class="matrix-header-row mb-l">
+                    <p class="body-medium mb-0" style="opacity: 0.8;" data-i18n="matrix_desc">Compare all saved colors against each other.</p>
+                    <div class="segmented-control" id="matrix-mode-toggle">
+                        <button class="segment-btn active" data-mode="wcag" data-i18n="matrix_wcag">WCAG 2.1</button>
+                        <button class="segment-btn" data-mode="apca" data-i18n="matrix_apca">APCA (Lc)</button>
+                    </div>
+                </div>
                 
                 <div style="overflow-x: auto;">
                     <table id="matrix-table" class="matrix-table">
                         <!-- JS Generated -->
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: SMART PALETTE GENERATOR -->
+        <div id="page-generator" class="page">
+            <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
+                <h2 class="headline-medium mb-m" data-i18n="palette_generator">Smart Palette Generator</h2>
+                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="generator_desc">Automatically generate harmonious 5-color palettes and lock your favorite colors.</p>
+                
+                <div class="generator-controls-row mb-l">
+                    <div class="input-group">
+                        <label class="label-large mb-s" data-i18n="rule_label">Color Harmony Rule</label>
+                        <select id="generator-rule-select" class="dropdown-select">
+                            <option value="complementary" data-i18n="rule_complementary">Complementary</option>
+                            <option value="analogous" data-i18n="rule_analogous">Analogous</option>
+                            <option value="triadic" data-i18n="rule_triadic">Triadic</option>
+                            <option value="tetradic" data-i18n="rule_tetradic">Tetradic</option>
+                            <option value="monochromatic" data-i18n="rule_monochromatic">Monochromatic</option>
+                            <option value="freestyle" data-i18n="rule_freestyle">Freestyle / Random</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="generator-swatches" class="generator-swatches-container mb-l">
+                    <!-- 5 Color Swatches generated via JS -->
+                </div>
+
+                <div class="generator-actions">
+                    <button id="generator-generate-btn" class="button-filled">
+                        <span class="material-symbols-outlined">auto_awesome</span>
+                        <span data-i18n="btn_generate">Generate Palette</span>
+                    </button>
+                    <button id="generator-save-btn" class="button-tonal">
+                        <span class="material-symbols-outlined">bookmark_add</span>
+                        <span data-i18n="btn_save_palette">Save Palette</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -527,9 +596,12 @@
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <div class="modal-tabs">
+            <div class="modal-tabs" style="overflow-x: auto; white-space: nowrap; max-width: 100%;">
                 <button class="tab-btn active" data-tab="css">CSS</button>
                 <button class="tab-btn" data-tab="tailwind">Tailwind</button>
+                <button class="tab-btn" data-tab="scss">SCSS</button>
+                <button class="tab-btn" data-tab="android">Android</button>
+                <button class="tab-btn" data-tab="swiftui">SwiftUI</button>
                 <button class="tab-btn" data-tab="json">JSON</button>
             </div>
             <div class="modal-body">
@@ -538,6 +610,15 @@
                 </div>
                 <div id="export-content-tailwind" class="tab-content">
                     <pre><code id="code-tailwind"></code></pre>
+                </div>
+                <div id="export-content-scss" class="tab-content">
+                    <pre><code id="code-scss"></code></pre>
+                </div>
+                <div id="export-content-android" class="tab-content">
+                    <pre><code id="code-android"></code></pre>
+                </div>
+                <div id="export-content-swiftui" class="tab-content">
+                    <pre><code id="code-swiftui"></code></pre>
                 </div>
                 <div id="export-content-json" class="tab-content">
                     <pre><code id="code-json"></code></pre>

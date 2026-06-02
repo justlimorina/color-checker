@@ -1,6 +1,7 @@
 import { state, dom } from './state.js';
 import { ColorUtils } from './utils.js';
 import { updateColorState } from './app.js';
+import { translations } from './config.js';
 
 export function addToHistory(hex) {
     if (!/^[0-9A-F]{6}$/i.test(hex)) return;
@@ -74,6 +75,38 @@ export function updateCustomContrast() {
     dom.customContrastPreview.style.color = `#${state.customContrastFg}`;
     
     renderCustomWCAGBadges(dom.customContrastBadges, ratio);
+
+    // APCA Custom Contrast
+    const apcaVal = ColorUtils.getAPCAContrast(fgRgb, bgRgb);
+    const apcaRatioEl = document.getElementById('custom-apca-ratio');
+    const apcaBadgeEl = document.getElementById('custom-apca-badge');
+    if (apcaRatioEl) apcaRatioEl.textContent = `Lc ${Math.round(apcaVal)}`;
+    
+    if (apcaBadgeEl) {
+        const absScore = Math.abs(apcaVal);
+        apcaBadgeEl.className = 'badge large-badge';
+        if (absScore >= 75) {
+            apcaBadgeEl.classList.add('badge-pass');
+            apcaBadgeEl.textContent = 'Lc 75+ (Body)';
+            apcaBadgeEl.style.backgroundColor = '';
+            apcaBadgeEl.style.color = '';
+        } else if (absScore >= 60) {
+            apcaBadgeEl.classList.add('badge-pass');
+            apcaBadgeEl.textContent = 'Lc 60+ (Large)';
+            apcaBadgeEl.style.backgroundColor = 'var(--md-sys-color-primary)';
+            apcaBadgeEl.style.color = 'var(--md-sys-color-on-primary)';
+        } else if (absScore >= 45) {
+            apcaBadgeEl.classList.add('badge-pass');
+            apcaBadgeEl.textContent = 'Lc 45+ (Heading)';
+            apcaBadgeEl.style.backgroundColor = 'var(--md-sys-color-secondary)';
+            apcaBadgeEl.style.color = 'var(--md-sys-color-on-secondary)';
+        } else {
+            apcaBadgeEl.classList.add('badge-fail');
+            apcaBadgeEl.textContent = `Lc ${Math.round(apcaVal)} (Fail)`;
+            apcaBadgeEl.style.backgroundColor = '';
+            apcaBadgeEl.style.color = '';
+        }
+    }
 }
 
 function renderCustomWCAGBadges(container, ratio) {
@@ -311,7 +344,7 @@ export function renderContrastMatrix() {
     if(!table) return;
     
     if(state.palette.length === 0) {
-        table.innerHTML = '<tr><td style="padding: 32px;">No colors in palette. Save some colors first!</td></tr>';
+        table.innerHTML = `<tr><td style="padding: 32px;">${translations[state.currentLang].no_colors_saved || "No colors in palette. Save some colors first!"}</td></tr>`;
         return;
     }
     
@@ -325,6 +358,8 @@ export function renderContrastMatrix() {
     });
     html += '</tr>';
     
+    const isApca = state.matrixMode === 'apca';
+    
     colors.forEach(bg => {
         const bgRgb = ColorUtils.hexToRgb(bg);
         const bgL = ColorUtils.getLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
@@ -335,18 +370,31 @@ export function renderContrastMatrix() {
                 html += `<td style="background-color: #${bg}; border: 1px solid rgba(128,128,128,0.2);"> - </td>`;
                 return;
             }
-            const ratio = ColorUtils.getContrastRatio(bgRgb, ColorUtils.hexToRgb(fg));
-            const pass = ratio >= 4.5;
-            const passLarge = ratio >= 3.0;
             
+            let displayVal = '';
             let badgeHtml = '';
-            if(pass) badgeHtml = '<span style="color: #2e7d32; font-weight: bold;">AA</span>';
-            else if(passLarge) badgeHtml = '<span style="color: #ed6c02; font-weight: bold;">AA (Large)</span>';
-            else badgeHtml = '<span style="color: #d32f2f; font-weight: bold;">Fail</span>';
+            
+            if (isApca) {
+                const score = ColorUtils.getAPCAContrast(ColorUtils.hexToRgb(fg), bgRgb);
+                displayVal = `Lc ${Math.round(score)}`;
+                const absScore = Math.abs(score);
+                if (absScore >= 75) badgeHtml = '<span style="color: #2e7d32; font-weight: bold;">Body</span>';
+                else if (absScore >= 60) badgeHtml = '<span style="color: var(--md-sys-color-primary); font-weight: bold;">Large</span>';
+                else if (absScore >= 45) badgeHtml = '<span style="color: #ed6c02; font-weight: bold;">Hdng</span>';
+                else badgeHtml = '<span style="color: #d32f2f; font-weight: bold;">Fail</span>';
+            } else {
+                const ratio = ColorUtils.getContrastRatio(bgRgb, ColorUtils.hexToRgb(fg));
+                displayVal = `${ratio.toFixed(1)}:1`;
+                const pass = ratio >= 4.5;
+                const passLarge = ratio >= 3.0;
+                if(pass) badgeHtml = '<span style="color: #2e7d32; font-weight: bold;">AA</span>';
+                else if(passLarge) badgeHtml = '<span style="color: #ed6c02; font-weight: bold;">AA (Large)</span>';
+                else badgeHtml = '<span style="color: #d32f2f; font-weight: bold;">Fail</span>';
+            }
             
             html += `<td style="background-color: #${bg}; color: #${fg}; border: 1px solid rgba(128,128,128,0.2);">
                 <div class="matrix-cell">
-                    <strong>${ratio.toFixed(1)}</strong>
+                    <strong>${displayVal}</strong>
                     ${badgeHtml}
                 </div>
             </td>`;
@@ -527,4 +575,210 @@ export function renderThemeBuilder() {
             });
         };
     }
+}
+
+export function initPaletteGenerator() {
+    const generatorBtn = document.querySelector('[data-page="page-generator"]');
+    if (generatorBtn) {
+        generatorBtn.addEventListener('click', () => {
+            if (!state.generatorColors || state.generatorColors.length === 0) {
+                state.generatorColors = generatePaletteColors(state.hex, state.generatorRule);
+            }
+            const select = document.getElementById('generator-rule-select');
+            if (select) {
+                select.value = state.generatorRule;
+            }
+            renderPaletteGenerator();
+        });
+    }
+}
+
+function generatePaletteColors(seedHex, rule) {
+    const rgb = ColorUtils.hexToRgb(seedHex);
+    const hsl = ColorUtils.rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const h = hsl.h;
+    const s = hsl.s;
+    const l = hsl.l;
+    
+    let colors = [];
+    const hslToHexStr = (hue, sat, lit) => {
+        sat = Math.max(0, Math.min(100, sat));
+        lit = Math.max(0, Math.min(100, lit));
+        const rgbColor = ColorUtils.hslToRgb(hue, sat, lit);
+        return ColorUtils.rgbToHex(rgbColor.r, rgbColor.g, rgbColor.b);
+    };
+    
+    switch (rule) {
+        case 'complementary':
+            colors = [
+                seedHex,
+                hslToHexStr(h, s, l - 15),
+                hslToHexStr(h, s, l + 15),
+                hslToHexStr((h + 180) % 360, s, l),
+                hslToHexStr((h + 180) % 360, s, l + 15)
+            ];
+            break;
+        case 'analogous':
+            colors = [
+                hslToHexStr((h - 30 + 360) % 360, s, l),
+                hslToHexStr((h - 15 + 360) % 360, s, l),
+                seedHex,
+                hslToHexStr((h + 15) % 360, s, l),
+                hslToHexStr((h + 30) % 360, s, l)
+            ];
+            break;
+        case 'triadic':
+            colors = [
+                seedHex,
+                hslToHexStr(h, s, l - 15),
+                hslToHexStr((h + 120) % 360, s, l),
+                hslToHexStr((h + 120) % 360, s, l + 15),
+                hslToHexStr((h + 240) % 360, s, l)
+            ];
+            break;
+        case 'tetradic':
+            colors = [
+                seedHex,
+                hslToHexStr((h + 90) % 360, s, l),
+                hslToHexStr((h + 180) % 360, s, l),
+                hslToHexStr((h + 270) % 360, s, l),
+                hslToHexStr(h, s, l - 20)
+            ];
+            break;
+        case 'monochromatic':
+            colors = [
+                hslToHexStr(h, s, l - 30),
+                hslToHexStr(h, s, l - 15),
+                seedHex,
+                hslToHexStr(h, s, l + 15),
+                hslToHexStr(h, s, l + 30)
+            ];
+            break;
+        case 'freestyle':
+        default:
+            colors = [seedHex];
+            for (let i = 1; i < 5; i++) {
+                const randH = Math.random() * 360;
+                const randS = 50 + Math.random() * 30;
+                const randL = 40 + Math.random() * 30;
+                colors.push(hslToHexStr(randH, randS, randL));
+            }
+            break;
+    }
+    return colors.map(c => c.toUpperCase());
+}
+
+export function renderPaletteGenerator() {
+    const container = document.getElementById('generator-swatches');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    for (let i = 0; i < 5; i++) {
+        const hex = state.generatorColors[i] || 'FFFFFF';
+        const isLocked = state.generatorLocks[i];
+        
+        const swatch = document.createElement('div');
+        swatch.className = 'generator-swatch';
+        
+        // Swatch Preview Color Block
+        const preview = document.createElement('div');
+        preview.className = 'generator-swatch-preview';
+        preview.style.backgroundColor = `#${hex}`;
+        
+        // Lock button
+        const lockBtn = document.createElement('button');
+        lockBtn.className = `lock-badge ${isLocked ? 'locked' : ''}`;
+        lockBtn.innerHTML = `<span class="material-symbols-outlined">${isLocked ? 'lock' : 'lock_open'}</span>`;
+        lockBtn.title = isLocked ? 'Locked (Click to unlock)' : 'Unlocked (Click to lock)';
+        lockBtn.onclick = (e) => {
+            e.stopPropagation();
+            state.generatorLocks[i] = !state.generatorLocks[i];
+            renderPaletteGenerator();
+        };
+        preview.appendChild(lockBtn);
+        
+        // Allow clicking the swatch preview to set as active state color
+        preview.onclick = () => {
+            updateColorState(hex);
+            import('./ui.js').then(ui => ui.showToast());
+        };
+        
+        // Controls under preview
+        const controls = document.createElement('div');
+        controls.className = 'generator-swatch-controls';
+        
+        const hexWrapper = document.createElement('div');
+        hexWrapper.className = 'hex-wrapper';
+        
+        const hashSpan = document.createElement('span');
+        hashSpan.textContent = '#';
+        
+        const hexInput = document.createElement('input');
+        hexInput.type = 'text';
+        hexInput.value = hex;
+        hexInput.maxLength = 6;
+        hexInput.oninput = (e) => {
+            let val = e.target.value.replace('#', '').toUpperCase();
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                state.generatorColors[i] = val;
+                preview.style.backgroundColor = `#${val}`;
+                colorPicker.value = `#${val}`;
+            }
+        };
+        
+        const colorPicker = document.createElement('input');
+        colorPicker.type = 'color';
+        colorPicker.value = `#${hex}`;
+        colorPicker.oninput = (e) => {
+            const val = e.target.value.substring(1).toUpperCase();
+            state.generatorColors[i] = val;
+            hexInput.value = val;
+            preview.style.backgroundColor = `#${val}`;
+        };
+        
+        hexWrapper.appendChild(hashSpan);
+        hexWrapper.appendChild(hexInput);
+        hexWrapper.appendChild(colorPicker);
+        
+        controls.appendChild(hexWrapper);
+        swatch.appendChild(preview);
+        swatch.appendChild(controls);
+        
+        container.appendChild(swatch);
+    }
+}
+
+export function runPaletteGeneration() {
+    let seedHex = state.hex;
+    const firstLockedIdx = state.generatorLocks.indexOf(true);
+    if (firstLockedIdx > -1) {
+        seedHex = state.generatorColors[firstLockedIdx] || state.hex;
+    }
+    
+    const candidates = generatePaletteColors(seedHex, state.generatorRule);
+    
+    for (let i = 0; i < 5; i++) {
+        if (!state.generatorLocks[i]) {
+            state.generatorColors[i] = candidates[i];
+        }
+    }
+    
+    renderPaletteGenerator();
+}
+
+export function saveGeneratorPalette() {
+    state.generatorColors.forEach(hex => {
+        if (!state.palette.includes(hex)) {
+            state.palette.push(hex);
+        }
+    });
+    if (state.palette.length > 20) {
+        state.palette = state.palette.slice(-20);
+    }
+    localStorage.setItem('saved_palette', JSON.stringify(state.palette));
+    import('./ui.js').then(ui => {
+        ui.renderSavedPalette();
+        ui.showToast();
+    });
 }

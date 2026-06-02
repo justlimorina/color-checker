@@ -217,6 +217,48 @@ export function updateWCAG() {
 
     renderWCAGBadges(dom.wcagWhiteBadges, whiteRatio);
     renderWCAGBadges(dom.wcagBlackBadges, blackRatio);
+
+    // APCA
+    const apcaWhite = ColorUtils.getAPCAContrast(state.rgb, white);
+    const apcaBlack = ColorUtils.getAPCAContrast(state.rgb, black);
+
+    const apcaWhiteEl = document.getElementById('apca-white-ratio');
+    const apcaBlackEl = document.getElementById('apca-black-ratio');
+    const apcaWhiteBadgeEl = document.getElementById('apca-white-badge');
+    const apcaBlackBadgeEl = document.getElementById('apca-black-badge');
+
+    if (apcaWhiteEl) apcaWhiteEl.textContent = `Lc ${Math.round(apcaWhite)}`;
+    if (apcaBlackEl) apcaBlackEl.textContent = `Lc ${Math.round(apcaBlack)}`;
+
+    updateAPCABadge(apcaWhiteBadgeEl, apcaWhite);
+    updateAPCABadge(apcaBlackBadgeEl, apcaBlack);
+}
+
+function updateAPCABadge(badgeEl, score) {
+    if (!badgeEl) return;
+    const absScore = Math.abs(score);
+    badgeEl.className = 'badge'; // reset class
+    if (absScore >= 75) {
+        badgeEl.classList.add('badge-pass');
+        badgeEl.textContent = 'Lc 75+ (Body)';
+        badgeEl.style.backgroundColor = '';
+        badgeEl.style.color = '';
+    } else if (absScore >= 60) {
+        badgeEl.classList.add('badge-pass');
+        badgeEl.textContent = 'Lc 60+ (Large)';
+        badgeEl.style.backgroundColor = 'var(--md-sys-color-primary)';
+        badgeEl.style.color = 'var(--md-sys-color-on-primary)';
+    } else if (absScore >= 45) {
+        badgeEl.classList.add('badge-pass');
+        badgeEl.textContent = 'Lc 45+ (Heading)';
+        badgeEl.style.backgroundColor = 'var(--md-sys-color-secondary)';
+        badgeEl.style.color = 'var(--md-sys-color-on-secondary)';
+    } else {
+        badgeEl.classList.add('badge-fail');
+        badgeEl.textContent = `Lc ${Math.round(score)} (Fail)`;
+        badgeEl.style.backgroundColor = '';
+        badgeEl.style.color = '';
+    }
 }
 
 function renderWCAGBadges(container, ratio) {
@@ -367,6 +409,36 @@ export function updateExportContent() {
     });
     tw += `}`;
     document.getElementById('code-tailwind').textContent = tw;
+
+    // SCSS Map
+    let scss = `// SCSS Color Map\n$brand-color: (\n  "base": #${state.hex},\n  "tints": (\n`;
+    tints.forEach((h, i) => scss += `    ${(i+1)*10}: #${h},\n`);
+    scss += `  ),\n  "shades": (\n`;
+    shades.forEach((h, i) => scss += `    ${(i+1)*10}: #${h},\n`);
+    scss += `  )\n);`;
+    document.getElementById('code-scss').textContent = scss;
+
+    // Android Colors XML and Jetpack Compose
+    let android = `<!-- res/values/colors.xml -->\n<resources>\n  <color name="brand_color">#FF${state.hex}</color>\n`;
+    tints.forEach((h, i) => android += `  <color name="brand_color_tint_${(i+1)*10}">#FF${h}</color>\n`);
+    shades.forEach((h, i) => android += `  <color name="brand_color_shade_${(i+1)*10}">#FF${h}</color>\n`);
+    android += `</resources>\n\n// Jetpack Compose Kotlin Colors\nimport androidx.compose.ui.graphics.Color\n\nobject BrandColors {\n  val Base = Color(0xFF${state.hex})\n`;
+    tints.forEach((h, i) => android += `  val Tint${(i+1)*10} = Color(0xFF${h})\n`);
+    shades.forEach((h, i) => android += `  val Shade${(i+1)*10} = Color(0xFF${h})\n`);
+    android += `}`;
+    document.getElementById('code-android').textContent = android;
+
+    // SwiftUI Colors Extension
+    const hexToSwiftColor = (hexStr) => {
+        const rgb = ColorUtils.hexToRgb(hexStr);
+        return `Color(red: ${(rgb.r / 255).toFixed(3)}, green: ${(rgb.g / 255).toFixed(3)}, blue: ${(rgb.b / 255).toFixed(3)})`;
+    };
+    let swift = `// SwiftUI Color Extension\nimport SwiftUI\n\nextension Color {\n  static let brandColor = ${hexToSwiftColor(state.hex)} // #${state.hex}\n\n  struct BrandTints {\n`;
+    tints.forEach((h, i) => swift += `    static let tint${(i+1)*10} = ${hexToSwiftColor(h)} // #${h}\n`);
+    swift += `  }\n\n  struct BrandShades {\n`;
+    shades.forEach((h, i) => swift += `    static let shade${(i+1)*10} = ${hexToSwiftColor(h)} // #${h}\n`);
+    swift += `  }\n}`;
+    document.getElementById('code-swiftui').textContent = swift;
 
     // JSON
     const data = {

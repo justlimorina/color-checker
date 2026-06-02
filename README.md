@@ -30,11 +30,19 @@ A professional-grade color analysis and design tool built with Material Design 3
 - **Complementary**, **Analogous**, **Triadic**, **Tetradic**, **Monochromatic**.
 - Click any harmony swatch to instantly switch to that color.
 
-### ♿ WCAG Accessibility, Freestyle Contrast & Matrix
-- Contrast ratios against **White** and **Black** backgrounds.
-- **Freestyle Contrast Page:** A standalone page to analyze contrast between custom foreground and background colors with WCAG pass/fail badges.
-- **Contrast Matrix:** A cross-comparison matrix table checking the WCAG contrast ratios of all your saved colors against each other, as well as against pure White and Black.
+### ♿ WCAG & APCA Accessibility, Freestyle Contrast & Matrix
+- Contrast ratios against **White** and **Black** backgrounds using both WCAG 2.1 and W3C APCA Beta 0.1.9 (Lc score).
+- **Freestyle Contrast Page:** A standalone page to analyze contrast between custom foreground and background colors with both WCAG pass/fail badges and APCA perceptual scores.
+- **Contrast Matrix:** A cross-comparison matrix table checking the contrast of all your saved colors against each other, as well as against pure White and Black.
+- **Matrix View Toggle:** Quickly switch the Contrast Matrix layout between standard **WCAG 2.1** ratios and **APCA (Lc)** scores.
 - Automatic **Best Text Color** recommendation (White or Black).
+
+### 🎨 Smart Palette Generator
+- Generate beautiful 5-color palettes based on 6 color harmony rules: **Complementary**, **Analogous**, **Triadic**, **Tetradic**, **Monochromatic**, and **Freestyle (Random)**.
+- **Color Locking:** Individually lock/unlock any of the 5 swatches to serve as anchor points while generating new variations.
+- Easily set any generated swatch as the main app color with a single click.
+- Instantly save the entire 5-color palette into your Saved Palette.
+- Fully responsive layout that automatically adjusts swatches vertically for desktop and horizontally for mobile display.
 
 ### 🌈 CSS Gradient Generator
 - Draw linear or radial gradients dynamically from your active color.
@@ -56,6 +64,9 @@ A professional-grade color analysis and design tool built with Material Design 3
 - Export color data as:
   - **CSS custom properties** (`:root` variables)
   - **Tailwind v4** `@theme` block using OKLCH values
+  - **SCSS** color map structure
+  - **Android** XML color resources and Jetpack Compose Kotlin color objects
+  - **SwiftUI** Color extension templates with precise RGB scaling
   - **JSON** object with all color formats
 
 ### 👁️ Color Blindness Simulator

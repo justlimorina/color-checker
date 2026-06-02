@@ -3,13 +3,14 @@ import { updateColorState, saveToPalette } from './app.js';
 import { setLanguage, updateExportContent, showToast, exportPaletteImage, updateDynamicTheme } from './ui.js';
 import { ColorUtils } from './utils.js';
 import { toggleSidebar, closeSidebar } from './sidebar.js';
-import { updateCustomContrast, toggleAdvancedPreview } from './features.js';
-import { initImageExtractor, initContrastMatrix, initGradientGenerator, initThemeBuilder } from './features.js';
+import { updateCustomContrast, toggleAdvancedPreview, renderContrastMatrix } from './features.js';
+import { initImageExtractor, initContrastMatrix, initGradientGenerator, initThemeBuilder, initPaletteGenerator, runPaletteGeneration, saveGeneratorPalette } from './features.js';
 
 export function attachEvents() {
     initRipple();
     initImageExtractor();
     initContrastMatrix();
+    initPaletteGenerator();
     initGradientGenerator();
     initThemeBuilder();
     dom.hexInput.oninput = (e) => updateColorState(e.target.value);
@@ -144,6 +145,38 @@ export function attachEvents() {
     // Advanced Preview Toggle
     if (dom.advancedPreviewToggle) {
         dom.advancedPreviewToggle.onclick = toggleAdvancedPreview;
+    }
+
+    // Contrast Matrix Toggle
+    const matrixToggle = document.getElementById('matrix-mode-toggle');
+    if (matrixToggle) {
+        matrixToggle.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.onclick = () => {
+                matrixToggle.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.matrixMode = btn.getAttribute('data-mode');
+                renderContrastMatrix();
+            };
+        });
+    }
+
+    // Smart Palette Generator Control Listeners
+    const generatorRuleSelect = document.getElementById('generator-rule-select');
+    if (generatorRuleSelect) {
+        generatorRuleSelect.onchange = (e) => {
+            state.generatorRule = e.target.value;
+            runPaletteGeneration();
+        };
+    }
+
+    const generatorGenerateBtn = document.getElementById('generator-generate-btn');
+    if (generatorGenerateBtn) {
+        generatorGenerateBtn.onclick = runPaletteGeneration;
+    }
+
+    const generatorSaveBtn = document.getElementById('generator-save-btn');
+    if (generatorSaveBtn) {
+        generatorSaveBtn.onclick = saveGeneratorPalette;
     }
 }
 

@@ -164,5 +164,46 @@ export const ColorUtils = {
             g: Math.round(rgb.r * m[3] + rgb.g * m[4] + rgb.b * m[5]),
             b: Math.round(rgb.r * m[6] + rgb.g * m[7] + rgb.b * m[8])
         };
+    },
+
+    getAPCAContrast(rgbText, rgbBg) {
+        const sRGBtoY = (rgb) => {
+            const r = Math.pow(rgb.r / 255.0, 2.4);
+            const g = Math.pow(rgb.g / 255.0, 2.4);
+            const b = Math.pow(rgb.b / 255.0, 2.4);
+            return 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
+        };
+
+        let txtY = sRGBtoY(rgbText);
+        let bgY = sRGBtoY(rgbBg);
+
+        const blkThrs = 0.022;
+        const blkClmp = 1.414;
+        const scaleBoW = 1.14;
+        const scaleWoB = 1.14;
+        const loBoWoffset = 0.027;
+        const loWoBoffset = 0.027;
+        const deltaYmin = 0.0005;
+        const loClip = 0.1;
+
+        txtY = (txtY > blkThrs) ? txtY : txtY + Math.pow(blkThrs - txtY, blkClmp);
+        bgY = (bgY > blkThrs) ? bgY : bgY + Math.pow(blkThrs - bgY, blkClmp);
+
+        if (Math.abs(bgY - txtY) < deltaYmin) {
+            return 0.0;
+        }
+
+        let SAPC = 0.0;
+        let outputContrast = 0.0;
+
+        if (bgY > txtY) {
+            SAPC = (Math.pow(bgY, 0.56) - Math.pow(txtY, 0.57)) * scaleBoW;
+            outputContrast = (SAPC < loClip) ? 0.0 : SAPC - loBoWoffset;
+        } else {
+            SAPC = (Math.pow(bgY, 0.65) - Math.pow(txtY, 0.62)) * scaleWoB;
+            outputContrast = (SAPC > -loClip) ? 0.0 : SAPC + loWoBoffset;
+        }
+
+        return outputContrast * 100.0;
     }
 };
