@@ -3,8 +3,18 @@ import { updateColorState, saveToPalette } from './app.js';
 import { setLanguage, updateExportContent, showToast, exportPaletteImage, updateDynamicTheme } from './ui.js';
 import { ColorUtils } from './utils.js';
 import { toggleSidebar, closeSidebar } from './sidebar.js';
-import { updateCustomContrast, toggleAdvancedPreview, renderContrastMatrix } from './features.js';
-import { initImageExtractor, initContrastMatrix, initGradientGenerator, initThemeBuilder, initPaletteGenerator, runPaletteGeneration, saveGeneratorPalette } from './features.js';
+import {
+    updateCustomContrast,
+    toggleAdvancedPreview,
+    renderContrastMatrix,
+    initImageExtractor,
+    initContrastMatrix,
+    initGradientGenerator,
+    initThemeBuilder,
+    initPaletteGenerator,
+    runPaletteGeneration,
+    saveGeneratorPalette
+} from './features.js';
 
 export function attachEvents() {
     initRipple();
@@ -15,6 +25,23 @@ export function attachEvents() {
     initThemeBuilder();
     dom.hexInput.oninput = (e) => updateColorState(e.target.value);
     dom.colorPicker.oninput = (e) => updateColorState(e.target.value.substring(1));
+    
+    // EyeDropper API integration
+    if (dom.eyedropperBtn && window.EyeDropper) {
+        dom.eyedropperBtn.style.display = 'flex';
+        dom.eyedropperBtn.onclick = async () => {
+            try {
+                const eyeDropper = new EyeDropper();
+                const result = await eyeDropper.open();
+                const hex = result.sRGBHex.replace('#', '').toUpperCase();
+                updateColorState(hex);
+                dom.hexInput.value = hex;
+                dom.colorPicker.value = `#${hex}`;
+            } catch (err) {
+                console.log("EyeDropper cancelled or failed:", err);
+            }
+        };
+    }
     
     dom.themeToggle.onclick = () => {
         document.body.classList.toggle('dark-mode');
@@ -94,11 +121,18 @@ export function attachEvents() {
     dom.helpBtn.onclick = () => dom.helpModal.classList.add('show');
     dom.closeHelp.onclick = dom.closeHelpConfirm.onclick = () => dom.helpModal.classList.remove('show');
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.modal-tabs .tab-btn[data-tab]').forEach(btn => {
         btn.onclick = () => {
-            document.querySelectorAll('.tab-btn, .tab-content').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`export-content-${btn.getAttribute('data-tab')}`).classList.add('active');
+            const container = btn.closest('.card');
+            if (container) {
+                container.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+                container.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const tabId = btn.getAttribute('data-tab');
+                const targetContent = document.getElementById(`export-content-${tabId}`);
+                if (targetContent) targetContent.classList.add('active');
+            }
         };
     });
 

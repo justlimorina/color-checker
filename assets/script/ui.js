@@ -376,6 +376,11 @@ export function setLanguage(lang) {
 
     dom.appTitle.textContent = translations[state.currentLang].app_title;
     
+    // Translate EyeDropper button title
+    if (dom.eyedropperBtn && translations[state.currentLang].eyedropper_btn) {
+        dom.eyedropperBtn.setAttribute('title', translations[state.currentLang].eyedropper_btn);
+    }
+    
     // Update active state in menu
     document.querySelectorAll('.menu-item').forEach(item => {
         item.classList.toggle('active', item.getAttribute('data-lang') === lang);

@@ -22,7 +22,8 @@ export const state = {
     generatorColors: [],
     generatorLocks: [false, false, false, false, false],
     generatorRule: "complementary",
-    matrixMode: "wcag"
+    matrixMode: "wcag",
+    MAX_PALETTE_SIZE: 10
 };
 
 export const dom = {}; // Populated in app.js after DOMContentLoaded

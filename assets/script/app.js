@@ -1,6 +1,6 @@
 import { state, dom } from './state.js';
 import { ColorUtils } from './utils.js';
-import { renderAll, setLanguage, renderSavedPalette } from './ui.js';
+import { renderAll, setLanguage, renderSavedPalette, showToast } from './ui.js';
 import { attachEvents } from './events.js';
 import { addToHistory, renderHistory } from './features.js';
 import { initNavigation } from './navigation.js';
@@ -27,11 +27,11 @@ export function updateColorState(hex, skipHistory = false) {
 
 export function saveToPalette() {
     if (state.palette.includes(state.hex)) return;
-    if (state.palette.length >= 10) state.palette.shift();
+    if (state.palette.length >= state.MAX_PALETTE_SIZE) state.palette.shift();
     state.palette.push(state.hex);
     localStorage.setItem('saved_palette', JSON.stringify(state.palette));
     renderSavedPalette();
-    import('./ui.js').then(ui => ui.showToast());
+    showToast();
 }
 
 export function removeFromPalette(index) {
@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Populate DOM elements
     Object.assign(dom, {
         hexInput: document.getElementById('hex-input'),
+        eyedropperBtn: document.getElementById('eyedropper-btn'),
         colorPicker: document.getElementById('color-picker'),
         preview: document.getElementById('color-preview'),
         rgbOutput: document.getElementById('rgb-output'),

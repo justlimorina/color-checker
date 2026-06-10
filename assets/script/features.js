@@ -756,8 +756,8 @@ export function saveGeneratorPalette() {
             state.palette.push(hex);
         }
     });
-    if (state.palette.length > 20) {
-        state.palette = state.palette.slice(-20);
+    if (state.palette.length > state.MAX_PALETTE_SIZE) {
+        state.palette = state.palette.slice(-state.MAX_PALETTE_SIZE);
     }
     localStorage.setItem('saved_palette', JSON.stringify(state.palette));
     import('./ui.js').then(ui => {
