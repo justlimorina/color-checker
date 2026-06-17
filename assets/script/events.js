@@ -45,7 +45,10 @@ export function attachEvents() {
     
     dom.themeToggle.onclick = () => {
         document.body.classList.toggle('dark-mode');
-        dom.themeToggle.children[0].textContent = document.body.classList.contains('dark-mode') ? 'light_mode' : 'dark_mode';
+        const icon = dom.themeToggle.querySelector('md-icon');
+        if (icon) {
+            icon.textContent = document.body.classList.contains('dark-mode') ? 'light_mode' : 'dark_mode';
+        }
         updateDynamicTheme();
     };
     
@@ -121,14 +124,11 @@ export function attachEvents() {
     dom.helpBtn.onclick = () => dom.helpModal.classList.add('show');
     dom.closeHelp.onclick = dom.closeHelpConfirm.onclick = () => dom.helpModal.classList.remove('show');
 
-    document.querySelectorAll('.modal-tabs .tab-btn[data-tab]').forEach(btn => {
+    document.querySelectorAll('md-primary-tab[data-tab]').forEach(btn => {
         btn.onclick = () => {
             const container = btn.closest('.card');
             if (container) {
-                container.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
                 container.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                btn.classList.add('active');
-                
                 const tabId = btn.getAttribute('data-tab');
                 const targetContent = document.getElementById(`export-content-${tabId}`);
                 if (targetContent) targetContent.classList.add('active');
@@ -137,9 +137,12 @@ export function attachEvents() {
     });
 
     dom.copyExportBtn.onclick = () => {
-        const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
-        const text = document.getElementById(`code-${activeTab}`).textContent;
-        navigator.clipboard.writeText(text).then(showToast);
+        const activeTabEl = document.querySelector('md-primary-tab[data-tab][active]');
+        if (activeTabEl) {
+            const activeTab = activeTabEl.getAttribute('data-tab');
+            const text = document.getElementById(`code-${activeTab}`).textContent;
+            navigator.clipboard.writeText(text).then(showToast);
+        }
     };
 
     document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -171,7 +174,10 @@ export function attachEvents() {
 
     // Advanced Preview Toggle
     if (dom.advancedPreviewToggle) {
-        dom.advancedPreviewToggle.onclick = toggleAdvancedPreview;
+        dom.advancedPreviewToggle.addEventListener('change', (e) => {
+            state.advancedPreviewActive = e.target.selected;
+            applyAdvancedPreview();
+        });
     }
 
     // Contrast Matrix Toggle
@@ -190,10 +196,10 @@ export function attachEvents() {
     // Smart Palette Generator Control Listeners
     const generatorRuleSelect = document.getElementById('generator-rule-select');
     if (generatorRuleSelect) {
-        generatorRuleSelect.onchange = (e) => {
+        generatorRuleSelect.addEventListener('change', (e) => {
             state.generatorRule = e.target.value;
             runPaletteGeneration();
-        };
+        });
     }
 
     const generatorGenerateBtn = document.getElementById('generator-generate-btn');

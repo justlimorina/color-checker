@@ -3,6 +3,7 @@ import { ColorUtils } from './utils.js';
 import { translations } from './config.js';
 import { updateColorState, removeFromPalette } from './app.js';
 import { applyAdvancedPreview, updateCustomContrast } from './features.js';
+import { themeFromSourceColor, argbFromHex, hexFromArgb } from 'https://esm.sh/@material/material-color-utilities';
 
 export function renderAll() {
     // 1. Update Columns 1
@@ -112,66 +113,75 @@ export function renderColorBlindness() {
 
 export function updateDynamicTheme() {
     const isDark = document.body.classList.contains('dark-mode');
-    document.documentElement.style.setProperty('--md-sys-color-primary', `#${state.hex}`);
     
-    const primary = state.rgb;
+    // Set Core dynamic variables using material-color-utilities
+    const sourceArgb = argbFromHex(`#${state.hex}`);
+    const theme = themeFromSourceColor(sourceArgb);
+    const scheme = isDark ? theme.schemes.dark : theme.schemes.light;
+    const palettes = theme.palettes;
+
+    const setProp = (name, argb) => {
+        document.documentElement.style.setProperty(name, hexFromArgb(argb));
+    };
+
+    setProp('--md-sys-color-primary', scheme.primary);
+    setProp('--md-sys-color-on-primary', scheme.onPrimary);
+    setProp('--md-sys-color-primary-container', scheme.primaryContainer);
+    setProp('--md-sys-color-on-primary-container', scheme.onPrimaryContainer);
+    
+    setProp('--md-sys-color-secondary', scheme.secondary);
+    setProp('--md-sys-color-on-secondary', scheme.onSecondary);
+    setProp('--md-sys-color-secondary-container', scheme.secondaryContainer);
+    setProp('--md-sys-color-on-secondary-container', scheme.onSecondaryContainer);
+
+    setProp('--md-sys-color-tertiary', scheme.tertiary);
+    setProp('--md-sys-color-on-tertiary', scheme.onTertiary);
+    setProp('--md-sys-color-tertiary-container', scheme.tertiaryContainer);
+    setProp('--md-sys-color-on-tertiary-container', scheme.onTertiaryContainer);
+
+    setProp('--md-sys-color-error', scheme.error);
+    setProp('--md-sys-color-on-error', scheme.onError);
+    setProp('--md-sys-color-error-container', scheme.errorContainer);
+    setProp('--md-sys-color-on-error-container', scheme.onErrorContainer);
+
+    setProp('--md-sys-color-background', scheme.background);
+    setProp('--md-sys-color-on-background', scheme.onBackground);
+    setProp('--md-sys-color-surface', scheme.surface);
+    setProp('--md-sys-color-on-surface', scheme.onSurface);
+    setProp('--md-sys-color-surface-variant', scheme.surfaceVariant);
+    setProp('--md-sys-color-on-surface-variant', scheme.onSurfaceVariant);
+
+    setProp('--md-sys-color-outline', scheme.outline);
+    setProp('--md-sys-color-outline-variant', scheme.outlineVariant);
+    setProp('--md-sys-color-shadow', scheme.shadow);
+    setProp('--md-sys-color-scrim', scheme.scrim);
+    setProp('--md-sys-color-inverse-surface', scheme.inverseSurface);
+    setProp('--md-sys-color-inverse-on-surface', scheme.inverseOnSurface);
+    setProp('--md-sys-color-inverse-primary', scheme.inversePrimary);
+
+    // Compute Surface Container values from neutral palette tones
+    if (!isDark) {
+        setProp('--md-sys-color-surface-container-lowest', palettes.neutral.tone(100));
+        setProp('--md-sys-color-surface-container-low', palettes.neutral.tone(96));
+        setProp('--md-sys-color-surface-container', palettes.neutral.tone(94));
+        setProp('--md-sys-color-surface-container-high', palettes.neutral.tone(92));
+        setProp('--md-sys-color-surface-container-highest', palettes.neutral.tone(90));
+    } else {
+        setProp('--md-sys-color-surface-container-lowest', palettes.neutral.tone(4));
+        setProp('--md-sys-color-surface-container-low', palettes.neutral.tone(10));
+        setProp('--md-sys-color-surface-container', palettes.neutral.tone(12));
+        setProp('--md-sys-color-surface-container-high', palettes.neutral.tone(17));
+        setProp('--md-sys-color-surface-container-highest', palettes.neutral.tone(22));
+    }
     
     // Set Gradient Colors
     document.documentElement.style.setProperty('--gradient-color-1', `#${state.hex}`);
     const mixColorForGrad = isDark ? { r: 0, g: 0, b: 0 } : { r: 255, g: 255, b: 255 };
-    const mixedGrad = ColorUtils.mixColors(primary, mixColorForGrad, 40);
+    const mixedGrad = ColorUtils.mixColors(state.rgb, mixColorForGrad, 40);
     document.documentElement.style.setProperty('--gradient-color-2', `#${ColorUtils.rgbToHex(mixedGrad.r, mixedGrad.g, mixedGrad.b)}`);
     const h1 = (state.hsl.h + 45) % 360;
     const rgb1 = ColorUtils.hslToRgb(h1, state.hsl.s, state.hsl.l);
     document.documentElement.style.setProperty('--gradient-color-3', `#${ColorUtils.rgbToHex(rgb1.r, rgb1.g, rgb1.b)}`);
-
-    if (!isDark) {
-        const white = { r: 255, g: 255, b: 255 };
-        const mixHex = (w, alpha = 0.85) => {
-            const m = ColorUtils.mixColors(primary, white, w);
-            return `rgba(${m.r}, ${m.g}, ${m.b}, ${alpha})`;
-        };
-
-        // Tint surfaces with primary color
-        document.documentElement.style.setProperty('--md-sys-color-surface', mixHex(98, 0.9));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container-low', mixHex(96));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container', mixHex(94));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container-high', mixHex(92));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container-highest', mixHex(90));
-        document.documentElement.style.setProperty('--md-sys-color-surface-variant', mixHex(85));
-        
-        // Tint containers
-        document.documentElement.style.setProperty('--md-sys-color-primary-container', mixHex(80));
-        document.documentElement.style.setProperty('--md-sys-color-secondary-container', mixHex(85));
-        document.documentElement.style.setProperty('--md-sys-color-on-primary-container', `#${ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(primary, white, 10)))}`);
-        document.documentElement.style.setProperty('--md-sys-color-on-secondary-container', `#${ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(primary, white, 20)))}`);
-    } else {
-        const black = { r: 0, g: 0, b: 0 };
-        const mixHex = (w, alpha = 0.85) => {
-            const m = ColorUtils.mixColors(primary, black, w);
-            return `rgba(${m.r}, ${m.g}, ${m.b}, ${alpha})`;
-        };
-
-        // Tint dark surfaces with primary color
-        document.documentElement.style.setProperty('--md-sys-color-surface', mixHex(95, 0.9));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container-low', mixHex(93));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container', mixHex(90));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container-high', mixHex(85));
-        document.documentElement.style.setProperty('--md-sys-color-surface-container-highest', mixHex(80));
-        document.documentElement.style.setProperty('--md-sys-color-surface-variant', mixHex(75));
-
-        // Tint dark containers
-        document.documentElement.style.setProperty('--md-sys-color-primary-container', mixHex(60));
-        document.documentElement.style.setProperty('--md-sys-color-secondary-container', mixHex(70));
-        
-        // Dark mode text on containers should be light
-        const whiteMixHex = (w) => {
-            const m = ColorUtils.mixColors(primary, { r: 255, g: 255, b: 255 }, w);
-            return `#${ColorUtils.rgbToHex(m.r, m.g, m.b)}`;
-        };
-        document.documentElement.style.setProperty('--md-sys-color-on-primary-container', whiteMixHex(90));
-        document.documentElement.style.setProperty('--md-sys-color-on-secondary-container', whiteMixHex(85));
-    }
 }
 
 export function updateBestText() {
@@ -459,6 +469,11 @@ export function updateExportContent() {
         shades: shades.map(h => `#${h}`)
     };
     document.getElementById('code-json').textContent = JSON.stringify(data, null, 2);
+
+    // Python (materialyoucolor)
+    const pythonCode = `# Code template for materialyoucolor-python\n# Install: pip install materialyoucolor\n\nfrom materialyoucolor.theme import Theme\nfrom materialyoucolor.rgba import RGBA\n\n# Initialize dynamic theme using active color: #${state.hex}\ntheme = Theme(RGBA(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b}, 255))\n\n# Retrieve dynamic colors for Light & Dark schemes\nlight = theme.schemes.light\ndark = theme.schemes.dark\n\nprint("=== LIGHT SYSTEM COLORS ===")\nprint(f"Primary:           {light.primary}")\nprint(f"On Primary:        {light.onPrimary}")\nprint(f"Primary Container: {light.primaryContainer}")\nprint(f"Surface:           {light.surface}")\n\nprint("\\n=== DARK SYSTEM COLORS ===")\nprint(f"Primary:           {dark.primary}")\nprint(f"On Primary:        {dark.onPrimary}")\nprint(f"Primary Container: {dark.primaryContainer}")\nprint(f"Surface:           {dark.surface}")\n`;
+    const pythonCodeEl = document.getElementById('code-python');
+    if (pythonCodeEl) pythonCodeEl.textContent = pythonCode;
 }
 
 export function showToast() {
@@ -490,7 +505,7 @@ export function exportPaletteImage() {
         
         // Hex text
         ctx.fillStyle = '#333333';
-        ctx.font = 'bold 20px Outfit, sans-serif';
+        ctx.font = 'bold 20px "Roboto Slab", serif';
         ctx.textAlign = 'center';
         ctx.fillText(`#${hex}`, i * stripWidth + stripWidth / 2, 270);
     });

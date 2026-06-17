@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Roboto:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -22,9 +22,9 @@
     <header class="top-app-bar">
         <div class="header-content">
             <div class="header-left">
-                <button id="sidebar-toggle-btn" class="icon-button" title="Toggle Sidebar">
-                    <span class="material-symbols-outlined">menu</span>
-                </button>
+                <md-icon-button id="sidebar-toggle-btn" title="Toggle Sidebar">
+                    <md-icon>menu</md-icon>
+                </md-icon-button>
                 <div class="header-title-wrapper">
                     <svg class="app-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                         <path d="M 24 2 C 24 16 34 14 38 10 C 30 18 34 22 46 24 C 34 26 30 30 38 38 C 34 34 24 32 24 46 C 24 32 14 34 10 38 C 18 30 14 26 2 24 C 14 22 18 18 10 10 C 14 14 24 16 24 2 Z" fill="var(--md-sys-color-primary)"/>
@@ -33,13 +33,13 @@
                 </div>
             </div>
             <div class="app-bar-actions">
-                <button id="help-btn" class="icon-button" title="User Guide">
-                    <span class="material-symbols-outlined">help</span>
-                </button>
+                <md-icon-button id="help-btn" title="User Guide">
+                    <md-icon>help</md-icon>
+                </md-icon-button>
                 <div class="dropdown">
-                    <button id="lang-btn" class="icon-button" title="Switch Language">
-                        <span class="material-symbols-outlined">language</span>
-                    </button>
+                    <md-icon-button id="lang-btn" title="Switch Language">
+                        <md-icon>language</md-icon>
+                    </md-icon-button>
                     <div id="lang-menu" class="dropdown-menu">
                         <button class="menu-item" data-lang="en">English</button>
                         <button class="menu-item" data-lang="vi">Tiếng Việt</button>
@@ -47,9 +47,9 @@
                         <button class="menu-item" data-lang="zh">简体中文</button>
                     </div>
                 </div>
-                <button id="theme-toggle" class="icon-button" title="Toggle Dark/Light Mode">
-                    <span class="material-symbols-outlined">dark_mode</span>
-                </button>
+                <md-icon-button id="theme-toggle" title="Toggle Dark/Light Mode">
+                    <md-icon>dark_mode</md-icon>
+                </md-icon-button>
             </div>
         </div>
     </header>
@@ -198,14 +198,14 @@
                                 </div>
                             </div>
 
-                            <button id="save-to-palette" class="button-filled full-width mt-m">
-                                <span class="material-symbols-outlined">bookmark_add</span>
+                            <md-filled-button id="save-to-palette" class="full-width mt-m">
+                                <md-icon slot="icon">bookmark_add</md-icon>
                                 <span data-i18n="save_btn">Save to Palette</span>
-                            </button>
-                            <button id="export-image-btn" class="button-tonal full-width mt-s">
-                                <span class="material-symbols-outlined">image</span>
+                            </md-filled-button>
+                            <md-filled-tonal-button id="export-image-btn" class="full-width mt-s">
+                                <md-icon slot="icon">image</md-icon>
                                 <span data-i18n="export_btn_image">Export Palette Image</span>
-                            </button>
+                            </md-filled-tonal-button>
                         </div>
                     </div>
 
@@ -303,7 +303,7 @@
                             <h2 class="title-medium mb-0" data-i18n="ui_prototype">UI Prototype Preview</h2>
                             <div style="display:flex; align-items:center; gap:8px;">
                                 <span class="label-small" data-i18n="advanced_preview">Advanced</span>
-                                <div id="advanced-preview-toggle" class="toggle-btn"></div>
+                                <md-switch id="advanced-preview-toggle"></md-switch>
                             </div>
                         </div>
                         
@@ -480,35 +480,46 @@
             <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
                 <h2 class="headline-medium mb-m" data-i18n="palette_generator">Smart Palette Generator</h2>
                 <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="generator_desc">Automatically generate harmonious 5-color palettes and lock your favorite colors.</p>
-                
                 <div class="generator-controls-row mb-l">
-                    <div class="input-group">
-                        <label class="label-large mb-s" data-i18n="rule_label">Color Harmony Rule</label>
-                        <select id="generator-rule-select" class="dropdown-select">
-                            <option value="complementary" data-i18n="rule_complementary">Complementary</option>
-                            <option value="analogous" data-i18n="rule_analogous">Analogous</option>
-                            <option value="triadic" data-i18n="rule_triadic">Triadic</option>
-                            <option value="tetradic" data-i18n="rule_tetradic">Tetradic</option>
-                            <option value="monochromatic" data-i18n="rule_monochromatic">Monochromatic</option>
-                            <option value="freestyle" data-i18n="rule_freestyle">Freestyle / Random</option>
-                        </select>
-                    </div>
-                </div>
+                     <div class="input-group">
+                         <label class="label-large mb-s" data-i18n="rule_label" style="display:block; margin-bottom: 8px;">Color Harmony Rule</label>
+                         <md-outlined-select id="generator-rule-select">
+                             <md-select-option value="complementary">
+                                 <div slot="headline" data-i18n="rule_complementary">Complementary</div>
+                             </md-select-option>
+                             <md-select-option value="analogous">
+                                 <div slot="headline" data-i18n="rule_analogous">Analogous</div>
+                             </md-select-option>
+                             <md-select-option value="triadic">
+                                 <div slot="headline" data-i18n="rule_triadic">Triadic</div>
+                             </md-select-option>
+                             <md-select-option value="tetradic">
+                                 <div slot="headline" data-i18n="rule_tetradic">Tetradic</div>
+                             </md-select-option>
+                             <md-select-option value="monochromatic">
+                                 <div slot="headline" data-i18n="rule_monochromatic">Monochromatic</div>
+                             </md-select-option>
+                             <md-select-option value="freestyle">
+                                 <div slot="headline" data-i18n="rule_freestyle">Freestyle / Random</div>
+                             </md-select-option>
+                         </md-outlined-select>
+                     </div>
+                 </div>
 
                 <div id="generator-swatches" class="generator-swatches-container mb-l">
                     <!-- 5 Color Swatches generated via JS -->
                 </div>
 
                 <div class="generator-actions">
-                    <button id="generator-generate-btn" class="button-filled">
-                        <span class="material-symbols-outlined">auto_awesome</span>
-                        <span data-i18n="btn_generate">Generate Palette</span>
-                    </button>
-                    <button id="generator-save-btn" class="button-tonal">
-                        <span class="material-symbols-outlined">bookmark_add</span>
-                        <span data-i18n="btn_save_palette">Save Palette</span>
-                    </button>
-                </div>
+                     <md-filled-button id="generator-generate-btn">
+                         <md-icon slot="icon">auto_awesome</md-icon>
+                         <span data-i18n="btn_generate">Generate Palette</span>
+                     </md-filled-button>
+                     <md-filled-tonal-button id="generator-save-btn">
+                         <md-icon slot="icon">bookmark_add</md-icon>
+                         <span data-i18n="btn_save_palette">Save Palette</span>
+                     </md-filled-tonal-button>
+                 </div>
             </div>
         </div>
 
@@ -519,18 +530,18 @@
                 
                 <div class="gradient-layout">
                     <div class="gradient-controls">
-                        <div class="input-group mb-m">
-                            <label class="label-large" data-i18n="gradient_type">Type</label>
-                            <div class="modal-tabs mt-s" style="border:none;">
-                                <button class="tab-btn active" id="grad-linear" style="flex:1;" data-i18n="grad_linear">Linear</button>
-                                <button class="tab-btn" id="grad-radial" style="flex:1;" data-i18n="grad_radial">Radial</button>
-                            </div>
-                        </div>
-                        
-                        <div class="input-group mb-m" id="grad-angle-group">
-                            <label class="label-large"><span data-i18n="gradient_angle">Angle</span> (<span id="grad-angle-val">90</span>°)</label>
-                            <input type="range" id="grad-angle" min="0" max="360" value="90" style="width: 100%; margin-top: 8px;">
-                        </div>
+                         <div class="input-group mb-m">
+                             <label class="label-large" data-i18n="gradient_type" style="display:block; margin-bottom: 8px;">Type</label>
+                             <md-tabs id="gradient-tabs">
+                                 <md-primary-tab id="grad-linear" active data-i18n="grad_linear">Linear</md-primary-tab>
+                                 <md-primary-tab id="grad-radial" data-i18n="grad_radial">Radial</md-primary-tab>
+                             </md-tabs>
+                         </div>
+                         
+                         <div class="input-group mb-m" id="grad-angle-group">
+                             <label class="label-large" style="display:block; margin-bottom: 8px;"><span data-i18n="gradient_angle">Angle</span> (<span id="grad-angle-val">90</span>°)</label>
+                             <md-slider id="grad-angle" min="0" max="360" value="90" labeled></md-slider>
+                         </div>
 
                         <div class="input-group mb-m">
                             <label class="label-large mb-s" data-i18n="gradient_colors">Colors</label>
@@ -548,10 +559,10 @@
                             </div>
                         </div>
                         
-                        <button id="copy-gradient-btn" class="button-filled full-width mt-l">
-                            <span class="material-symbols-outlined">content_copy</span>
-                            <span data-i18n="copy_css">Copy CSS</span>
-                        </button>
+                         <md-filled-button id="copy-gradient-btn" class="full-width mt-l">
+                             <md-icon slot="icon">content_copy</md-icon>
+                             <span data-i18n="copy_css">Copy CSS</span>
+                         </md-filled-button>
                     </div>
                     
                     <div class="gradient-preview-area">
@@ -578,41 +589,44 @@
             <div class="card card-elevated mt-l">
                 <h2 class="headline-medium mb-m" data-i18n="export_hub">Export Hub</h2>
                 <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="export_desc">Export color data and CSS/SCSS/Android/SwiftUI code templates.</p>
-                
-                <div class="modal-tabs">
-                    <button class="tab-btn active" data-tab="css">CSS</button>
-                    <button class="tab-btn" data-tab="tailwind">Tailwind</button>
-                    <button class="tab-btn" data-tab="scss">SCSS</button>
-                    <button class="tab-btn" data-tab="android">Android</button>
-                    <button class="tab-btn" data-tab="swiftui">SwiftUI</button>
-                    <button class="tab-btn" data-tab="json">JSON</button>
-                </div>
-                <div class="modal-body" style="overflow-y: auto; max-height: 400px; display: flex; flex-direction: column;">
-                    <div id="export-content-css" class="tab-content active">
-                        <pre><code id="code-css"></code></pre>
-                    </div>
-                    <div id="export-content-tailwind" class="tab-content">
-                        <pre><code id="code-tailwind"></code></pre>
-                    </div>
-                    <div id="export-content-scss" class="tab-content">
-                        <pre><code id="code-scss"></code></pre>
-                    </div>
-                    <div id="export-content-android" class="tab-content">
-                        <pre><code id="code-android"></code></pre>
-                    </div>
-                    <div id="export-content-swiftui" class="tab-content">
-                        <pre><code id="code-swiftui"></code></pre>
-                    </div>
-                    <div id="export-content-json" class="tab-content">
-                        <pre><code id="code-json"></code></pre>
-                    </div>
-                </div>
-                <div class="modal-footer" style="padding-top: var(--spacing-m); display: flex; justify-content: flex-end;">
-                    <button id="copy-export" class="button-filled">
-                        <span class="material-symbols-outlined">content_copy</span>
-                        <span data-i18n="copy_all">Copy All Template</span>
-                    </button>
-                </div>
+                 <md-tabs id="export-tabs">
+                     <md-primary-tab class="export-tab-btn" active data-tab="css">CSS</md-primary-tab>
+                     <md-primary-tab class="export-tab-btn" data-tab="tailwind">Tailwind</md-primary-tab>
+                     <md-primary-tab class="export-tab-btn" data-tab="scss">SCSS</md-primary-tab>
+                     <md-primary-tab class="export-tab-btn" data-tab="android">Android</md-primary-tab>
+                     <md-primary-tab class="export-tab-btn" data-tab="swiftui">SwiftUI</md-primary-tab>
+                     <md-primary-tab class="export-tab-btn" data-tab="json">JSON</md-primary-tab>
+                     <md-primary-tab class="export-tab-btn" data-tab="python">Python</md-primary-tab>
+                 </md-tabs>
+                 <div class="modal-body" style="overflow-y: auto; max-height: 400px; display: flex; flex-direction: column;">
+                     <div id="export-content-css" class="tab-content active">
+                         <pre><code id="code-css"></code></pre>
+                     </div>
+                     <div id="export-content-tailwind" class="tab-content">
+                         <pre><code id="code-tailwind"></code></pre>
+                     </div>
+                     <div id="export-content-scss" class="tab-content">
+                         <pre><code id="code-scss"></code></pre>
+                     </div>
+                     <div id="export-content-android" class="tab-content">
+                         <pre><code id="code-android"></code></pre>
+                     </div>
+                     <div id="export-content-swiftui" class="tab-content">
+                         <pre><code id="code-swiftui"></code></pre>
+                     </div>
+                     <div id="export-content-json" class="tab-content">
+                         <pre><code id="code-json"></code></pre>
+                     </div>
+                     <div id="export-content-python" class="tab-content">
+                         <pre><code id="code-python"></code></pre>
+                     </div>
+                 </div>
+                 <div class="modal-footer" style="padding-top: var(--spacing-m); display: flex; justify-content: flex-end;">
+                     <md-filled-button id="copy-export">
+                         <md-icon slot="icon">content_copy</md-icon>
+                         <span data-i18n="copy_all">Copy All Template</span>
+                     </md-filled-button>
+                 </div>
             </div>
         </div>
 
@@ -660,15 +674,16 @@
                     </ul>
                 </section>
             </div>
-            <div class="modal-footer">
-                <button id="close-help-confirm" class="button-filled">
-                    <span data-i18n="got_it">Got it!</span>
-                </button>
-            </div>
+             <div class="modal-footer">
+                 <md-filled-button id="close-help-confirm">
+                     <span data-i18n="got_it">Got it!</span>
+                 </md-filled-button>
+             </div>
         </div>
     </div>
 
     <script src="assets/script/ntc.js"></script>
+    <script type="module" src="https://esm.sh/@material/web/all.js"></script>
     <script type="module" src="assets/script/app.js"></script>
 </body>
 

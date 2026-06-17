@@ -22,9 +22,9 @@
     --md-sys-color-surface-container-highest: #E3E3E3;
 
     /* MD3 Typography */
-    --md-sys-typescale-headline-medium-font: 'Outfit', sans-serif;
+    --md-sys-typescale-headline-medium-font: 'Roboto Slab', serif;
     --md-sys-typescale-headline-medium-size: 1.75rem;
-    --md-sys-typescale-title-medium-font: 'Outfit', sans-serif;
+    --md-sys-typescale-title-medium-font: 'Roboto', sans-serif;
     --md-sys-typescale-title-medium-size: 1.25rem;
     --md-sys-typescale-body-medium-font: 'Roboto', sans-serif;
     --md-sys-typescale-body-medium-size: 0.875rem;
@@ -83,6 +83,10 @@
     padding: 0;
 }
 
+button, input, select, textarea {
+    font-family: inherit;
+}
+
 body {
     background-color: var(--md-sys-color-surface);
     color: var(--md-sys-color-on-surface);
@@ -110,14 +114,18 @@ body::before {
 }
 
 /* Typography */
+h1, h2, h3, h4, h5, h6,
+.headline-medium,
+.title-medium {
+    font-family: 'Roboto Slab', serif !important;
+}
+
 .headline-medium {
-    font-family: var(--md-sys-typescale-headline-medium-font);
     font-size: var(--md-sys-typescale-headline-medium-size);
     font-weight: 500;
 }
 
 .title-medium {
-    font-family: var(--md-sys-typescale-title-medium-font);
     font-size: var(--md-sys-typescale-title-medium-size);
     font-weight: 500;
     margin-bottom: var(--spacing-m);
@@ -369,7 +377,7 @@ body::before {
     border: none;
     outline: none;
     color: var(--md-sys-color-on-surface);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Roboto Mono', monospace;
     font-size: 1.25rem;
     width: calc(100% - 40px);
 }
@@ -405,7 +413,7 @@ body::before {
     border: 1px solid var(--md-sys-color-outline);
     border-radius: 8px;
     padding: 6px;
-    font-family: inherit;
+    font-family: 'Roboto Mono', monospace;
     font-size: 0.9rem;
     text-align: center;
 }
@@ -514,7 +522,7 @@ body::before {
 }
 
 code {
-    font-family: monospace;
+    font-family: 'Roboto Mono', monospace;
     font-size: 1rem;
 }
 
@@ -774,7 +782,7 @@ pre {
     margin: 0;
     white-space: pre;
     overflow-x: auto;
-    font-family: monospace;
+    font-family: 'Roboto Mono', monospace;
     font-size: 13px;
 }
 
@@ -1706,4 +1714,64 @@ body.sidebar-open .sidebar-overlay {
         transform: translateY(-50%) scale(1.1);
     }
 }
+
+/* Material Web Components Overrides & Styling */
+md-icon {
+    font-family: 'Material Symbols Outlined' !important;
+    font-size: 24px;
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+}
+
+md-filled-button.full-width,
+md-filled-tonal-button.full-width {
+    width: 100%;
+}
+
+md-slider {
+    width: 100%;
+    margin-top: 8px;
+    --md-slider-active-track-color: var(--md-sys-color-primary);
+    --md-slider-inactive-track-color: var(--md-sys-color-surface-variant);
+    --md-slider-handle-color: var(--md-sys-color-primary);
+    --md-slider-active-track-height: 4px;
+    --md-slider-inactive-track-height: 4px;
+}
+
+md-switch {
+    --md-switch-selected-handle-color: var(--md-sys-color-on-primary);
+    --md-switch-selected-track-color: var(--md-sys-color-primary);
+}
+
+md-tabs {
+    width: 100%;
+    margin-bottom: var(--spacing-m);
+    --md-tabs-active-indicator-color: var(--md-sys-color-primary);
+    --md-tabs-active-label-text-color: var(--md-sys-color-primary);
+    --md-tabs-active-icon-color: var(--md-sys-color-primary);
+}
+
+md-outlined-select {
+    width: 100%;
+    --md-outlined-select-text-field-outline-color: var(--md-sys-color-outline);
+    --md-outlined-select-text-field-input-text-color: var(--md-sys-color-on-surface);
+    --md-outlined-select-text-field-container-background-color: var(--md-sys-color-surface);
+}
+
+/* Ensure Web Components use global typography font */
+md-filled-button,
+md-filled-tonal-button,
+md-outlined-button,
+md-outlined-select,
+md-tabs,
+md-primary-tab {
+    font-family: var(--md-sys-typescale-body-medium-font) !important;
+}
+
 

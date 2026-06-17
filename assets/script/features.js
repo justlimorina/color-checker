@@ -127,7 +127,9 @@ function renderCustomWCAGBadges(container, ratio) {
 
 export function toggleAdvancedPreview() {
     state.advancedPreviewActive = !state.advancedPreviewActive;
-    dom.advancedPreviewToggle.classList.toggle('active', state.advancedPreviewActive);
+    if (dom.advancedPreviewToggle) {
+        dom.advancedPreviewToggle.selected = state.advancedPreviewActive;
+    }
     applyAdvancedPreview();
 }
 
@@ -296,7 +298,7 @@ export function initImageExtractor() {
                         ctxExp.fillStyle = `#${hex}`;
                         ctxExp.fillRect(i * stripWidth, 0, stripWidth, 230);
                         ctxExp.fillStyle = '#333333';
-                        ctxExp.font = 'bold 20px Outfit, sans-serif';
+                        ctxExp.font = 'bold 20px "Roboto Slab", serif';
                         ctxExp.textAlign = 'center';
                         ctxExp.fillText(`#${hex}`, i * stripWidth + stripWidth / 2, 270);
                     });
@@ -441,16 +443,12 @@ export function initGradientGenerator() {
     
     btnLinear.onclick = () => {
         type = 'linear';
-        btnLinear.classList.add('active');
-        btnRadial.classList.remove('active');
         angleGroup.style.display = 'block';
         updateGradient();
     };
     
     btnRadial.onclick = () => {
         type = 'radial';
-        btnRadial.classList.add('active');
-        btnLinear.classList.remove('active');
         angleGroup.style.display = 'none';
         updateGradient();
     };
@@ -520,41 +518,73 @@ export function renderThemeBuilder() {
     const grid = document.getElementById('theme-colors-grid');
     if(!grid) return;
     
-    const tokens = [
-        '--md-sys-color-primary', '--md-sys-color-on-primary',
-        '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
-        '--md-sys-color-secondary', '--md-sys-color-on-secondary',
-        '--md-sys-color-secondary-container', '--md-sys-color-on-secondary-container',
-        '--md-sys-color-tertiary', '--md-sys-color-on-tertiary',
-        '--md-sys-color-error', '--md-sys-color-on-error',
-        '--md-sys-color-background', '--md-sys-color-on-background',
-        '--md-sys-color-surface', '--md-sys-color-on-surface',
-        '--md-sys-color-surface-variant', '--md-sys-color-on-surface-variant',
-        '--md-sys-color-outline',
-        '--md-sys-color-surface-container-low',
-        '--md-sys-color-surface-container',
-        '--md-sys-color-surface-container-high',
-        '--md-sys-color-surface-container-highest'
+    const tokenPairs = [
+        { bg: '--md-sys-color-primary', fg: '--md-sys-color-on-primary' },
+        { bg: '--md-sys-color-on-primary', fg: '--md-sys-color-primary' },
+        { bg: '--md-sys-color-primary-container', fg: '--md-sys-color-on-primary-container' },
+        { bg: '--md-sys-color-on-primary-container', fg: '--md-sys-color-primary-container' },
+        { bg: '--md-sys-color-secondary', fg: '--md-sys-color-on-secondary' },
+        { bg: '--md-sys-color-on-secondary', fg: '--md-sys-color-secondary' },
+        { bg: '--md-sys-color-secondary-container', fg: '--md-sys-color-on-secondary-container' },
+        { bg: '--md-sys-color-on-secondary-container', fg: '--md-sys-color-secondary-container' },
+        { bg: '--md-sys-color-tertiary', fg: '--md-sys-color-on-tertiary' },
+        { bg: '--md-sys-color-on-tertiary', fg: '--md-sys-color-tertiary' },
+        { bg: '--md-sys-color-tertiary-container', fg: '--md-sys-color-on-tertiary-container' },
+        { bg: '--md-sys-color-on-tertiary-container', fg: '--md-sys-color-tertiary-container' },
+        { bg: '--md-sys-color-error', fg: '--md-sys-color-on-error' },
+        { bg: '--md-sys-color-on-error', fg: '--md-sys-color-error' },
+        { bg: '--md-sys-color-error-container', fg: '--md-sys-color-on-error-container' },
+        { bg: '--md-sys-color-on-error-container', fg: '--md-sys-color-error-container' },
+        { bg: '--md-sys-color-background', fg: '--md-sys-color-on-background' },
+        { bg: '--md-sys-color-on-background', fg: '--md-sys-color-background' },
+        { bg: '--md-sys-color-surface', fg: '--md-sys-color-on-surface' },
+        { bg: '--md-sys-color-on-surface', fg: '--md-sys-color-surface' },
+        { bg: '--md-sys-color-surface-variant', fg: '--md-sys-color-on-surface-variant' },
+        { bg: '--md-sys-color-on-surface-variant', fg: '--md-sys-color-surface-variant' },
+        { bg: '--md-sys-color-outline', fg: '--md-sys-color-surface' },
+        { bg: '--md-sys-color-outline-variant', fg: '--md-sys-color-on-surface' },
+        { bg: '--md-sys-color-inverse-surface', fg: '--md-sys-color-inverse-on-surface' },
+        { bg: '--md-sys-color-inverse-on-surface', fg: '--md-sys-color-inverse-surface' },
+        { bg: '--md-sys-color-inverse-primary', fg: '--md-sys-color-primary' },
+        { bg: '--md-sys-color-surface-container-lowest', fg: '--md-sys-color-on-surface' },
+        { bg: '--md-sys-color-surface-container-low', fg: '--md-sys-color-on-surface' },
+        { bg: '--md-sys-color-surface-container', fg: '--md-sys-color-on-surface' },
+        { bg: '--md-sys-color-surface-container-high', fg: '--md-sys-color-on-surface' },
+        { bg: '--md-sys-color-surface-container-highest', fg: '--md-sys-color-on-surface' }
     ];
     
     grid.innerHTML = '';
     
-    tokens.forEach(token => {
+    tokenPairs.forEach(pair => {
         const computed = window.getComputedStyle(document.documentElement);
-        let val = computed.getPropertyValue(token).trim();
+        let val = computed.getPropertyValue(pair.bg).trim();
         if(!val) return;
         
         const item = document.createElement('div');
-        item.style.backgroundColor = `var(${token})`;
-        item.style.padding = '8px';
-        item.style.borderRadius = '12px';
+        item.style.backgroundColor = `var(${pair.bg})`;
+        item.style.color = `var(${pair.fg})`;
+        item.style.padding = '12px';
+        item.style.borderRadius = '16px';
         item.style.border = '1px solid rgba(128,128,128,0.2)';
         item.style.display = 'flex';
         item.style.flexDirection = 'column';
-        item.style.height = '100px';
-        item.title = `${token}: ${val}`;
+        item.style.justifyContent = 'space-between';
+        item.style.height = '110px';
+        item.title = `${pair.bg}: ${val}`;
         
-        item.innerHTML = `<span style="font-size:10px; opacity:0.9; background:rgba(0,0,0,0.4); color:#fff; padding:2px 4px; border-radius:4px; margin-top:auto; word-break:break-all;">${token.replace('--md-sys-color-', '')}</span>`;
+        const nameSpan = document.createElement('span');
+        nameSpan.style.fontSize = '12px';
+        nameSpan.style.fontWeight = '700';
+        nameSpan.style.wordBreak = 'break-word';
+        nameSpan.textContent = pair.bg.replace('--md-sys-color-', '');
+        
+        const valSpan = document.createElement('span');
+        valSpan.style.fontSize = '11px';
+        valSpan.style.opacity = '0.8';
+        valSpan.textContent = val;
+        
+        item.appendChild(nameSpan);
+        item.appendChild(valSpan);
         
         grid.appendChild(item);
     });
