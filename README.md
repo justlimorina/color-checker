@@ -15,8 +15,7 @@ A professional-grade color analysis and design tool built with Material Design 3
 - All input formats update each other automatically.
 
 ### 🎭 Dynamic Theme Tinting (Material You)
-- **Contextual Light Mode:** Subtly tints all background surfaces (`surface`, `surface-container-low/high/highest`) and active buttons (`secondary-container`) using a micro-blend (2% - 15%) of the selected primary color.
-- **Vibrant Dark Mode:** Tinted dark surfaces and active containers create an elegant, glowing, uniform aesthetic.
+- **HCT Dynamic Palette:** Automatically generates the entire suite of standard Material Design 3 system colors using the official `@material/material-color-utilities` HCT (Hue, Chroma, Tone) algorithm for light and dark modes.
 - **Interactive SVG Logo:** A beautifully curved 8-pointed star in the header dynamically changes its color to match the selected theme and rotates 45° on hover.
 
 ### 🏷️ Color Name Identification
@@ -51,8 +50,8 @@ A professional-grade color analysis and design tool built with Material Design 3
 - Quick one-click action to copy clean, raw CSS code to your clipboard.
 
 ### 🎨 MD3 Theme Builder
-- Instantly generate a complete suite of standard Material Design 3 color tokens (Primary, Secondary, Surface, Outline, Error, and their variants).
-- Visualized in a responsive grid illustrating each token's background and on-color interaction.
+- Instantly generate a complete suite of standard Material Design 3 color tokens (Primary, Secondary, Surface, Outline, Error, Surface Containers, and their variants) using the official `@material/material-color-utilities` HCT algorithm.
+- Visualized in a responsive grid illustrating each token's background and on-color contrast interaction.
 - One-click export to copy the generated `:root` CSS variables block directly into your stylesheet.
 
 ### 🖼️ Image Extractor & Palette Export
@@ -68,6 +67,7 @@ A professional-grade color analysis and design tool built with Material Design 3
   - **Android** XML color resources and Jetpack Compose Kotlin color objects
   - **SwiftUI** Color extension templates with precise RGB scaling
   - **JSON** object with all color formats
+  - **Python** `materialyoucolor` code templates demonstrating how to programmatically recreate the theme.
 
 ### 👁️ Color Blindness Simulator
 - Simulates 4 types of color vision deficiency using transformation matrices:
@@ -120,7 +120,9 @@ python3 -m http.server 5500
 |---|---|
 | Structure | HTML5 |
 | Logic | Modular Vanilla JavaScript (ES2020+) |
-| Styling | Vanilla CSS with MD3 design tokens |
+| Dynamic Colors | Official `@material/material-color-utilities` |
+| UI Components | Official `@material/web` Components |
+| Styling | Vanilla CSS with MD3 design tokens, typography hierarchy (Roboto Slab, Roboto, Roboto Mono) |
 | Design System | Material Design 3 (Material You Dynamic Theme) |
 | Logo | Embedded SVG (Vector Path) |
 
