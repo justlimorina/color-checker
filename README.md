@@ -177,7 +177,7 @@ See [LICENSE](LICENSE) for the full text.
 ## 🙏 Acknowledgements
 
 - [Material Design 3](https://m3.material.io/) — Design system guidelines
-- [Google Fonts](https://fonts.google.com/) — Outfit & Roboto typefaces
+- [Google Fonts](https://fonts.google.com/) — Roboto, Roboto Slab & Roboto Mono typefaces
 - [Material Symbols](https://fonts.google.com/icons) — Icon set
 - [WCAG 2.1](https://www.w3.org/TR/WCAG21/) — Accessibility contrast standards
 - [OKLCH color space](https://oklch.com/) — Perceptually uniform color for Tailwind v4 export

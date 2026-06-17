@@ -176,7 +176,7 @@ Xem file [LICENSE](LICENSE) để biết toàn văn.
 ## 🙏 Lời cảm ơn
 
 - [Material Design 3](https://m3.material.io/) — Hướng dẫn hệ thống thiết kế
-- [Google Fonts](https://fonts.google.com/) — Font Outfit & Roboto
+- [Google Fonts](https://fonts.google.com/) — Font Roboto, Roboto Slab & Roboto Mono
 - [Material Symbols](https://fonts.google.com/icons) — Bộ biểu tượng
 - [WCAG 2.1](https://www.w3.org/TR/WCAG21/) — Tiêu chuẩn tương phản khả năng tiếp cận
 - [OKLCH color space](https://oklch.com/) — Không gian màu đồng đều về mặt cảm nhận, dùng cho xuất Tailwind v4
