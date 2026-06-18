@@ -2,7 +2,7 @@
 
 > **English** | [Tiếng Việt](README_vi.md)
 
-A professional-grade color analysis and design tool built with Material Design 3 and Material You dynamic theming principles. Analyze colors, check accessibility, simulate color blindness, and export palettes — all in your browser, no installation required.
+A professional-grade color analysis and design tool built with Material Design 3 and Material You dynamic theming principles. Fully installable as a Progressive Web App (PWA) with offline support. Analyze colors, check accessibility, simulate color blindness, and export palettes — all in your browser, no installation required.
 
 ---
 
@@ -94,6 +94,11 @@ A professional-grade color analysis and design tool built with Material Design 3
 - **Logo Transition:** The header text automatically hides on mobile screens, leaving the dynamic SVG star logo as the sole brand anchor.
 - **Sidebar Backdrop:** A beautiful modal Navigation Drawer on mobile with a blurred backdrop overlay.
 
+### ⚡ Progressive Web App (PWA)
+- **Installable:** Install as a standalone application on desktop, mobile, or tablet.
+- **Offline Capable:** Cached using Service Worker for access without internet connectivity.
+- **Theme Color Integration:** Merges seamlessly with native status bars and system colors.
+
 ---
 
 ## 🖥️ Getting Started
@@ -135,7 +140,9 @@ The project uses a highly modular and organized structure:
 ```
 color-checker/
 ├── index.html            # Application shell & SPA page wrappers
-├── LICENSE               # CC BY 4.0
+├── LICENSE               # MIT License
+├── manifest.json         # Web App Manifest for PWA support
+├── sw.js                 # Service Worker for offline caching
 ├── README.md             # English README
 ├── README_vi.md          # Vietnamese README
 └── assets/               # Assets directory
