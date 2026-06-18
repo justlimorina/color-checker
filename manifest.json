@@ -1,0 +1,17 @@
+{
+  "name": "Limorina Color Checker",
+  "short_name": "Color Checker",
+  "description": "Professional-grade color analysis and design tool built with Material Design 3.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6750A4",
+  "icons": [
+    {
+      "src": "assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

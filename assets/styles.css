@@ -114,10 +114,14 @@ body::before {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6,
-.headline-medium,
-.title-medium {
+h1,
+.headline-medium {
     font-family: 'Roboto Slab', serif !important;
+}
+
+h2, h3, h4, h5, h6,
+.title-medium {
+    font-family: 'Roboto', sans-serif !important;
 }
 
 .headline-medium {
