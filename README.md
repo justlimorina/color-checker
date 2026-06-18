@@ -19,7 +19,7 @@ A professional-grade color analysis and design tool built with Material Design 3
 - **Interactive SVG Logo:** A beautifully curved 8-pointed star in the header dynamically changes its color to match the selected theme and rotates 45° on hover.
 
 ### 🏷️ Color Name Identification
-- Automatically identifies the nearest named color (e.g. *"Butterfly Bush"*, *"Deep Indigo"*) using the **ntc.js** Name That Color library (2,500+ named colors).
+- Automatically identifies the nearest named color using a curated **color-name-list** (bestOf subset) containing 4,900+ color names.
 
 ### 🌈 Tints, Shades & Tones
 - 9-step gradients mixed with **White** (Tints), **Black** (Shades), and **Grey** (Tones).
@@ -146,8 +146,8 @@ color-checker/
         ├── config.js     # Shared configuration (e.g., translation data)
         ├── events.js     # DOM event listeners
         ├── features.js   # Contrast checker & advanced preview logic
+        ├── colornames.bestof.js # Curated bestOf subset from color-names library
         ├── navigation.js # SPA router and sidebar navigation
-        ├── ntc.js        # Third-party: Name That Color library
         ├── sidebar.js    # Sidebar Drawer toggle logic
         ├── state.js      # Global state variables & DOM cache
         ├── ui.js         # UI updates, image exporter, & dynamic tinting
@@ -158,19 +158,17 @@ color-checker/
 
 ## ⚖️ License
 
-Released under the **Creative Commons Attribution 4.0 International (CC BY 4.0)**.  
+Released under the **MIT License**.  
 See [LICENSE](LICENSE) for the full text.
 
 ---
 
 ## 📣 Third-Party Attributions
 
-### ntc.js — Name That Color
-- **Author:** Chirag Mehta — [http://chir.ag/projects/ntc](http://chir.ag/projects/ntc)
-- **License:** [Creative Commons Attribution 2.5](https://creativecommons.org/licenses/by/2.5/)
-- **Usage:** Used to identify the nearest human-readable name for any RGB color value. The original copyright header is preserved in `ntc.js` as required.
-
-> Per the Creative Commons Attribution 2.5 license, credit must be given to the original creator. This notice fulfills that requirement.
+### color-names (color-name-list)
+- **Author:** meodai (David Aerne) — [https://github.com/meodai/color-names](https://github.com/meodai/color-names)
+- **License:** [MIT License](https://github.com/meodai/color-names/blob/master/LICENSE)
+- **Usage:** Provides the curated `bestOf` color names dataset utilized for the nearest color name lookups in `colornames.bestof.js`.
 
 ---
 

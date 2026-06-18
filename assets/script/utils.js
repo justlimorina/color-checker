@@ -1,3 +1,5 @@
+import { getNearestColor } from './colornames.bestof.js';
+
 export const ColorUtils = {
     hexToRgb(hex) {
         const r = parseInt(hex.substring(0, 2), 16);
@@ -146,9 +148,7 @@ export const ColorUtils = {
     },
 
     getColorName(hex) {
-        if (!window.ntc) return "Unknown";
-        const result = ntc.name("#" + hex);
-        return result[1];
+        return getNearestColor(hex).name;
     },
 
     simulateBlindness(rgb, type) {
