@@ -13,7 +13,8 @@ import {
     initThemeBuilder,
     initPaletteGenerator,
     runPaletteGeneration,
-    saveGeneratorPalette
+    saveGeneratorPalette,
+    renderHistory
 } from './features.js';
 
 export function attachEvents() {
@@ -210,6 +211,42 @@ export function attachEvents() {
     const generatorSaveBtn = document.getElementById('generator-save-btn');
     if (generatorSaveBtn) {
         generatorSaveBtn.onclick = saveGeneratorPalette;
+    }
+
+    // Click on preview to copy active HEX color
+    if (dom.preview) {
+        dom.preview.onclick = () => {
+            navigator.clipboard.writeText(`#${state.hex}`).then(showToast);
+        };
+    }
+
+    // Click on swap-contrast-btn to swap Foreground / Background
+    const swapContrastBtn = document.getElementById('swap-contrast-btn');
+    if (swapContrastBtn) {
+        swapContrastBtn.onclick = () => {
+            const bgVal = dom.customBgHex.value;
+            const fgVal = dom.customFgHex.value;
+            
+            dom.customBgHex.value = fgVal;
+            dom.customFgHex.value = bgVal;
+            
+            if (dom.customBgPicker && dom.customFgPicker) {
+                dom.customBgPicker.value = `#${fgVal}`;
+                dom.customFgPicker.value = `#${bgVal}`;
+            }
+            
+            updateCustomContrast();
+        };
+    }
+
+    // Click on clear-history-btn to clear recent color history
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    if (clearHistoryBtn) {
+        clearHistoryBtn.onclick = () => {
+            state.history = [];
+            localStorage.setItem('color_history', JSON.stringify(state.history));
+            renderHistory();
+        };
     }
 }
 

@@ -96,7 +96,9 @@ export const translations = {
         locked: "Locked",
         unlocked: "Unlocked",
         matrix_wcag: "WCAG 2.1",
-        matrix_apca: "APCA (Lc)"
+        matrix_apca: "APCA (Lc)",
+        copy_hex: "Copy HEX",
+        clear_history: "Clear History"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -195,7 +197,9 @@ export const translations = {
         locked: "Đã khóa",
         unlocked: "Đang mở",
         matrix_wcag: "WCAG 2.1",
-        matrix_apca: "APCA (Lc)"
+        matrix_apca: "APCA (Lc)",
+        copy_hex: "Sao chép HEX",
+        clear_history: "Xóa lịch sử"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -294,7 +298,9 @@ export const translations = {
         locked: "ロック中",
         unlocked: "アンロック",
         matrix_wcag: "WCAG 2.1",
-        matrix_apca: "APCA (Lc)"
+        matrix_apca: "APCA (Lc)",
+        copy_hex: "HEXをコピー",
+        clear_history: "履歴をクリア"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -393,6 +399,8 @@ export const translations = {
         locked: "已锁定",
         unlocked: "未锁定",
         matrix_wcag: "WCAG 2.1",
-        matrix_apca: "APCA (Lc)"
+        matrix_apca: "APCA (Lc)",
+        copy_hex: "复制 HEX",
+        clear_history: "清除历史记录"
     }
 };

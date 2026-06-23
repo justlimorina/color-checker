@@ -116,7 +116,11 @@
                         <h2 class="title-medium" data-i18n="input_color">Input Color</h2>
 
                         <div class="main-preview-container">
-                            <div id="color-preview" class="main-preview">
+                            <div id="color-preview" class="main-preview" style="cursor: pointer;" title="Click to copy HEX">
+                                <div class="copy-overlay">
+                                    <span class="material-symbols-outlined">content_copy</span>
+                                    <span data-i18n="copy_hex">Copy HEX</span>
+                                </div>
                             </div>
                         </div>
 
@@ -371,8 +375,16 @@
         <!-- PAGE: HISTORY -->
         <div id="page-history" class="page">
             <div class="card card-elevated">
-                <h2 class="headline-medium mb-m" data-i18n="color_history">Color History</h2>
-                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="color_history_desc">Your recently generated colors are automatically saved here.</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-m); margin-bottom: var(--spacing-l);">
+                    <div>
+                        <h2 class="headline-medium mb-s" data-i18n="color_history" style="margin-bottom: 4px;">Color History</h2>
+                        <p class="body-medium mb-0" style="opacity: 0.8;" data-i18n="color_history_desc">Your recently generated colors are automatically saved here.</p>
+                    </div>
+                    <md-filled-tonal-button id="clear-history-btn">
+                        <md-icon slot="icon">delete_sweep</md-icon>
+                        <span data-i18n="clear_history">Clear History</span>
+                    </md-filled-tonal-button>
+                </div>
                 <div id="history-container" class="history-page-grid">
                     <!-- JS Generated -->
                 </div>
@@ -393,9 +405,9 @@
                             <input type="color" id="custom-bg-picker" value="#FFFFFF">
                         </div>
                     </div>
-                    <div class="contrast-icon">
+                    <button id="swap-contrast-btn" class="contrast-icon" title="Swap Colors" style="border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; padding: 0;">
                         <span class="material-symbols-outlined" style="font-size: 32px;">sync_alt</span>
-                    </div>
+                    </button>
                     <div class="contrast-input-group">
                         <label class="label-large mb-s" data-i18n="foreground_color">Foreground</label>
                         <div class="hex-wrapper">
