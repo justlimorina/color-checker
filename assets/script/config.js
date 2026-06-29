@@ -98,7 +98,9 @@ export const translations = {
         matrix_wcag: "WCAG 2.1",
         matrix_apca: "APCA (Lc)",
         copy_hex: "Copy HEX",
-        clear_history: "Clear History"
+        clear_history: "Clear History",
+        no_colors_saved: "No colors in palette. Save some colors first!",
+        copy_active: "Copy Active Template"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -199,7 +201,9 @@ export const translations = {
         matrix_wcag: "WCAG 2.1",
         matrix_apca: "APCA (Lc)",
         copy_hex: "Sao chép HEX",
-        clear_history: "Xóa lịch sử"
+        clear_history: "Xóa lịch sử",
+        no_colors_saved: "Chưa lưu màu nào. Hãy lưu một số màu trước!",
+        copy_active: "Sao chép bản mẫu"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -300,7 +304,9 @@ export const translations = {
         matrix_wcag: "WCAG 2.1",
         matrix_apca: "APCA (Lc)",
         copy_hex: "HEXをコピー",
-        clear_history: "履歴をクリア"
+        clear_history: "履歴をクリア",
+        no_colors_saved: "パレットに色が保存されていません。まず色を保存してください！",
+        copy_active: "アクティブなテンプレートをコピー"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -401,6 +407,8 @@ export const translations = {
         matrix_wcag: "WCAG 2.1",
         matrix_apca: "APCA (Lc)",
         copy_hex: "复制 HEX",
-        clear_history: "清除历史记录"
+        clear_history: "清除历史记录",
+        no_colors_saved: "调色板中没有保存的颜色。请先保存一些颜色！",
+        copy_active: "复制当前模板"
     }
 };

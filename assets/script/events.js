@@ -6,6 +6,7 @@ import { toggleSidebar, closeSidebar } from './sidebar.js';
 import {
     updateCustomContrast,
     toggleAdvancedPreview,
+    applyAdvancedPreview,
     renderContrastMatrix,
     initImageExtractor,
     initContrastMatrix,

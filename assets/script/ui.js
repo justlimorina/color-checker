@@ -2,7 +2,7 @@ import { state, dom } from './state.js';
 import { ColorUtils } from './utils.js';
 import { translations } from './config.js';
 import { updateColorState, removeFromPalette } from './app.js';
-import { applyAdvancedPreview, updateCustomContrast } from './features.js';
+import { applyAdvancedPreview, updateCustomContrast, syncGradientColors } from './features.js';
 import { themeFromSourceColor, argbFromHex, hexFromArgb } from 'https://esm.sh/@material/material-color-utilities';
 
 export function renderAll() {
@@ -13,7 +13,7 @@ export function renderAll() {
     dom.rgbOutput.textContent = `rgb(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b})`;
     dom.hslOutput.textContent = `${Math.round(state.hsl.h)}°, ${Math.round(state.hsl.s)}%, ${Math.round(state.hsl.l)}%`;
     dom.cmykOutput.textContent = `${state.cmyk.c}, ${state.cmyk.m}, ${state.cmyk.y}, ${state.cmyk.k}`;
-    dom.oklchOutput.textContent = `${Math.round(state.oklch.l)}%, ${state.oklch.c.toFixed(2)}, ${Math.round(state.oklch.h)}`;
+    dom.oklchOutput.textContent = `oklch(${Math.round(state.oklch.l)}% ${state.oklch.c.toFixed(2)} ${Math.round(state.oklch.h)})`;
 
     // Update Color Name
     const colorName = ColorUtils.getColorName(state.hex);
@@ -50,6 +50,8 @@ export function renderAll() {
         if(dom.customFgHex) dom.customFgHex.value = state.hex;
         updateCustomContrast();
     }
+    // 7.5. Sync Gradient Colors
+    syncGradientColors();
     
     // 8. Update Export Content
     updateExportContent();
@@ -412,6 +414,49 @@ export function updateExportContent() {
     let css = `:root {\n  --primary: #${state.hex};\n`;
     tints.forEach((h, i) => css += `  --primary-tint-${(i+1)*10}: #${h};\n`);
     shades.forEach((h, i) => css += `  --primary-shade-${(i+1)*10}: #${h};\n`);
+    css += `\n  /* Material Design 3 Theme Colors */\n`;
+    
+    const computed = window.getComputedStyle(document.documentElement);
+    const tokenPairs = [
+        '--md-sys-color-primary',
+        '--md-sys-color-on-primary',
+        '--md-sys-color-primary-container',
+        '--md-sys-color-on-primary-container',
+        '--md-sys-color-secondary',
+        '--md-sys-color-on-secondary',
+        '--md-sys-color-secondary-container',
+        '--md-sys-color-on-secondary-container',
+        '--md-sys-color-tertiary',
+        '--md-sys-color-on-tertiary',
+        '--md-sys-color-tertiary-container',
+        '--md-sys-color-on-tertiary-container',
+        '--md-sys-color-error',
+        '--md-sys-color-on-error',
+        '--md-sys-color-error-container',
+        '--md-sys-color-on-error-container',
+        '--md-sys-color-background',
+        '--md-sys-color-on-background',
+        '--md-sys-color-surface',
+        '--md-sys-color-on-surface',
+        '--md-sys-color-surface-variant',
+        '--md-sys-color-on-surface-variant',
+        '--md-sys-color-outline',
+        '--md-sys-color-outline-variant',
+        '--md-sys-color-inverse-surface',
+        '--md-sys-color-inverse-on-surface',
+        '--md-sys-color-inverse-primary',
+        '--md-sys-color-surface-container-lowest',
+        '--md-sys-color-surface-container-low',
+        '--md-sys-color-surface-container',
+        '--md-sys-color-surface-container-high',
+        '--md-sys-color-surface-container-highest'
+    ];
+    tokenPairs.forEach(prop => {
+        const val = computed.getPropertyValue(prop).trim();
+        if (val) {
+            css += `  ${prop}: ${val};\n`;
+        }
+    });
     css += `}`;
     document.getElementById('code-css').textContent = css;
 

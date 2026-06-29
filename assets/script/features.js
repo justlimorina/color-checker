@@ -795,3 +795,42 @@ export function saveGeneratorPalette() {
         ui.showToast();
     });
 }
+
+export function syncGradientColors() {
+    const color1 = document.getElementById('grad-color-1');
+    const hex1 = document.getElementById('grad-hex-1');
+    const color2 = document.getElementById('grad-color-2');
+    const hex2 = document.getElementById('grad-hex-2');
+    const preview = document.getElementById('gradient-preview');
+    const code = document.getElementById('gradient-code');
+    const angleSlider = document.getElementById('grad-angle');
+    const btnRadial = document.getElementById('grad-radial');
+    
+    if (!color1) return;
+    
+    color1.value = `#${state.hex}`;
+    if (hex1) hex1.value = state.hex.toUpperCase();
+    
+    const h1 = (state.hsl.h + 45) % 360;
+    const rgb1 = ColorUtils.hslToRgb(h1, state.hsl.s, state.hsl.l);
+    const hexVal2 = ColorUtils.rgbToHex(rgb1.r, rgb1.g, rgb1.b).toUpperCase();
+    color2.value = `#${hexVal2}`;
+    if (hex2) hex2.value = hexVal2;
+    
+    const isRadial = btnRadial && (btnRadial.active || btnRadial.hasAttribute('active'));
+    const angle = angleSlider ? angleSlider.value : 90;
+    
+    let css = '';
+    if(!isRadial) {
+        css = `background: linear-gradient(${angle}deg, #${state.hex}, #${hexVal2});`;
+    } else {
+        css = `background: radial-gradient(circle, #${state.hex}, #${hexVal2});`;
+    }
+    
+    if (preview) {
+        preview.style.cssText = `${css} width: 100%; height: 300px; border-radius: 24px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);`;
+    }
+    if (code) {
+        code.textContent = css;
+    }
+}
