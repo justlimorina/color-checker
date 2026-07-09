@@ -180,12 +180,25 @@ export function initImageExtractor() {
     const canvas = document.getElementById('image-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const paletteContainer = document.getElementById('extracted-palette');
+    
+    // New workspace and control elements
+    const workspace = document.getElementById('image-extractor-workspace');
+    const pinsOverlay = document.getElementById('image-pins-overlay');
+    const paletteContainer = document.getElementById('image-extracted-palette');
+    const slider = document.getElementById('picked-palettes-slider');
+    const sliderLabelName = document.getElementById('picked-palette-name');
+    const btnAddColor = document.getElementById('palette-add-color');
+    const btnRemoveColor = document.getElementById('palette-remove-color');
     const resetBtn = document.getElementById('reset-image-btn');
-    const actionBtns = document.getElementById('image-action-buttons');
     const exportBtn = document.getElementById('export-extracted-palette-btn');
+    
+    // Add file trigger for clicking anywhere in workspace dropZone or button
+    const browseImageBtn = document.getElementById('browse-image-btn');
+    if (browseImageBtn) {
+        browseImageBtn.onclick = () => fileInput.click();
+    }
 
-    if(!dropZone) return;
+    if (!dropZone) return;
 
     dropZone.onclick = () => fileInput.click();
     
@@ -197,44 +210,52 @@ export function initImageExtractor() {
     dropZone.ondrop = (e) => {
         e.preventDefault();
         dropZone.classList.remove('dragover');
-        if(e.dataTransfer.files && e.dataTransfer.files[0]) {
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             processImage(e.dataTransfer.files[0]);
         }
     };
 
     fileInput.onchange = (e) => {
-        if(e.target.files && e.target.files[0]) {
+        if (e.target.files && e.target.files[0]) {
             processImage(e.target.files[0]);
         }
     };
 
-    if(resetBtn) {
+    if (resetBtn) {
         resetBtn.onclick = () => {
             dropZone.style.display = 'flex';
-            canvas.style.display = 'none';
-            paletteContainer.style.display = 'none';
-            if (actionBtns) actionBtns.style.display = 'none';
-            else resetBtn.style.display = 'none';
+            if (workspace) workspace.style.display = 'none';
             fileInput.value = '';
+            // Clear current image logic states
+            currentImage = null;
+            activePins = [];
+            presets = [];
         };
     }
 
+    // Interactive Image Extractor State
+    let currentImage = null;
+    let activePins = []; // Array of { x, y, hex }
+    let activePinIndex = 0;
+    let numColors = 5;
+    let presets = []; // Array of 5 presets [Vibrant, Muted, Light, Dark, Balanced]
+    const presetKeys = ['palette_vibrant', 'palette_muted', 'palette_light', 'palette_dark', 'palette_balanced'];
+    const presetNames = ['Vibrant', 'Muted', 'Light', 'Dark', 'Balanced'];
+
     function processImage(file) {
-        if(!file.type.startsWith('image/')) return;
+        if (!file.type.startsWith('image/')) return;
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
+                currentImage = img;
                 dropZone.style.display = 'none';
-                canvas.style.display = 'block';
-                paletteContainer.style.display = 'grid';
-                if(actionBtns) actionBtns.style.display = 'flex';
-                else if(resetBtn) resetBtn.style.display = 'flex';
+                if (workspace) workspace.style.display = 'flex';
                 
                 const MAX_WIDTH = 500;
                 let width = img.width;
                 let height = img.height;
-                if(width > MAX_WIDTH) {
+                if (width > MAX_WIDTH) {
                     height *= MAX_WIDTH / width;
                     width = MAX_WIDTH;
                 }
@@ -242,95 +263,427 @@ export function initImageExtractor() {
                 canvas.height = height;
                 ctx.drawImage(img, 0, 0, width, height);
 
-                extractPalette(ctx, width, height);
+                // Analyze colors & pre-generate presets
+                generatePresets(width, height);
+                
+                // Load initial preset (Balanced is index 4, or Vibrant 0. Let's load Balanced 4 by default)
+                if (slider) {
+                    slider.value = 4;
+                    updateSliderLabel(4);
+                }
+                loadPreset(4);
             };
             img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    function extractPalette(ctx, width, height) {
-        const imageData = ctx.getImageData(0, 0, width, height).data;
-        const colorCounts = {};
+    function updateSliderLabel(value) {
+        if (sliderLabelName) {
+            const key = presetKeys[value];
+            sliderLabelName.textContent = translations[state.currentLang][key] || presetNames[value];
+        }
+    }
+
+    if (slider) {
+        slider.oninput = (e) => {
+            const value = parseInt(e.target.value);
+            updateSliderLabel(value);
+            loadPreset(value);
+        };
+    }
+
+    function generatePresets(width, height) {
+        // Sample pixels on a grid
+        const stepX = Math.max(1, Math.floor(width / 25));
+        const stepY = Math.max(1, Math.floor(height / 25));
+        const pool = [];
         
-        for(let i=0; i<imageData.length; i+=16) { 
-            const r = Math.round(imageData[i]/16)*16;
-            const g = Math.round(imageData[i+1]/16)*16;
-            const b = Math.round(imageData[i+2]/16)*16;
-            const a = imageData[i+3];
-            if(a < 128) continue; 
-            const rgb = `${r},${g},${b}`;
-            colorCounts[rgb] = (colorCounts[rgb] || 0) + 1;
+        try {
+            const imageData = ctx.getImageData(0, 0, width, height).data;
+            for (let y = 0; y < height; y += stepY) {
+                for (let x = 0; x < width; x += stepX) {
+                    const idx = (y * width + x) * 4;
+                    const r = imageData[idx];
+                    const g = imageData[idx + 1];
+                    const b = imageData[idx + 2];
+                    const a = imageData[idx + 3];
+                    if (a < 128) continue;
+                    
+                    const hex = ColorUtils.rgbToHex(r, g, b);
+                    const hsl = ColorUtils.rgbToHsl(r, g, b);
+                    pool.push({ x, y, r, g, b, h: hsl.h, s: hsl.s, l: hsl.l, hex });
+                }
+            }
+        } catch (e) {
+            console.error("Error sampling pixels:", e);
         }
 
-        const sorted = Object.keys(colorCounts).sort((a,b) => colorCounts[b] - colorCounts[a]);
-        
-        const palette = [];
-        for(const rgbStr of sorted) {
-            const [r,g,b] = rgbStr.split(',').map(Number);
-            let tooClose = false;
-            for(const p of palette) {
-                const dist = Math.sqrt(Math.pow(p.r-r,2) + Math.pow(p.g-g,2) + Math.pow(p.b-b,2));
-                if(dist < 50) { tooClose = true; break; }
-            }
-            if(!tooClose) {
-                palette.push({r,g,b});
-                if(palette.length >= 6) break;
-            }
+        if (pool.length === 0) {
+            // Fallback pool in case of error
+            pool.push({ x: Math.floor(width/2), y: Math.floor(height/2), r: 103, g: 80, b: 164, h: 256, s: 34, l: 48, hex: "6750A4" });
         }
 
-        paletteContainer.innerHTML = '';
-        import('./utils.js').then(({ColorUtils}) => {
-            if (exportBtn) {
-                exportBtn.onclick = () => {
-                    const canvasExp = document.createElement('canvas');
-                    const colorCount = palette.length;
-                    const stripWidth = Math.max(150, 600 / colorCount);
-                    canvasExp.width = stripWidth * colorCount;
-                    canvasExp.height = 300;
-                    const ctxExp = canvasExp.getContext('2d');
-        
-                    ctxExp.fillStyle = '#FFFFFF';
-                    ctxExp.fillRect(0, 0, canvasExp.width, canvasExp.height);
-        
-                    palette.forEach((c, i) => {
-                        const hex = ColorUtils.rgbToHex(c.r, c.g, c.b);
-                        ctxExp.fillStyle = `#${hex}`;
-                        ctxExp.fillRect(i * stripWidth, 0, stripWidth, 230);
-                        ctxExp.fillStyle = '#333333';
-                        ctxExp.font = 'bold 20px "Roboto Slab", serif';
-                        ctxExp.textAlign = 'center';
-                        ctxExp.fillText(`#${hex}`, i * stripWidth + stripWidth / 2, 270);
-                    });
-                    const link = document.createElement('a');
-                    link.download = `extracted-palette.png`;
-                    link.href = canvasExp.toDataURL();
-                    link.click();
-                };
+        // Helper: pick up to 10 distinct colors for a preset
+        function pickDistinct(sortedPool) {
+            const selected = [];
+            const minDistance = 45; // Minimum RGB Euclidean distance
+            
+            for (const item of sortedPool) {
+                let tooClose = false;
+                for (const sel of selected) {
+                    const d = Math.sqrt(Math.pow(item.r - sel.r, 2) + Math.pow(item.g - sel.g, 2) + Math.pow(item.b - sel.b, 2));
+                    if (d < minDistance) {
+                        tooClose = true;
+                        break;
+                    }
+                }
+                if (!tooClose) {
+                    selected.push(item);
+                    if (selected.length >= 10) break;
+                }
+            }
+            
+            // If not enough colors, relax distance requirement
+            if (selected.length < 10 && sortedPool.length > selected.length) {
+                for (const item of sortedPool) {
+                    if (selected.includes(item)) continue;
+                    let tooClose = false;
+                    for (const sel of selected) {
+                        const d = Math.sqrt(Math.pow(item.r - sel.r, 2) + Math.pow(item.g - sel.g, 2) + Math.pow(item.b - sel.b, 2));
+                        if (d < 15) {
+                            tooClose = true;
+                            break;
+                        }
+                    }
+                    if (!tooClose) {
+                        selected.push(item);
+                        if (selected.length >= 10) break;
+                    }
+                }
             }
 
-            import('./app.js').then(({updateColorState}) => {
-                palette.forEach(c => {
-                    const hex = ColorUtils.rgbToHex(c.r, c.g, c.b);
-                    const item = document.createElement('div');
-                    item.className = 'palette-item';
-                    item.style.backgroundColor = `#${hex}`;
-                    item.title = `#${hex}`;
-                    
-                    const label = document.createElement('div');
-                    label.className = 'history-hex-label';
-                    label.textContent = `#${hex}`;
-                    item.appendChild(label);
-                    
-                    item.onclick = () => {
-                        updateColorState(hex);
-                        const homeBtn = document.querySelector('[data-page="page-home"]');
-                        if(homeBtn) homeBtn.click();
-                    };
-                    paletteContainer.appendChild(item);
+            // Still not enough? Fill with duplicates from sortedPool
+            while (selected.length < 10 && sortedPool.length > 0) {
+                const item = sortedPool[selected.length % sortedPool.length];
+                selected.push({
+                    x: Math.min(width - 1, Math.max(0, Math.floor(item.x + (Math.random() - 0.5) * 40))),
+                    y: Math.min(height - 1, Math.max(0, Math.floor(item.y + (Math.random() - 0.5) * 40))),
+                    r: item.r, g: item.g, b: item.b, h: item.h, s: item.s, l: item.l, hex: item.hex
                 });
-            });
+            }
+            
+            return selected;
+        }
+
+        // 1. Vibrant (high saturation)
+        const vibrantPool = [...pool].sort((a, b) => b.s - a.s);
+        presets[0] = pickDistinct(vibrantPool);
+
+        // 2. Muted (low saturation)
+        const mutedPool = [...pool].sort((a, b) => a.s - b.s);
+        presets[1] = pickDistinct(mutedPool);
+
+        // 3. Light (high lightness)
+        const lightPool = [...pool].sort((a, b) => b.l - a.l);
+        presets[2] = pickDistinct(lightPool);
+
+        // 4. Dark (low lightness)
+        const darkPool = [...pool].sort((a, b) => a.l - b.l);
+        presets[3] = pickDistinct(darkPool);
+
+        // 5. Balanced (Representative clustering)
+        // Sort pool by frequency density
+        const counts = {};
+        pool.forEach(p => {
+            const key = `${Math.round(p.r/20)*20},${Math.round(p.g/20)*20},${Math.round(p.b/20)*20}`;
+            counts[key] = (counts[key] || 0) + 1;
         });
+        const balancedPool = [...pool].sort((a, b) => {
+            const keyA = `${Math.round(a.r/20)*20},${Math.round(a.g/20)*20},${Math.round(a.b/20)*20}`;
+            const keyB = `${Math.round(b.r/20)*20},${Math.round(b.g/20)*20},${Math.round(b.b/20)*20}`;
+            return counts[keyB] - counts[keyA];
+        });
+        presets[4] = pickDistinct(balancedPool);
+    }
+
+    function loadPreset(index) {
+        const preset = presets[index] || [];
+        activePins = [];
+        for (let i = 0; i < numColors; i++) {
+            if (preset[i]) {
+                activePins.push({
+                    x: preset[i].x,
+                    y: preset[i].y,
+                    hex: preset[i].hex
+                });
+            }
+        }
+        activePinIndex = 0;
+        renderWorkspace();
+    }
+
+    function renderWorkspace() {
+        if (!paletteContainer || !pinsOverlay) return;
+        
+        // 1. Render Palette Swatches
+        paletteContainer.innerHTML = '';
+        const swatches = [];
+        
+        activePins.forEach((pin, i) => {
+            const swatch = document.createElement('div');
+            swatch.className = 'extracted-swatch';
+            swatch.style.backgroundColor = `#${pin.hex}`;
+            swatch.title = `#${pin.hex}`;
+            if (i === activePinIndex) {
+                swatch.classList.add('active');
+            }
+            
+            swatch.onclick = () => {
+                activePinIndex = i;
+                // Highlight corresponding pin
+                document.querySelectorAll('.image-pin').forEach((p, idx) => {
+                    if (idx === i) p.classList.add('active');
+                    else p.classList.remove('active');
+                });
+                
+                // Redraw palette to move active class
+                document.querySelectorAll('.extracted-swatch').forEach((s, idx) => {
+                    if (idx === i) s.classList.add('active');
+                    else s.classList.remove('active');
+                });
+                
+                // Update app color state
+                updateColorState(pin.hex, true);
+            };
+
+            paletteContainer.appendChild(swatch);
+            swatches.push(swatch);
+        });
+
+        // Update add/remove button states
+        if (btnAddColor) btnAddColor.disabled = activePins.length >= 10;
+        if (btnRemoveColor) btnRemoveColor.disabled = activePins.length <= 2;
+
+        // 2. Render Pins Overlay
+        pinsOverlay.innerHTML = '';
+        activePins.forEach((pin, i) => {
+            const pinEl = document.createElement('div');
+            pinEl.className = 'image-pin';
+            pinEl.style.left = `${(pin.x / canvas.width) * 100}%`;
+            pinEl.style.top = `${(pin.y / canvas.height) * 100}%`;
+            pinEl.style.backgroundColor = `#${pin.hex}`;
+            
+            if (i === activePinIndex) {
+                pinEl.classList.add('active');
+            }
+
+            // Drag event handling
+            let isDragging = false;
+            
+            const startDrag = (e) => {
+                e.preventDefault();
+                isDragging = true;
+                activePinIndex = i;
+                
+                // Highlight active
+                document.querySelectorAll('.image-pin').forEach((p, idx) => {
+                    if (idx === i) p.classList.add('active');
+                    else p.classList.remove('active');
+                });
+                document.querySelectorAll('.extracted-swatch').forEach((s, idx) => {
+                    if (idx === i) s.classList.add('active');
+                    else s.classList.remove('active');
+                });
+                
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchmove', onDrag, { passive: false });
+                document.addEventListener('touchend', stopDrag);
+            };
+
+            const onDrag = (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                
+                const rect = canvas.getBoundingClientRect();
+                let clientXRel = clientX - rect.left;
+                let clientYRel = clientY - rect.top;
+                
+                // Clamp
+                clientXRel = Math.max(0, Math.min(rect.width, clientXRel));
+                clientYRel = Math.max(0, Math.min(rect.height, clientYRel));
+                
+                const pctX = clientXRel / rect.width;
+                const pctY = clientYRel / rect.height;
+                
+                const pixelX = Math.min(canvas.width - 1, Math.floor(pctX * canvas.width));
+                const pixelY = Math.min(canvas.height - 1, Math.floor(pctY * canvas.height));
+                
+                try {
+                    const pixel = ctx.getImageData(pixelX, pixelY, 1, 1).data;
+                    const hex = ColorUtils.rgbToHex(pixel[0], pixel[1], pixel[2]);
+                    
+                    pin.x = pixelX;
+                    pin.y = pixelY;
+                    pin.hex = hex;
+                    
+                    pinEl.style.left = `${pctX * 100}%`;
+                    pinEl.style.top = `${pctY * 100}%`;
+                    pinEl.style.backgroundColor = `#${hex}`;
+                    
+                    swatches[i].style.backgroundColor = `#${hex}`;
+                    swatches[i].title = `#${hex}`;
+                    
+                    updateColorState(hex, true); // update app state without creating history spam
+                } catch (err) {
+                    console.error("Error reading pixel on drag:", err);
+                }
+            };
+
+            const stopDrag = () => {
+                if (isDragging) {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onDrag);
+                    document.removeEventListener('mouseup', stopDrag);
+                    document.removeEventListener('touchmove', onDrag);
+                    document.removeEventListener('touchend', stopDrag);
+                    
+                    // Add finalized color to history
+                    updateColorState(pin.hex, false);
+                }
+            };
+
+            pinEl.addEventListener('mousedown', startDrag);
+            pinEl.addEventListener('touchstart', startDrag, { passive: false });
+            
+            // Also select on click
+            pinEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                activePinIndex = i;
+                renderWorkspace();
+                updateColorState(pin.hex, true);
+            });
+
+            pinsOverlay.appendChild(pinEl);
+        });
+
+        // Set active app color to the currently active pin's color
+        if (activePins[activePinIndex]) {
+            updateColorState(activePins[activePinIndex].hex, true);
+        }
+    }
+
+    // Add Color Button
+    if (btnAddColor) {
+        btnAddColor.onclick = () => {
+            if (activePins.length >= 10) return;
+            
+            // Find next distinct color in the image
+            // We search a grid to find the pixel whose color has the maximum distance from existing pin colors
+            let bestX = Math.floor(canvas.width / 2);
+            let bestY = Math.floor(canvas.height / 2);
+            let bestHex = "FFFFFF";
+            let maxMinDist = -1;
+            
+            try {
+                const step = 20;
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                
+                for (let y = 10; y < canvas.height; y += step) {
+                    for (let x = 10; x < canvas.width; x += step) {
+                        const idx = (y * canvas.width + x) * 4;
+                        const r = imageData[idx];
+                        const g = imageData[idx + 1];
+                        const b = imageData[idx + 2];
+                        const a = imageData[idx + 3];
+                        if (a < 128) continue;
+                        
+                        // Min distance to any active pin
+                        let minDist = Infinity;
+                        activePins.forEach(pin => {
+                            // Read pixel at pin position
+                            const pxIdx = (pin.y * canvas.width + pin.x) * 4;
+                            const pr = imageData[pxIdx];
+                            const pg = imageData[pxIdx + 1];
+                            const pb = imageData[pxIdx + 2];
+                            const d = Math.sqrt(Math.pow(r - pr, 2) + Math.pow(g - pg, 2) + Math.pow(b - pb, 2));
+                            if (d < minDist) minDist = d;
+                        });
+                        
+                        if (minDist > maxMinDist) {
+                            maxMinDist = minDist;
+                            bestX = x;
+                            bestY = y;
+                            bestHex = ColorUtils.rgbToHex(r, g, b);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Error finding distinct color to add:", e);
+            }
+            
+            activePins.push({
+                x: bestX,
+                y: bestY,
+                hex: bestHex
+            });
+            numColors = activePins.length;
+            activePinIndex = activePins.length - 1;
+            renderWorkspace();
+            updateColorState(bestHex, false);
+        };
+    }
+
+    // Remove Color Button
+    if (btnRemoveColor) {
+        btnRemoveColor.onclick = () => {
+            if (activePins.length <= 2) return;
+            activePins.splice(activePinIndex, 1);
+            numColors = activePins.length;
+            // Adjust active index
+            if (activePinIndex >= activePins.length) {
+                activePinIndex = activePins.length - 1;
+            }
+            renderWorkspace();
+            if (activePins[activePinIndex]) {
+                updateColorState(activePins[activePinIndex].hex, false);
+            }
+        };
+    }
+
+    // Export Palette Image
+    if (exportBtn) {
+        exportBtn.onclick = () => {
+            const canvasExp = document.createElement('canvas');
+            const colorCount = activePins.length;
+            const stripWidth = Math.max(150, 600 / colorCount);
+            canvasExp.width = stripWidth * colorCount;
+            canvasExp.height = 300;
+            const ctxExp = canvasExp.getContext('2d');
+
+            ctxExp.fillStyle = '#FFFFFF';
+            ctxExp.fillRect(0, 0, canvasExp.width, canvasExp.height);
+
+            activePins.forEach((pin, i) => {
+                ctxExp.fillStyle = `#${pin.hex}`;
+                ctxExp.fillRect(i * stripWidth, 0, stripWidth, 230);
+                
+                // Draw color hex code
+                ctxExp.fillStyle = '#333333';
+                ctxExp.font = 'bold 20px "Roboto Slab", serif';
+                ctxExp.textAlign = 'center';
+                ctxExp.fillText(`#${pin.hex}`, i * stripWidth + stripWidth / 2, 270);
+            });
+            
+            const link = document.createElement('a');
+            link.download = `extracted-palette.png`;
+            link.href = canvasExp.toDataURL();
+            link.click();
+        };
     }
 }
 

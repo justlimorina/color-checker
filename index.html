@@ -448,23 +448,54 @@
                     <p class="title-medium mt-s" data-i18n="drop_image_here">Drag & Drop an image here or click to upload</p>
                     <input type="file" id="image-upload" accept="image/*" style="display: none;">
                 </div>
-                <div style="display: flex; gap: var(--spacing-l); margin-top: var(--spacing-m); flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 300px;">
-                        <canvas id="image-canvas" style="display: none; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px var(--md-sys-color-shadow);"></canvas>
+                <div id="image-extractor-workspace">
+                    <!-- Left Column: Controls -->
+                    <div style="width: 250px; display: flex; flex-direction: column; gap: var(--spacing-m);">
+                        <!-- Picked palettes slider -->
+                        <div class="input-group">
+                            <label class="label-large" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <span data-i18n="picked_palettes">Picked palettes</span>
+                                <span id="picked-palette-name" class="label-small" style="font-weight: bold; color: var(--md-sys-color-primary);">Balanced</span>
+                            </label>
+                            <input type="range" id="picked-palettes-slider" min="0" max="4" value="4" class="custom-slider">
+                        </div>
+
+                        <!-- Palette with +/- buttons -->
+                        <div class="input-group">
+                            <label class="label-large" data-i18n="palette" style="display: block; margin-bottom: 8px;">Palette</label>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div id="image-extracted-palette"></div>
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <button id="palette-add-color" class="icon-button small-btn" style="border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: var(--md-sys-color-surface-container-high); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--md-sys-color-on-surface);" title="Add Color">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                                    </button>
+                                    <button id="palette-remove-color" class="icon-button small-btn" style="border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: var(--md-sys-color-surface-container-high); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--md-sys-color-on-surface);" title="Remove Color">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">remove</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: var(--spacing-s);">
+                            <md-filled-tonal-button id="reset-image-btn" style="width: 100%;">
+                                <md-icon slot="icon">restart_alt</md-icon>
+                                <span data-i18n="upload_another">Upload Another</span>
+                            </md-filled-tonal-button>
+                            <md-filled-button id="export-extracted-palette-btn" style="width: 100%;">
+                                <md-icon slot="icon">download</md-icon>
+                                <span data-i18n="export_palette">Export Palette</span>
+                            </md-filled-button>
+                        </div>
                     </div>
-                    <div style="width: 250px;">
-                        <div id="extracted-palette" class="palette-grid" style="display: none; grid-template-columns: repeat(3, 1fr);"></div>
+
+                    <!-- Right Column: Interactive Image canvas & overlay -->
+                    <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: flex-start;">
+                        <div id="image-workspace">
+                            <canvas id="image-canvas"></canvas>
+                            <div id="image-pins-overlay"></div>
+                        </div>
                     </div>
-                </div>
-                <div id="image-action-buttons" style="display: none; gap: var(--spacing-m); margin-top: var(--spacing-m);">
-                    <button id="reset-image-btn" class="button-tonal" style="flex: 1;">
-                        <span class="material-symbols-outlined">restart_alt</span>
-                        <span data-i18n="upload_another">Upload Another</span>
-                    </button>
-                    <button id="export-extracted-palette-btn" class="button-filled" style="flex: 1;">
-                        <span class="material-symbols-outlined">image</span>
-                        <span data-i18n="export_btn_image">Export Palette Image</span>
-                    </button>
                 </div>
             </div>
         </div>
