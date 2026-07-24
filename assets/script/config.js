@@ -25,7 +25,7 @@ export const translations = {
         help_title: "User Guide & Glossary",
         guide_color_formats_title: "1. Color Formats",
         guide_color_formats_desc: "How color is represented in code.",
-        desc_hex: "6-digit code (e.g. #6750A4). Standard for web design.",
+        desc_hex: "6-digit code (e.g. #624E9A). Standard for web design.",
         desc_rgb: "Red, Green, Blue (0-255). Used for screen displays.",
         desc_hsl: "Hue (color), Saturation (intensity), Lightness (brightness). Great for designers.",
         desc_cmyk: "Cyan, Magenta, Yellow, Black (0-100%). Used for physical printing.",
@@ -109,7 +109,13 @@ export const translations = {
         copy_hex: "Copy HEX",
         clear_history: "Clear History",
         no_colors_saved: "No colors in palette. Save some colors first!",
-        copy_active: "Copy Active Template"
+        copy_active: "Copy Active Template",
+        menu: "Menu",
+        landing_hero_title: "The Super Fast Color Tools Suite!",
+        landing_hero_desc: "Create harmonized palettes, check WCAG/APCA contrast, extract colors from images, and build Material Design 3 themes in seconds.",
+        landing_start_btn: "Start the Generator",
+        landing_features_title: "Explore Our Utilities",
+        landing_footer: "Limorina Color Checker - Built with Material Design 3"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -137,7 +143,7 @@ export const translations = {
         help_title: "Hướng dẫn & Giải nghĩa",
         guide_color_formats_title: "1. Định dạng màu",
         guide_color_formats_desc: "Cách màu sắc được biểu diễn trong mã nguồn.",
-        desc_hex: "Mã 6 ký tự (VD: #6750A4). Tiêu chuẩn thiết kế web.",
+        desc_hex: "Mã 6 ký tự (VD: #624E9A). Tiêu chuẩn thiết kế web.",
         desc_rgb: "Đỏ, Xanh lá, Xanh dương (0-255). Dùng cho màn hình.",
         desc_hsl: "Sắc màu, Độ bão hòa, Độ sáng. Rất trực quan cho thiết kế.",
         desc_cmyk: "Lục lam, Hồng sẫm, Vàng, Đen (0-100%). Dùng cho in ấn thực tế.",
@@ -221,7 +227,13 @@ export const translations = {
         copy_hex: "Sao chép HEX",
         clear_history: "Xóa lịch sử",
         no_colors_saved: "Chưa lưu màu nào. Hãy lưu một số màu trước!",
-        copy_active: "Sao chép bản mẫu"
+        copy_active: "Sao chép bản mẫu",
+        menu: "Danh mục",
+        landing_hero_title: "Bộ công cụ màu sắc siêu tốc!",
+        landing_hero_desc: "Tạo bảng màu hài hòa, kiểm tra độ tương phản WCAG/APCA, trích xuất màu từ ảnh và sinh theme Material Design 3 trong nháy mắt.",
+        landing_start_btn: "Bắt đầu tạo màu",
+        landing_features_title: "Khám phá các tiện ích",
+        landing_footer: "Limorina Color Checker - Thiết kế theo chuẩn Material Design 3"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -249,7 +261,7 @@ export const translations = {
         help_title: "ユーザーガイド",
         guide_color_formats_title: "1. カラーフォーマット",
         guide_color_formats_desc: "コードでの色の表現方法。",
-        desc_hex: "6桁のコード（例：#6750A4）。Webデザインの標準。",
+        desc_hex: "6桁のコード（例：#624E9A）。Webデザインの標準。",
         desc_rgb: "赤、緑、青 (0-255)。ディスプレイ用。",
         desc_hsl: "色相、彩度、明度。直感的な調整が可能。",
         desc_cmyk: "シアン、マゼンタ、イエロー、ブラック (0-100%)。印刷用。",
@@ -333,7 +345,13 @@ export const translations = {
         copy_hex: "HEXをコピー",
         clear_history: "履歴をクリア",
         no_colors_saved: "パレットに色が保存されていません。まず色を保存してください！",
-        copy_active: "アクティブなテンプレートをコピー"
+        copy_active: "アクティブなテンプレートをコピー",
+        menu: "メニュー",
+        landing_hero_title: "高速カラーツールスイート！",
+        landing_hero_desc: "調和したパレットの作成、WCAG/APCAコントラストの確認、画像からの色抽出、Material Design 3テーマの構築を数秒で。",
+        landing_start_btn: "ジェネレーターを開始",
+        landing_features_title: "ユーティリティを探索",
+        landing_footer: "Limorina Color Checker - Material Design 3で構築"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -361,7 +379,7 @@ export const translations = {
         help_title: "用户指南",
         guide_color_formats_title: "1. 颜色格式",
         guide_color_formats_desc: "代码中的颜色表示方式。",
-        desc_hex: "6位代码（例如 #6750A4）。网页设计标准。",
+        desc_hex: "6位代码（例如 #624E9A）。网页设计标准。",
         desc_rgb: "红、绿、蓝 (0-255)。用于屏幕显示。",
         desc_hsl: "色相、饱和度、亮度。更符合设计直觉。",
         desc_cmyk: "青、品红、黄、黑 (0-100%)。用于印刷。",
@@ -445,6 +463,12 @@ export const translations = {
         copy_hex: "复制 HEX",
         clear_history: "清除历史记录",
         no_colors_saved: "调色板中没有保存的颜色。请先保存一些颜色！",
-        copy_active: "复制当前模板"
+        copy_active: "复制当前模板",
+        menu: "菜单",
+        landing_hero_title: "极速色彩工具套件！",
+        landing_hero_desc: "在数秒内创建协调的调色板、检查 WCAG/APCA 对比度、从图像中提取颜色以及构建 Material Design 3 主题。",
+        landing_start_btn: "启动生成器",
+        landing_features_title: "探索我们的实用工具",
+        landing_footer: "Limorina Color Checker - 基于 Material Design 3 构建"
     }
 };

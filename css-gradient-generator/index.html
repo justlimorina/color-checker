@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator - Limorina Color Checker</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/images/amelia_logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <meta name="description" content="Design custom linear and radial gradients. Slide angles, pick color stops, preview results, and grab clean CSS properties instantly.">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#624E9A">
+    <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
+</head>
+<body class="light-mode">
+    <header class="top-app-bar"></header>
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <main class="md-main">
+        <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
+            <h2 class="headline-medium mb-m" data-i18n="gradient_generator">CSS Gradient Generator</h2>
+            
+            <div class="gradient-layout">
+                <div class="gradient-controls">
+                     <div class="input-group mb-m">
+                         <label class="label-large" data-i18n="gradient_type" style="display:block; margin-bottom: 8px;">Type</label>
+                         <md-tabs id="gradient-tabs">
+                             <md-primary-tab id="grad-linear" active data-i18n="grad_linear">Linear</md-primary-tab>
+                             <md-primary-tab id="grad-radial" data-i18n="grad_radial">Radial</md-primary-tab>
+                         </md-tabs>
+                     </div>
+                     
+                     <div class="input-group mb-m" id="grad-angle-group">
+                         <label class="label-large" style="display:block; margin-bottom: 8px;"><span data-i18n="gradient_angle">Angle</span> (<span id="grad-angle-val">90</span>°)</label>
+                         <md-slider id="grad-angle" min="0" max="360" value="90" labeled></md-slider>
+                     </div>
+
+                    <div class="input-group mb-m">
+                        <label class="label-large mb-s" data-i18n="gradient_colors">Colors</label>
+                        <div class="mixer-row">
+                            <div class="hex-wrapper" style="flex:1; margin-top:0;">
+                                <span>#</span>
+                                <input type="text" id="grad-hex-1" value="624E9A" maxlength="6" style="width: calc(100% - 40px);">
+                                <input type="color" id="grad-color-1" value="#624E9A">
+                            </div>
+                            <div class="hex-wrapper" style="flex:1; margin-top:0;">
+                                <span>#</span>
+                                <input type="text" id="grad-hex-2" value="EADDFF" maxlength="6" style="width: calc(100% - 40px);">
+                                <input type="color" id="grad-color-2" value="#EADDFF">
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <md-filled-button id="copy-gradient-btn" class="full-width mt-l">
+                         <md-icon slot="icon">content_copy</md-icon>
+                         <span data-i18n="copy_css">Copy CSS</span>
+                     </md-filled-button>
+                </div>
+                
+                <div class="gradient-preview-area">
+                    <div id="gradient-preview" style="width: 100%; height: 300px; border-radius: 24px; background: linear-gradient(90deg, #624E9A, #EADDFF); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);"></div>
+                    <pre class="mt-m" style="background: var(--md-sys-color-surface-variant); padding: 16px; border-radius: 12px;"><code id="gradient-code">background: linear-gradient(90deg, #624E9A, #EADDFF);</code></pre>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script type="module" src="https://esm.sh/@material/web/all.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

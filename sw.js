@@ -1,20 +1,34 @@
-const CACHE_NAME = 'color-checker-v4';
+const CACHE_NAME = 'color-checker-v8';
 const ASSETS = [
     './',
     'index.html',
     'manifest.json',
     'assets/styles.css',
-    'assets/logo.svg',
-    'assets/script/app.js',
+    'assets/images/amelia_logo.svg',
+    'assets/images/logo-black.svg',
+    'assets/images/logo-white.svg',
     'assets/script/config.js',
-    'assets/script/events.js',
-    'assets/script/features.js',
-    'assets/script/navigation.js',
-    'assets/script/sidebar.js',
-    'assets/script/state.js',
-    'assets/script/ui.js',
     'assets/script/utils.js',
-    'assets/script/colornames.bestof.js'
+    'assets/script/colornames.bestof.js',
+    'assets/script/shared/layout.js',
+    'generator/',
+    'generator/index.html',
+    'generator/script.js',
+    'image-extractor/',
+    'image-extractor/index.html',
+    'image-extractor/script.js',
+    'md3-theme-creator/',
+    'md3-theme-creator/index.html',
+    'md3-theme-creator/script.js',
+    'contrast-checker/',
+    'contrast-checker/index.html',
+    'contrast-checker/script.js',
+    'matrix/',
+    'matrix/index.html',
+    'matrix/script.js',
+    'css-gradient-generator/',
+    'css-gradient-generator/index.html',
+    'css-gradient-generator/script.js'
 ];
 
 // Install Event - cache core assets

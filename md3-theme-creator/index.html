@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD3 Theme Builder - Limorina Color Checker</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/images/amelia_logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <meta name="description" content="Generate a complete Material Design 3 theme system from your primary source color. View system tokens and export production-ready code.">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#624E9A">
+    <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
+</head>
+<body class="light-mode">
+    <header class="top-app-bar"></header>
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <main class="md-main">
+        <div class="card card-elevated">
+            <h2 class="headline-medium mb-m" data-i18n="theme_builder">MD3 Theme Builder</h2>
+            <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="theme_desc">Your complete Material Design 3 theme generated from the primary color.</p>
+            
+            <div id="theme-colors-grid" class="palette-grid mt-m" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
+                <!-- JS generated -->
+            </div>
+        </div>
+
+        <!-- Export Hub Section -->
+        <div class="card card-elevated mt-l">
+            <h2 class="headline-medium mb-m" data-i18n="export_hub">Export Hub</h2>
+            <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="export_desc">Export color data and CSS/SCSS/Android/SwiftUI code templates.</p>
+             <md-tabs id="export-tabs">
+                 <md-primary-tab class="export-tab-btn" active data-tab="css">CSS</md-primary-tab>
+                 <md-primary-tab class="export-tab-btn" data-tab="tailwind">Tailwind</md-primary-tab>
+                 <md-primary-tab class="export-tab-btn" data-tab="scss">SCSS</md-primary-tab>
+                 <md-primary-tab class="export-tab-btn" data-tab="android">Android</md-primary-tab>
+                 <md-primary-tab class="export-tab-btn" data-tab="swiftui">SwiftUI</md-primary-tab>
+                 <md-primary-tab class="export-tab-btn" data-tab="json">JSON</md-primary-tab>
+                 <md-primary-tab class="export-tab-btn" data-tab="python">Python</md-primary-tab>
+             </md-tabs>
+             <div class="modal-body" style="overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; margin-top: 16px;">
+                 <div id="export-content-css" class="tab-content active">
+                     <pre><code id="code-css"></code></pre>
+                 </div>
+                 <div id="export-content-tailwind" class="tab-content" style="display:none;">
+                     <pre><code id="code-tailwind"></code></pre>
+                 </div>
+                 <div id="export-content-scss" class="tab-content" style="display:none;">
+                     <pre><code id="code-scss"></code></pre>
+                 </div>
+                 <div id="export-content-android" class="tab-content" style="display:none;">
+                     <pre><code id="code-android"></code></pre>
+                 </div>
+                 <div id="export-content-swiftui" class="tab-content" style="display:none;">
+                     <pre><code id="code-swiftui"></code></pre>
+                 </div>
+                 <div id="export-content-json" class="tab-content" style="display:none;">
+                     <pre><code id="code-json"></code></pre>
+                 </div>
+                 <div id="export-content-python" class="tab-content" style="display:none;">
+                     <pre><code id="code-python"></code></pre>
+                 </div>
+             </div>
+             <div class="modal-footer" style="padding-top: var(--spacing-m); display: flex; justify-content: flex-end;">
+                 <md-filled-button id="copy-export">
+                     <md-icon slot="icon">content_copy</md-icon>
+                     <span data-i18n="copy_active">Copy Active Template</span>
+                 </md-filled-button>
+             </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script type="module" src="https://esm.sh/@material/web/all.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Contrast Checker - Limorina Color Checker</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/images/amelia_logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <meta name="description" content="Check the contrast ratio between foreground and background colors in real-time. Compliant with WCAG 2.1 guidelines and W3C APCA scoring.">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#624E9A">
+    <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
+</head>
+<body class="light-mode">
+    <header class="top-app-bar"></header>
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <main class="md-main">
+        <div class="card card-outlined" style="max-width: 800px; margin: 0 auto;">
+            <h2 class="headline-medium mb-m" data-i18n="custom_contrast">Custom Contrast Checker</h2>
+            
+            <div class="custom-contrast-box large">
+                <div class="contrast-input-group">
+                    <label class="label-large mb-s" data-i18n="background_color">Background</label>
+                    <div class="hex-wrapper">
+                        <span>#</span>
+                        <input type="text" id="custom-bg-hex" value="FFFFFF" maxlength="6">
+                        <input type="color" id="custom-bg-picker" value="#FFFFFF">
+                    </div>
+                </div>
+                <button id="swap-contrast-btn" class="contrast-icon" title="Swap Colors" style="border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; padding: 0; color: var(--md-sys-color-on-surface);">
+                    <span class="material-symbols-rounded" style="font-size: 32px;">sync_alt</span>
+                </button>
+                <div class="contrast-input-group">
+                    <label class="label-large mb-s" data-i18n="foreground_color">Foreground</label>
+                    <div class="hex-wrapper">
+                        <span>#</span>
+                        <input type="text" id="custom-fg-hex" value="000000" maxlength="6">
+                        <input type="color" id="custom-fg-picker" value="#000000">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="custom-contrast-preview" class="custom-contrast-preview large">The quick brown fox jumps over the lazy dog.</div>
+            
+            <div class="wcag-result-card mt-l">
+                <div class="custom-contrast-results">
+                    <div class="contrast-result-col">
+                        <span class="title-medium mb-0">WCAG Contrast Ratio</span>
+                        <span id="custom-contrast-ratio" class="headline-large" style="color: var(--md-sys-color-primary);">21.0:1</span>
+                        <div id="custom-contrast-badges" class="badges large-badges mt-m"></div>
+                    </div>
+                    <div class="contrast-result-divider"></div>
+                    <div class="contrast-result-col">
+                        <span class="title-medium mb-0" data-i18n="apca_contrast">APCA Contrast</span>
+                        <span id="custom-apca-ratio" class="headline-large" style="color: var(--md-sys-color-primary);">106</span>
+                        <div class="mt-m"><span id="custom-apca-badge" class="badge large-badge">Pass</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="https://esm.sh/@material/web/all.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

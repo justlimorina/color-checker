@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator & Palette - Limorina Color Checker</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/images/amelia_logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <meta name="description" content="Advanced color checker and palette generator. HCT variations, color harmonies, WCAG/APCA analysis, and design system code export.">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#624E9A">
+    <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
+    <style>
+        /* Tab Styles for the Generator Workstation */
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: var(--spacing-l);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            padding-bottom: 8px;
+            overflow-x: auto;
+        }
+        .tab-trigger {
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            border-radius: 100px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .tab-trigger:hover {
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+        }
+        .tab-trigger.active {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            font-weight: 700;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header class="top-app-bar"></header>
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <main class="md-main">
+        <!-- Subpage Header & Tabs -->
+        <div class="tabs-header">
+            <button class="tab-trigger active" data-tab="tab-single" data-i18n="input_color">Input Color</button>
+            <button class="tab-trigger" data-tab="tab-smart" data-i18n="smart_palette">Smart Palette</button>
+            <button class="tab-trigger" data-tab="tab-history" data-i18n="color_history">Color History</button>
+        </div>
+
+        <!-- TAB 1: SINGLE COLOR CHECKER -->
+        <div id="tab-single" class="tab-panel active">
+            <div class="home-grid">
+                <!-- Column 1: Primary Control -->
+                <section class="column" id="col-primary">
+                    <div class="card card-filled">
+                        <h2 class="title-medium" data-i18n="input_color">Input Color</h2>
+
+                        <div class="main-preview-container">
+                            <div id="color-preview" class="main-preview" style="cursor: pointer;" title="Click to copy HEX">
+                                <div class="copy-overlay">
+                                    <span class="material-symbols-rounded">content_copy</span>
+                                    <span data-i18n="copy_hex">Copy HEX</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mixer-section mt-m">
+                            <!-- HEX Input -->
+                            <div class="input-group">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <label for="hex-input" class="label-large mb-0">HEX</label>
+                                    <span id="color-name-display" class="label-small" style="color: var(--md-sys-color-on-primary-container); background: var(--md-sys-color-primary-container); padding: 2px 8px; border-radius: 12px; font-weight: 700;"></span>
+                                </div>
+                                <div class="hex-wrapper" style="margin-top: 0;">
+                                    <span>#</span>
+                                    <input type="text" id="hex-input" value="624E9A" maxlength="6" style="width: calc(100% - 76px);">
+                                    <button id="eyedropper-btn" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                        <span class="material-symbols-rounded" style="font-size: 20px;">colorize</span>
+                                    </button>
+                                    <input type="color" id="color-picker" value="#624E9A">
+                                </div>
+                            </div>
+
+                            <!-- RGB Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny">R</label>
+                                    <input type="number" id="rgb-r" min="0" max="255" value="103">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">G</label>
+                                    <input type="number" id="rgb-g" min="0" max="255" value="80">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">B</label>
+                                    <input type="number" id="rgb-b" min="0" max="255" value="164">
+                                </div>
+                            </div>
+
+                            <!-- HSL Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny">H</label>
+                                    <input type="number" id="hsl-h" min="0" max="360" value="256">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">S</label>
+                                    <input type="number" id="hsl-s" min="0" max="100" value="34">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny">L</label>
+                                    <input type="number" id="hsl-l" min="0" max="100" value="48">
+                                </div>
+                            </div>
+                            
+                            <!-- OKLCH Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Lightness">OK-L</label>
+                                    <input type="number" id="oklch-l" min="0" max="100" value="48" step="1">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Chroma">OK-C</label>
+                                    <input type="number" id="oklch-c" min="0" max="0.4" value="0.15" step="0.01">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Hue">OK-H</label>
+                                    <input type="number" id="oklch-h" min="0" max="360" value="256" step="1">
+                                </div>
+                            </div>
+                            
+                            <!-- Oklab Mixer -->
+                            <div class="mixer-row mt-s">
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="Lightness">OK-L*</label>
+                                    <input type="number" id="lab-l" min="0" max="100" value="48" step="1">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="A axis (Green to Red)">OK-A</label>
+                                    <input type="number" id="lab-a" min="-0.4" max="0.4" value="0" step="0.01">
+                                </div>
+                                <div class="mixer-item">
+                                    <label class="label-tiny" title="B axis (Blue to Yellow)">OK-B</label>
+                                    <input type="number" id="lab-b" min="-0.4" max="0.4" value="0" step="0.01">
+                                </div>
+                            </div>
+
+                            <md-filled-button id="save-to-palette" class="full-width mt-m">
+                                <md-icon slot="icon">bookmark_add</md-icon>
+                                <span data-i18n="save_btn">Save to Palette</span>
+                            </md-filled-button>
+                            <md-filled-tonal-button id="export-image-btn" class="full-width mt-s">
+                                <md-icon slot="icon">image</md-icon>
+                                <span data-i18n="export_btn_image">Export Palette Image</span>
+                            </md-filled-tonal-button>
+                        </div>
+                    </div>
+
+                    <!-- Saved Palette -->
+                    <div class="card card-tonal mt-l">
+                        <h2 class="title-medium" data-i18n="saved_palette">Saved Palette</h2>
+                        <div id="palette-colors" class="palette-grid">
+                            <!-- Saved colors -->
+                        </div>
+                    </div>
+
+                    <!-- Color Codes List -->
+                    <div class="card card-outlined mt-l">
+                        <div class="code-outputs">
+                            <div class="code-card">
+                                <span class="label-small">RGB</span>
+                                <div class="code-row">
+                                    <code id="rgb-output">rgb(103, 80, 164)</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="rgb-output">
+                                        <span class="material-symbols-rounded">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="code-card">
+                                <span class="label-small">HSL</span>
+                                <div class="code-row">
+                                    <code id="hsl-output">256°, 34%, 48%</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="hsl-output">
+                                        <span class="material-symbols-rounded">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="code-card">
+                                <span class="label-small">OKLCH</span>
+                                <div class="code-row">
+                                    <code id="oklch-output">48%, 0.15, 256</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="oklch-output">
+                                        <span class="material-symbols-rounded">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="code-card">
+                                <span class="label-small">CMYK</span>
+                                <div class="code-row">
+                                    <code id="cmyk-output">37, 51, 0, 36</code>
+                                    <button class="icon-button small-btn copy-btn" data-target="cmyk-output">
+                                        <span class="material-symbols-rounded">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Column 2: Analysis & Samples -->
+                <section class="column" id="col-analysis">
+                    <!-- Accessibility -->
+                    <div class="card card-elevated">
+                        <h2 class="title-medium" data-i18n="accessibility">WCAG Accessibility</h2>
+                        <div class="wcag-grid">
+                            <div class="wcag-item">
+                                <span class="label-small" data-i18n="on_white">On White</span>
+                                <div class="wcag-result-row">
+                                    <span id="wcag-white-ratio" class="title-medium mb-0">21.0:1</span>
+                                    <div id="wcag-white-badges" class="badges"></div>
+                                </div>
+                                <div class="apca-result-row mt-xs">
+                                    <span class="label-small" data-i18n="apca_lc">Lc Score:</span>
+                                    <span id="apca-white-ratio" class="apca-ratio-val">106</span>
+                                    <span id="apca-white-badge" class="badge">Pass</span>
+                                </div>
+                            </div>
+                            <div class="wcag-item">
+                                <span class="label-small" data-i18n="on_black">On Black</span>
+                                <div class="wcag-result-row">
+                                    <span id="wcag-black-ratio" class="title-medium mb-0">1.0:1</span>
+                                    <div id="wcag-black-badges" class="badges"></div>
+                                </div>
+                                <div class="apca-result-row mt-xs">
+                                    <span class="label-small" data-i18n="apca_lc">Lc Score:</span>
+                                    <span id="apca-black-ratio" class="apca-ratio-val">0</span>
+                                    <span id="apca-black-badge" class="badge">Fail</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="best-text-section mt-m">
+                            <h3 class="label-large" data-i18n="best_text">Best Text Color</h3>
+                            <div id="best-text-color" class="best-text-preview">Aa Bb Cc 123</div>
+                        </div>
+                    </div>
+
+                    <!-- UI Prototype -->
+                    <div id="ui-samples-card" class="card card-outlined mt-l" style="transition: all 0.3s ease;">
+                        <div class="toggle-container mb-m">
+                            <h2 class="title-medium mb-0" data-i18n="ui_prototype">UI Prototype Preview</h2>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="label-small" data-i18n="advanced_preview">Advanced</span>
+                                <md-switch id="advanced-preview-toggle"></md-switch>
+                            </div>
+                        </div>
+                        
+                        <div class="ui-samples-grid">
+                            <div class="ui-sample-item">
+                                <button class="sample-btn-primary" data-i18n-target="btn_solid">Solid Button</button>
+                            </div>
+                            <div class="ui-sample-item">
+                                <button class="sample-btn-outline" data-i18n-target="btn_outline">Outline Button</button>
+                            </div>
+                            <div class="ui-sample-item">
+                                <div class="sample-card">
+                                    <span class="label-small" data-i18n="sample_card">Surface Card</span>
+                                    <div class="sample-dot"></div>
+                                </div>
+                            </div>
+                            <div class="ui-sample-item">
+                                <div class="sample-text" data-i18n="sample_text_heading">Sample Text Heading</div>
+                                <p class="label-small" data-i18n="sample_text_secondary">Secondary description text</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color Blindness simulator -->
+                    <div class="card card-tonal mt-l">
+                        <h2 class="title-medium" data-i18n="cb_simulator">Color Blindness Simulator</h2>
+                        <div class="cb-grid" id="cb-simulator">
+                            <!-- JS Generated -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Column 3: Discovery -->
+                <section class="column" id="col-discovery">
+                    <div class="card card-outlined">
+                        <h2 class="title-medium" data-i18n="variations">Tints, Shades & Tones</h2>
+
+                        <div class="variation-section">
+                            <h3 class="label-large" data-i18n="tints">Tints</h3>
+                            <div class="color-row-scroll" id="tints-row"></div>
+                        </div>
+
+                        <div class="variation-section">
+                            <h3 class="label-large" data-i18n="shades">Shades</h3>
+                            <div class="color-row-scroll" id="shades-row"></div>
+                        </div>
+
+                        <div class="variation-section">
+                            <h3 class="label-large" data-i18n="tones">Tones</h3>
+                            <div class="color-row-scroll" id="tones-row"></div>
+                        </div>
+                    </div>
+
+                    <div class="card card-elevated mt-l">
+                        <h2 class="title-medium" data-i18n="harmonies">Color Harmonies</h2>
+                        <div id="harmonies-container"></div>
+                    </div>
+                </section>
+            </div>
+
+
+
+        <!-- TAB 2: SMART PALETTE -->
+        <div id="tab-smart" class="tab-panel">
+            <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
+                <h2 class="headline-medium mb-m" data-i18n="palette_generator">Smart Palette Generator</h2>
+                <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="generator_desc">Automatically generate harmonious 5-color palettes and lock your favorite colors.</p>
+                <div class="generator-controls-row mb-l">
+                     <div class="input-group">
+                          <label class="label-large mb-s" data-i18n="rule_label" style="display:block; margin-bottom: 8px;">Color Harmony Rule</label>
+                          <md-outlined-select id="generator-rule-select">
+                              <md-select-option value="complementary" selected>
+                                  <div slot="headline" data-i18n="rule_complementary">Complementary</div>
+                              </md-select-option>
+                              <md-select-option value="analogous">
+                                  <div slot="headline" data-i18n="rule_analogous">Analogous</div>
+                              </md-select-option>
+                              <md-select-option value="triadic">
+                                  <div slot="headline" data-i18n="rule_triadic">Triadic</div>
+                              </md-select-option>
+                              <md-select-option value="tetradic">
+                                  <div slot="headline" data-i18n="rule_tetradic">Tetradic</div>
+                              </md-select-option>
+                              <md-select-option value="monochromatic">
+                                  <div slot="headline" data-i18n="rule_monochromatic">Monochromatic</div>
+                              </md-select-option>
+                              <md-select-option value="freestyle">
+                                  <div slot="headline" data-i18n="rule_freestyle">Freestyle / Random</div>
+                              </md-select-option>
+                          </md-outlined-select>
+                     </div>
+                 </div>
+
+                <div id="generator-swatches" class="generator-swatches-container mb-l">
+                    <!-- 5 Color Swatches generated via JS -->
+                </div>
+
+                <div class="generator-actions">
+                     <md-filled-button id="generator-generate-btn">
+                         <md-icon slot="icon">auto_awesome</md-icon>
+                         <span data-i18n="btn_generate">Generate Palette</span>
+                     </md-filled-button>
+                     <md-filled-tonal-button id="generator-save-btn">
+                         <md-icon slot="icon">bookmark_add</md-icon>
+                         <span data-i18n="btn_save_palette">Save Palette</span>
+                     </md-filled-tonal-button>
+                 </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: COLOR HISTORY -->
+        <div id="tab-history" class="tab-panel">
+            <div class="card card-elevated">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-m); margin-bottom: var(--spacing-l);">
+                    <div>
+                        <h2 class="headline-medium mb-s" data-i18n="color_history" style="margin-bottom: 4px;">Color History</h2>
+                        <p class="body-medium mb-0" style="opacity: 0.8;" data-i18n="color_history_desc">Your recently generated colors are automatically saved here.</p>
+                    </div>
+                    <md-filled-tonal-button id="clear-history-btn">
+                        <md-icon slot="icon">delete_sweep</md-icon>
+                        <span data-i18n="clear_history">Clear History</span>
+                    </md-filled-tonal-button>
+                </div>
+                <div id="history-container" class="history-page-grid">
+                    <!-- JS Generated -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script type="module" src="https://esm.sh/@material/web/all.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

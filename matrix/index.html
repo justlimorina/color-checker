@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrast Matrix - Limorina Color Checker</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/images/amelia_logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <meta name="description" content="Cross-compare WCAG and APCA contrast ratios of all saved colors in your palette. A critical validation grid for accessible design systems.">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#624E9A">
+    <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
+</head>
+<body class="light-mode">
+    <header class="top-app-bar"></header>
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <main class="md-main">
+        <div class="card card-elevated">
+            <h2 class="headline-medium mb-m" data-i18n="contrast_matrix">Contrast Matrix</h2>
+            
+            <div class="matrix-header-row mb-l">
+                <p class="body-medium mb-0" style="opacity: 0.8;" data-i18n="matrix_desc">Compare all saved colors against each other.</p>
+                <div class="segmented-control" id="matrix-mode-toggle">
+                    <button class="segment-btn active" data-mode="wcag" data-i18n="matrix_wcag">WCAG 2.1</button>
+                    <button class="segment-btn" data-mode="apca" data-i18n="matrix_apca">APCA (Lc)</button>
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table id="matrix-table" class="matrix-table">
+                    <!-- JS Generated -->
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="https://esm.sh/@material/web/all.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>
