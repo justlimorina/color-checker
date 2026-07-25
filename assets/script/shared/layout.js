@@ -148,20 +148,6 @@ export function initLayout(activePageKey) {
             <span class="md-top-app-bar__title" data-i18n="app_title">Color Checker</span>
         </div>
         <div class="md-top-app-bar__trailing">
-            <md-icon-button id="help-btn-mobile" title="User Guide">
-                <md-icon>help</md-icon>
-            </md-icon-button>
-            <div class="dropdown">
-                <md-icon-button id="lang-btn-mobile" title="Switch Language">
-                    <md-icon>language</md-icon>
-                </md-icon-button>
-                <div id="lang-menu-mobile" class="dropdown-menu">
-                    <button class="menu-item" data-lang="en">English</button>
-                    <button class="menu-item" data-lang="vi">Tiếng Việt</button>
-                    <button class="menu-item" data-lang="ja">日本語</button>
-                    <button class="menu-item" data-lang="zh">简体中文</button>
-                </div>
-            </div>
             <md-icon-button id="theme-toggle-mobile" aria-label="Toggle dark mode">
                 <md-icon>dark_mode</md-icon>
             </md-icon-button>
@@ -453,8 +439,6 @@ function setupLayoutEvents() {
     
     const langBtn = document.getElementById('lang-btn');
     const langMenu = document.getElementById('lang-menu');
-    const langBtnMobile = document.getElementById('lang-btn-mobile');
-    const langMenuMobile = document.getElementById('lang-menu-mobile');
 
     // Sidebar Drawer Toggles
     if (toggleBtn && drawer && scrim) {
@@ -480,8 +464,8 @@ function setupLayoutEvents() {
     if (closeBtn) closeBtn.addEventListener('click', hideSidebar);
     if (scrim) scrim.addEventListener('click', hideSidebar);
 
-    // Help Modal Triggers (Desktop Rail, Mobile Top Bar, Mobile Drawer)
-    document.querySelectorAll('#help-btn, #help-btn-mobile, #help-btn-drawer').forEach(btn => {
+    // Help Modal Triggers (Desktop Rail, Mobile Drawer)
+    document.querySelectorAll('#help-btn, #help-btn-drawer').forEach(btn => {
         btn.addEventListener('click', () => {
             hideSidebar();
             if (helpModal) helpModal.classList.add('show');
@@ -510,25 +494,20 @@ function setupLayoutEvents() {
     if (themeToggle) themeToggle.addEventListener('click', onThemeClick);
     if (themeToggleMobile) themeToggleMobile.addEventListener('click', onThemeClick);
 
-    // Language Dropdown Toggles (Desktop & Mobile Top Bar)
+    // Language Dropdown Toggles (Desktop Nav Rail)
     const toggleDropdown = (menu, e) => {
         e.stopPropagation();
         const isShow = menu.classList.contains('show');
         if (langMenu) langMenu.classList.remove('show');
-        if (langMenuMobile) langMenuMobile.classList.remove('show');
         if (!isShow) menu.classList.add('show');
     };
 
     if (langBtn && langMenu) {
         langBtn.addEventListener('click', (e) => toggleDropdown(langMenu, e));
     }
-    if (langBtnMobile && langMenuMobile) {
-        langBtnMobile.addEventListener('click', (e) => toggleDropdown(langMenuMobile, e));
-    }
 
     document.addEventListener('click', () => {
         if (langMenu) langMenu.classList.remove('show');
-        if (langMenuMobile) langMenuMobile.classList.remove('show');
     });
 
     // Language Selection (All elements with data-lang)
