@@ -225,10 +225,23 @@ function attachEvents() {
     dom.exportImageBtn.addEventListener('click', exportPaletteImage);
 
     // Advanced UI Preview switch
-    dom.advancedPreviewToggle.addEventListener('change', (e) => {
-        state.advancedPreviewActive = e.target.checked;
-        updateUISamples();
-    });
+    if (dom.advancedPreviewToggle) {
+        const toggleAdvancedPreview = (e) => {
+            const target = dom.advancedPreviewToggle;
+            if (target.selected !== undefined) {
+                state.advancedPreviewActive = Boolean(target.selected);
+            } else if (target.checked !== undefined) {
+                state.advancedPreviewActive = Boolean(target.checked);
+            } else {
+                state.advancedPreviewActive = !state.advancedPreviewActive;
+                target.toggleAttribute('selected', state.advancedPreviewActive);
+            }
+            updateUISamples();
+        };
+
+        dom.advancedPreviewToggle.addEventListener('change', toggleAdvancedPreview);
+        dom.advancedPreviewToggle.addEventListener('click', toggleAdvancedPreview);
+    }
 
     // Copy action buttons on HEX displays
     dom.preview.addEventListener('click', () => {
@@ -330,6 +343,17 @@ function updateDynamicTheme() {
 }
 
 function updateUISamples() {
+    if (dom.advancedPreviewToggle) {
+        if ('selected' in dom.advancedPreviewToggle) {
+            dom.advancedPreviewToggle.selected = Boolean(state.advancedPreviewActive);
+        } else if ('checked' in dom.advancedPreviewToggle) {
+            dom.advancedPreviewToggle.checked = Boolean(state.advancedPreviewActive);
+        }
+    }
+
+    const rgb = state.rgb || ColorUtils.hexToRgb(state.hex || '624E9A');
+    const isLight = ColorUtils.getLuminance(rgb.r, rgb.g, rgb.b) > 0.5;
+
     if (state.advancedPreviewActive) {
         // Toggle advanced M3 layout states
         const container = dom.uiSamplesCard;
@@ -358,7 +382,7 @@ function updateUISamples() {
         }
         document.querySelectorAll('.sample-btn-primary').forEach(el => {
             el.style.backgroundColor = `#${state.hex}`;
-            el.style.color = ColorUtils.getLuminance(state.rgb.r, state.rgb.g, state.rgb.b) > 0.5 ? 'black' : 'white';
+            el.style.color = isLight ? 'black' : 'white';
         });
         document.querySelectorAll('.sample-btn-outline').forEach(el => {
             el.style.borderColor = `#${state.hex}`;
