@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,12 @@
     <link rel="icon" type="image/svg+xml" href="assets/images/amelia_logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="assets/styles.css">
-    <meta name="description" content="Advanced Material Design 3 color analysis suite. Featuring HCT palettes, color blindness simulation, custom contrast check, and UI prototyping.">
+    <meta name="description"
+        content="Advanced Material Design 3 color analysis suite. Featuring HCT palettes, color blindness simulation, custom contrast check, and UI prototyping.">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#624E9A">
     <link rel="apple-touch-icon" href="assets/images/amelia_logo.svg">
@@ -24,6 +28,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .landing-hero::before {
             content: '';
             position: absolute;
@@ -38,10 +43,12 @@
             pointer-events: none;
             z-index: 0;
         }
-        .landing-hero > * {
+
+        .landing-hero>* {
             position: relative;
             z-index: 1;
         }
+
         .landing-eyebrow {
             font-size: 0.875rem;
             font-weight: 500;
@@ -50,6 +57,7 @@
             color: var(--md-sys-color-primary);
             margin-bottom: 16px;
         }
+
         .landing-title {
             font-family: 'Roboto Slab', serif;
             font-size: 3.5rem;
@@ -59,12 +67,14 @@
             font-weight: 400;
             max-width: 720px;
         }
+
         .landing-title span {
             background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-tertiary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
         .landing-desc {
             max-width: 600px;
             font-size: 1.125rem;
@@ -72,6 +82,7 @@
             color: var(--md-sys-color-on-surface-variant);
             margin-bottom: 40px;
         }
+
         .landing-actions {
             display: flex;
             gap: 12px;
@@ -85,27 +96,32 @@
             max-width: 1120px;
             margin: 0 auto;
         }
+
         .features-section-header {
             text-align: center;
             margin-bottom: 48px;
         }
+
         .features-section-header h2 {
             font-size: 1.75rem;
             font-weight: 400;
             color: var(--md-sys-color-on-surface);
             margin-bottom: 8px;
         }
+
         .features-section-header p {
             color: var(--md-sys-color-on-surface-variant);
             font-size: 1rem;
             max-width: 480px;
             margin: 0 auto;
         }
+
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 16px;
         }
+
         .feature-card {
             display: flex;
             flex-direction: row;
@@ -120,10 +136,12 @@
             text-decoration: none;
             color: inherit;
         }
+
         .feature-card:hover {
             background: var(--md-sys-color-surface-container);
             border-color: var(--md-sys-color-outline-variant);
         }
+
         .feature-icon-wrapper {
             display: flex;
             align-items: center;
@@ -135,15 +153,18 @@
             background: var(--md-sys-color-primary-container);
             color: var(--md-sys-color-on-primary-container);
         }
+
         .feature-card-content {
             flex: 1;
         }
+
         .feature-card-content h3 {
             font-size: 1rem;
             font-weight: 500;
             color: var(--md-sys-color-on-surface);
             margin-bottom: 4px;
         }
+
         .feature-card-content p {
             color: var(--md-sys-color-on-surface-variant);
             font-size: 0.875rem;
@@ -165,19 +186,22 @@
             .landing-hero {
                 padding: 48px 20px 40px;
             }
+
             .landing-title {
                 font-size: 2rem;
             }
+
             .landing-desc {
                 font-size: 1rem;
             }
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
     <script>
-        (function() {
+        (function () {
             var theme = localStorage.getItem('theme_mode');
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark-mode', 'dark-theme');
@@ -187,6 +211,7 @@
         })();
     </script>
 </head>
+
 <body>
     <header class="top-app-bar"></header>
     <aside id="sidebar" class="sidebar"></aside>
@@ -195,8 +220,10 @@
         <!-- Hero Section -->
         <section class="landing-hero">
             <p class="landing-eyebrow">Limorina Color Checker</p>
-            <h1 class="landing-title" data-i18n="landing_hero_title">Build beautiful palettes with <span>Material You</span></h1>
-            <p class="landing-desc" data-i18n="landing_hero_desc">Create harmonized palettes, check WCAG/APCA contrast, extract colors from images, and build Material Design 3 themes — all in one place.</p>
+            <h1 class="landing-title" data-i18n="landing_hero_title">Build beautiful palettes with <span>Material
+                    You</span></h1>
+            <p class="landing-desc" data-i18n="landing_hero_desc">Create harmonized palettes, check WCAG/APCA contrast,
+                extract colors from images, and build Material Design 3 themes — all in one place.</p>
             <div class="landing-actions">
                 <md-filled-button onclick="window.location.href='./generator/'">
                     <md-icon slot="icon">auto_awesome</md-icon>
@@ -222,7 +249,8 @@
                     </div>
                     <div class="feature-card-content">
                         <h3 data-i18n="smart_palette">Generator & Palette</h3>
-                        <p data-i18n="generator_desc">Generate harmonized color palettes with smart rules and lock your favorites.</p>
+                        <p data-i18n="generator_desc">Generate harmonized color palettes with smart rules and lock your
+                            favorites.</p>
                     </div>
                 </a>
 
@@ -280,7 +308,8 @@
 
         <!-- Footer -->
         <footer class="landing-footer-text">
-            <span data-i18n="landing_footer">Limorina Color Checker · Built with Material Design 3</span>
+            <span data-i18n="landing_footer">&copy; 2024 – <span id="year"></span> Limorina. Released under the <a
+                    href="https://opensource.org/license/mit/" target="_blank">MIT License</a>.</span>
         </footer>
     </main>
 
@@ -292,4 +321,5 @@
         });
     </script>
 </body>
+
 </html>
