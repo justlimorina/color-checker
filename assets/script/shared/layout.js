@@ -148,6 +148,20 @@ export function initLayout(activePageKey) {
             <span class="md-top-app-bar__title" data-i18n="app_title">Color Checker</span>
         </div>
         <div class="md-top-app-bar__trailing">
+            <md-icon-button id="help-btn-mobile" title="User Guide">
+                <md-icon>help</md-icon>
+            </md-icon-button>
+            <div class="dropdown">
+                <md-icon-button id="lang-btn-mobile" title="Switch Language">
+                    <md-icon>language</md-icon>
+                </md-icon-button>
+                <div id="lang-menu-mobile" class="dropdown-menu">
+                    <button class="menu-item" data-lang="en">English</button>
+                    <button class="menu-item" data-lang="vi">Tiếng Việt</button>
+                    <button class="menu-item" data-lang="ja">日本語</button>
+                    <button class="menu-item" data-lang="zh">简体中文</button>
+                </div>
+            </div>
             <md-icon-button id="theme-toggle-mobile" aria-label="Toggle dark mode">
                 <md-icon>dark_mode</md-icon>
             </md-icon-button>
@@ -209,6 +223,26 @@ export function initLayout(activePageKey) {
                     <div slot="headline" data-i18n="gradient_generator">Gradient Generator</div>
                 </md-list-item>
             </md-list>
+
+            <md-divider style="margin: 16px 0;"></md-divider>
+
+            <p class="md-nav-drawer__headline" data-i18n="settings">Settings & Support</p>
+            <md-list class="md-nav-drawer__list">
+                <md-list-item id="help-btn-drawer" class="md-nav-item" style="cursor: pointer;">
+                    <md-icon slot="start">help</md-icon>
+                    <div slot="headline" data-i18n="help_title">User Guide</div>
+                </md-list-item>
+            </md-list>
+
+            <div style="padding: 12px 16px 24px;">
+                <p style="font-size: 12px; font-weight: 500; color: var(--md-sys-color-on-surface-variant); margin-bottom: 8px;" data-i18n="language">Language</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="menu-item drawer-lang-btn" data-lang="en" style="border-radius: 8px; width: auto; padding: 6px 14px;">English</button>
+                    <button class="menu-item drawer-lang-btn" data-lang="vi" style="border-radius: 8px; width: auto; padding: 6px 14px;">Tiếng Việt</button>
+                    <button class="menu-item drawer-lang-btn" data-lang="ja" style="border-radius: 8px; width: auto; padding: 6px 14px;">日本語</button>
+                    <button class="menu-item drawer-lang-btn" data-lang="zh" style="border-radius: 8px; width: auto; padding: 6px 14px;">简体中文</button>
+                </div>
+            </div>
         </div>
     `;
 
@@ -284,7 +318,7 @@ export function initLayout(activePageKey) {
 }
 
 export function applyColorTheme(hex) {
-    const isDark = document.body.classList.contains('dark-mode') || document.body.classList.contains('dark-theme');
+    const isDark = document.body.classList.contains('dark-mode') || document.body.classList.contains('dark-theme') || document.documentElement.classList.contains('dark-mode') || document.documentElement.classList.contains('dark-theme');
     const sourceArgb = argbFromHex(`#${hex}`);
     const theme = themeFromSourceColor(sourceArgb);
     const scheme = isDark ? theme.schemes.dark : theme.schemes.light;
@@ -395,8 +429,8 @@ export function setLanguage(lang) {
         }
     });
 
-    // Update active class in language dropdown
-    document.querySelectorAll('#lang-menu .menu-item').forEach(item => {
+    // Update active class in language dropdown items and drawer language buttons
+    document.querySelectorAll('[data-lang]').forEach(item => {
         item.classList.toggle('active', item.getAttribute('data-lang') === lang);
     });
 
@@ -410,7 +444,6 @@ function setupLayoutEvents() {
     const toggleBtn = document.getElementById('sidebar-toggle-btn');
     const closeBtn = document.getElementById('closeDrawerBtn');
     
-    const helpBtn = document.getElementById('help-btn');
     const helpModal = document.getElementById('help-modal');
     const closeHelp = document.getElementById('close-help');
     const closeHelpConfirm = document.getElementById('close-help-confirm');
@@ -420,6 +453,8 @@ function setupLayoutEvents() {
     
     const langBtn = document.getElementById('lang-btn');
     const langMenu = document.getElementById('lang-menu');
+    const langBtnMobile = document.getElementById('lang-btn-mobile');
+    const langMenuMobile = document.getElementById('lang-menu-mobile');
 
     // Sidebar Drawer Toggles
     if (toggleBtn && drawer && scrim) {
@@ -445,12 +480,14 @@ function setupLayoutEvents() {
     if (closeBtn) closeBtn.addEventListener('click', hideSidebar);
     if (scrim) scrim.addEventListener('click', hideSidebar);
 
-    // Help Modal
-    if (helpBtn && helpModal) {
-        helpBtn.addEventListener('click', () => {
-            helpModal.classList.add('show');
+    // Help Modal Triggers (Desktop Rail, Mobile Top Bar, Mobile Drawer)
+    document.querySelectorAll('#help-btn, #help-btn-mobile, #help-btn-drawer').forEach(btn => {
+        btn.addEventListener('click', () => {
+            hideSidebar();
+            if (helpModal) helpModal.classList.add('show');
         });
-    }
+    });
+
     const hideHelp = () => {
         if (helpModal) helpModal.classList.remove('show');
     };
@@ -473,22 +510,33 @@ function setupLayoutEvents() {
     if (themeToggle) themeToggle.addEventListener('click', onThemeClick);
     if (themeToggleMobile) themeToggleMobile.addEventListener('click', onThemeClick);
 
-    // Language Dropdown
+    // Language Dropdown Toggles (Desktop & Mobile Top Bar)
+    const toggleDropdown = (menu, e) => {
+        e.stopPropagation();
+        const isShow = menu.classList.contains('show');
+        if (langMenu) langMenu.classList.remove('show');
+        if (langMenuMobile) langMenuMobile.classList.remove('show');
+        if (!isShow) menu.classList.add('show');
+    };
+
     if (langBtn && langMenu) {
-        langBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            langMenu.classList.toggle('show');
-        });
-
-        document.addEventListener('click', () => {
-            langMenu.classList.remove('show');
-        });
-
-        langMenu.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const lang = item.getAttribute('data-lang');
-                setLanguage(lang);
-            });
-        });
+        langBtn.addEventListener('click', (e) => toggleDropdown(langMenu, e));
     }
+    if (langBtnMobile && langMenuMobile) {
+        langBtnMobile.addEventListener('click', (e) => toggleDropdown(langMenuMobile, e));
+    }
+
+    document.addEventListener('click', () => {
+        if (langMenu) langMenu.classList.remove('show');
+        if (langMenuMobile) langMenuMobile.classList.remove('show');
+    });
+
+    // Language Selection (All elements with data-lang)
+    document.querySelectorAll('[data-lang]').forEach(item => {
+        item.addEventListener('click', () => {
+            const lang = item.getAttribute('data-lang');
+            setLanguage(lang);
+            hideSidebar();
+        });
+    });
 }
