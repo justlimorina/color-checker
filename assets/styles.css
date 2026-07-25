@@ -78,7 +78,7 @@
     --transition-standard: 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.dark-mode {
+:root.dark-mode, :root.dark-theme {
     /* Brand-derived fallback; applyColorTheme() refreshes the full scheme at runtime. */
     --md-sys-color-primary: #CFBDFF;
     --md-sys-color-on-primary: #361F6C;

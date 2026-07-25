@@ -13,8 +13,18 @@
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#624E9A">
     <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme_mode');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode', 'dark-theme');
+            } else if (theme === 'light') {
+                document.documentElement.classList.add('light-mode');
+            }
+        })();
+    </script>
 </head>
-<body class="light-mode">
+<body>
     <header class="top-app-bar"></header>
     <aside id="sidebar" class="sidebar"></aside>
 

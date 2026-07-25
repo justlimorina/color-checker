@@ -359,6 +359,9 @@ export function applyColorTheme(hex) {
 function applyTheme(theme) {
     layoutState.theme = theme;
     localStorage.setItem('theme_mode', theme);
+    document.documentElement.classList.toggle('dark-theme', theme === 'dark');
+    document.documentElement.classList.toggle('dark-mode', theme === 'dark');
+    document.documentElement.classList.toggle('light-mode', theme === 'light');
     document.body.classList.toggle('dark-theme', theme === 'dark');
     document.body.classList.toggle('dark-mode', theme === 'dark');
     document.body.classList.toggle('light-mode', theme === 'light');

@@ -176,8 +176,18 @@
             }
         }
     </style>
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme_mode');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode', 'dark-theme');
+            } else if (theme === 'light') {
+                document.documentElement.classList.add('light-mode');
+            }
+        })();
+    </script>
 </head>
-<body class="light-mode">
+<body>
     <header class="top-app-bar"></header>
     <aside id="sidebar" class="sidebar"></aside>
 
