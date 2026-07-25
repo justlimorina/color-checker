@@ -198,7 +198,7 @@ export const translations = {
         landing_hero_desc: "Create harmonized palettes, check WCAG/APCA contrast, extract colors from images, and build Material Design 3 themes in seconds.",
         landing_start_btn: "Start the Generator",
         landing_features_title: "Explore Our Utilities",
-        landing_footer: "Limorina Color Checker - Built with Material Design 3",
+        landing_footer: "&copy; 2024 – {year} Limorina. Released under the <a href=\"https://opensource.org/license/mit/\" target=\"_blank\">MIT License</a>.",
         settings: "Settings & Support",
         language: "Language"
     },
@@ -318,7 +318,7 @@ export const translations = {
         landing_hero_desc: "Tạo bảng màu hài hòa, kiểm tra độ tương phản WCAG/APCA, trích xuất màu từ ảnh và sinh theme Material Design 3 trong nháy mắt.",
         landing_start_btn: "Bắt đầu tạo màu",
         landing_features_title: "Khám phá các tiện ích",
-        landing_footer: "Limorina Color Checker - Thiết kế theo chuẩn Material Design 3",
+        landing_footer: "&copy; 2024 – {year} Limorina. Phát hành theo <a href=\"https://opensource.org/license/mit/\" target=\"_blank\">Giấy phép MIT</a>.",
         settings: "Cài đặt & Hỗ trợ",
         language: "Ngôn ngữ"
     },
@@ -438,7 +438,7 @@ export const translations = {
         landing_hero_desc: "調和したパレットの作成、WCAG/APCAコントラストの確認、画像からの色抽出、Material Design 3テーマの構築を数秒で。",
         landing_start_btn: "ジェネレーターを開始",
         landing_features_title: "ユーティリティを探索",
-        landing_footer: "Limorina Color Checker - Material Design 3で構築",
+        landing_footer: "&copy; 2024 – {year} Limorina. <a href=\"https://opensource.org/license/mit/\" target=\"_blank\">MITライセンス</a>のもとで公開されています。",
         settings: "設定とサポート",
         language: "言語"
     },
@@ -558,7 +558,7 @@ export const translations = {
         landing_hero_desc: "在数秒内创建协调的调色板、检查 WCAG/APCA 对比度、从图像中提取颜色以及构建 Material Design 3 主题。",
         landing_start_btn: "启动生成器",
         landing_features_title: "探索我们的实用工具",
-        landing_footer: "Limorina Color Checker - 基于 Material Design 3 构建",
+        landing_footer: "&copy; 2024 – {year} Limorina. 基于 <a href=\"https://opensource.org/license/mit/\" target=\"_blank\">MIT 许可证</a> 发布。",
         settings: "设置与支持",
         language: "语言"
     }

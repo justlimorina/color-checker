@@ -400,11 +400,27 @@ function applyTheme(theme) {
 export function setLanguage(lang) {
     layoutState.currentLang = lang;
     localStorage.setItem('app_lang', lang);
+    const currentYear = new Date().getFullYear();
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
-            el.textContent = translations[lang][key];
+            let text = translations[lang][key];
+            if (text.includes('{year}')) {
+                text = text.replace(/{year}/g, currentYear);
+            }
+            el.textContent = text;
+        }
+    });
+
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang] && translations[lang][key]) {
+            let html = translations[lang][key];
+            if (html.includes('{year}')) {
+                html = html.replace(/{year}/g, currentYear);
+            }
+            el.innerHTML = html;
         }
     });
 
@@ -413,6 +429,10 @@ export function setLanguage(lang) {
         if (translations[lang] && translations[lang][key]) {
             el.textContent = translations[lang][key];
         }
+    });
+
+    document.querySelectorAll('#year').forEach(el => {
+        el.textContent = currentYear;
     });
 
     // Update active class in language dropdown items and drawer language buttons
