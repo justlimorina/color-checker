@@ -232,13 +232,7 @@ export function initLayout(activePageKey) {
         </div>
     `;
 
-    // 6. Clean up old monolithic headers & sidebars if present
-    const oldHeader = document.querySelector('header.top-app-bar');
-    if (oldHeader && oldHeader !== header) oldHeader.remove();
-    const oldSidebar = document.querySelector('aside.sidebar');
-    if (oldSidebar) oldSidebar.remove();
-
-    // 7. Inject Help Modal if not present
+    // 6. Inject Help Modal if not present
     if (!document.getElementById('help-modal')) {
         const modal = document.createElement('div');
         modal.id = 'help-modal';

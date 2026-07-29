@@ -66,11 +66,13 @@ export const ColorUtils = {
         };
     },
 
+    linearizeSRGB(v) {
+        v /= 255;
+        return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    },
+
     getLuminance(r, g, b) {
-        const a = [r, g, b].map(v => {
-            v /= 255;
-            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-        });
+        const a = [r, g, b].map(v => ColorUtils.linearizeSRGB(v));
         return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
     },
 
@@ -81,10 +83,9 @@ export const ColorUtils = {
     },
 
     rgbToOklabRaw(r, g, b) {
-        r /= 255; g /= 255; b /= 255;
-        const linR = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
-        const linG = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
-        const linB = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+        const linR = ColorUtils.linearizeSRGB(r);
+        const linG = ColorUtils.linearizeSRGB(g);
+        const linB = ColorUtils.linearizeSRGB(b);
 
         const l = 0.4122214708 * linR + 0.5363325363 * linG + 0.0514459929 * linB;
         const m = 0.2119034982 * linR + 0.6806995451 * linG + 0.1073969566 * linB;

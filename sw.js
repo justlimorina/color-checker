@@ -1,4 +1,4 @@
-const CACHE_NAME = 'color-checker-v8';
+const CACHE_NAME = 'color-checker-v9';
 const ASSETS = [
     './',
     'index.html',
@@ -28,7 +28,11 @@ const ASSETS = [
     'matrix/script.js',
     'css-gradient-generator/',
     'css-gradient-generator/index.html',
-    'css-gradient-generator/script.js'
+    'css-gradient-generator/script.js',
+    'https://esm.sh/@material/web/all.js',
+    'https://esm.sh/@material/material-color-utilities',
+    'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap',
+    'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
 ];
 
 // Install Event - cache core assets
