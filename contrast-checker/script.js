@@ -1,6 +1,6 @@
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
-import { initLayout, layoutState } from '../assets/script/shared/layout.js';
+import { initLayout } from '../assets/script/shared/layout.js';
 
 const state = {
     bg: "FFFFFF",

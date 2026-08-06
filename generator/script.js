@@ -81,6 +81,7 @@ function bindDOM() {
         paletteContainer: document.getElementById('palette-colors'),
         saveBtn: document.getElementById('save-to-palette'),
         exportImageBtn: document.getElementById('export-image-btn'),
+        shareBtn: document.getElementById('share-link-btn'),
         cbSimulator: document.getElementById('cb-simulator'),
         toast: document.getElementById('toast'),
         advancedPreviewToggle: document.getElementById('advanced-preview-toggle'),
@@ -223,6 +224,11 @@ function attachEvents() {
 
     // Export Palette Image
     dom.exportImageBtn.addEventListener('click', exportPaletteImage);
+
+    // Share Link (URL parse on load already handles ?color=)
+    dom.shareBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(`${location.origin}${location.pathname}?color=${state.hex}`).then(showToast);
+    });
 
     // Advanced UI Preview switch
     if (dom.advancedPreviewToggle) {
