@@ -46,15 +46,21 @@
 
                     <div class="input-group mb-m">
                         <label class="label-large mb-s" data-i18n="gradient_colors">Colors</label>
-                        <div class="mixer-row">
-                            <div class="hex-wrapper" style="flex:1; margin-top:0;">
+                        <div class="mixer-row" style="gap: 12px;">
+                            <div class="hex-wrapper" style="flex:1; margin-top:0; position: relative;">
                                 <span>#</span>
-                                <input type="text" id="grad-hex-1" value="624E9A" maxlength="6" style="width: calc(100% - 40px);">
+                                <input type="text" id="grad-hex-1" value="624E9A" maxlength="6" style="width: calc(100% - 76px);">
+                                <button id="eyedropper-btn-1" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                    <span class="material-symbols-rounded" style="font-size: 20px;">colorize</span>
+                                </button>
                                 <input type="color" id="grad-color-1" value="#624E9A">
                             </div>
-                            <div class="hex-wrapper" style="flex:1; margin-top:0;">
+                            <div class="hex-wrapper" style="flex:1; margin-top:0; position: relative;">
                                 <span>#</span>
-                                <input type="text" id="grad-hex-2" value="EADDFF" maxlength="6" style="width: calc(100% - 40px);">
+                                <input type="text" id="grad-hex-2" value="EADDFF" maxlength="6" style="width: calc(100% - 76px);">
+                                <button id="eyedropper-btn-2" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                    <span class="material-symbols-rounded" style="font-size: 20px;">colorize</span>
+                                </button>
                                 <input type="color" id="grad-color-2" value="#EADDFF">
                             </div>
                         </div>

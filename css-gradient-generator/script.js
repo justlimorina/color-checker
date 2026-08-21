@@ -47,13 +47,20 @@ function bindDOM() {
         preview: document.getElementById('gradient-preview'),
         code: document.getElementById('gradient-code'),
         copyBtn: document.getElementById('copy-gradient-btn'),
-        toast: document.getElementById('toast')
+        toast: document.getElementById('toast'),
+        eyedropperBtn1: document.getElementById('eyedropper-btn-1'),
+        eyedropperBtn2: document.getElementById('eyedropper-btn-2')
     });
 
     if (dom.hex1) dom.hex1.value = state.hex1;
     if (dom.hex2) dom.hex2.value = state.hex2;
     if (dom.color1) dom.color1.value = `#${state.hex1}`;
     if (dom.color2) dom.color2.value = `#${state.hex2}`;
+
+    if ('EyeDropper' in window) {
+        if (dom.eyedropperBtn1) dom.eyedropperBtn1.style.display = 'flex';
+        if (dom.eyedropperBtn2) dom.eyedropperBtn2.style.display = 'flex';
+    }
 }
 
 function attachEvents() {
@@ -100,6 +107,26 @@ function attachEvents() {
 
     onColorInput(dom.hex1, dom.color1, 'hex1');
     onColorInput(dom.hex2, dom.color2, 'hex2');
+
+    const setupEyeDropper = (btnEl, inputEl, pickerEl, stateKey) => {
+        if (!btnEl) return;
+        btnEl.addEventListener('click', async () => {
+            try {
+                const eyeDropper = new EyeDropper();
+                const result = await eyeDropper.open();
+                const hex = result.sRGBHex.replace('#', '').toUpperCase();
+                state[stateKey] = hex;
+                inputEl.value = hex;
+                pickerEl.value = `#${hex}`;
+                updateGradient();
+            } catch (err) {
+                console.warn('EyeDropper cancelled:', err);
+            }
+        });
+    };
+
+    setupEyeDropper(dom.eyedropperBtn1, dom.hex1, dom.color1, 'hex1');
+    setupEyeDropper(dom.eyedropperBtn2, dom.hex2, dom.color2, 'hex2');
 
     if (dom.copyBtn) {
         dom.copyBtn.addEventListener('click', () => {
