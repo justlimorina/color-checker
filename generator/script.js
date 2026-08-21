@@ -129,7 +129,7 @@ function bindDOM() {
     });
 
     // Handle Eyedropper visibility
-    if ('EyeDropper' in window && dom.eyedropperBtn) {
+    if (dom.eyedropperBtn) {
         dom.eyedropperBtn.style.display = 'flex';
     }
 }
@@ -175,12 +175,23 @@ function attachEvents() {
     // EyeDropper
     if (dom.eyedropperBtn) {
         dom.eyedropperBtn.addEventListener('click', async () => {
+            if (!('EyeDropper' in window)) {
+                if (dom.toast) {
+                    dom.toast.textContent = translations[layoutState.currentLang]?.eyedropper_not_supported || 'EyeDropper is not supported in this browser.';
+                    dom.toast.classList.add('show');
+                    setTimeout(() => dom.toast.classList.remove('show'), 3000);
+                }
+                return;
+            }
             try {
                 const eyeDropper = new EyeDropper();
                 const result = await eyeDropper.open();
-                updateColorState(result.sRGBHex.replace('#', ''));
+                if (result && result.sRGBHex) {
+                    updateColorState(result.sRGBHex.replace('#', ''));
+                }
             } catch (err) {
-                console.warn("EyeDropper cancelled or failed:", err);
+                if (err && err.name === 'AbortError') return;
+                console.warn("EyeDropper failed:", err);
             }
         });
     }

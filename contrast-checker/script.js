@@ -76,17 +76,30 @@ function attachEvents() {
 
     const setupEyeDropper = (btnEl, inputEl, pickerEl, stateKey) => {
         if (!btnEl) return;
+        btnEl.style.display = 'flex';
         btnEl.addEventListener('click', async () => {
+            if (!('EyeDropper' in window)) {
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.textContent = translations[layoutState.currentLang]?.eyedropper_not_supported || 'EyeDropper is not supported in this browser.';
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                }
+                return;
+            }
             try {
                 const eyeDropper = new EyeDropper();
                 const result = await eyeDropper.open();
-                const hex = result.sRGBHex.replace('#', '').toUpperCase();
-                state[stateKey] = hex;
-                inputEl.value = hex;
-                pickerEl.value = `#${hex}`;
-                updateCustomContrast();
+                if (result && result.sRGBHex) {
+                    const hex = result.sRGBHex.replace('#', '').toUpperCase();
+                    state[stateKey] = hex;
+                    inputEl.value = hex;
+                    pickerEl.value = `#${hex}`;
+                    updateCustomContrast();
+                }
             } catch (err) {
-                console.warn('EyeDropper cancelled:', err);
+                if (err && err.name === 'AbortError') return;
+                console.warn('EyeDropper failed:', err);
             }
         });
     };
