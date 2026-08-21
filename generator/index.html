@@ -362,8 +362,8 @@
             <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--md-sys-color-outline-variant);">
                     <div>
-                        <h2 class="headline-medium mb-xs" data-i18n="project_manager">Project Palettes</h2>
-                        <p class="body-medium mb-0" style="opacity: 0.8;">Organize custom color palettes, export GPL/JSON formats, and share links.</p>
+                        <h2 class="headline-medium mb-xs" data-i18n="project_manager">Bảng màu cho dự án</h2>
+                        <p class="body-medium mb-0" style="opacity: 0.8;" data-i18n="project_manager_desc">Organize custom color palettes, export GPL/JSON formats, and share links.</p>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                         <md-filled-button id="new-proj-btn">
@@ -382,7 +382,7 @@
                 </div>
 
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
-                    <label for="project-select" class="title-medium mb-0" style="min-width: 130px;">Active Project:</label>
+                    <label for="project-select" class="title-medium mb-0" style="min-width: 130px;" data-i18n="active_project">Active Project:</label>
                     <select id="project-select" style="flex: 1; min-width: 220px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--md-sys-color-outline); background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); font-family: inherit; font-size: 1rem; outline: none; cursor: pointer;">
                         <!-- JS Populated -->
                     </select>
@@ -390,7 +390,7 @@
 
                 <!-- Palette Colors Grid -->
                 <div class="card card-tonal mb-l" style="padding: 20px;">
-                    <h3 class="title-medium mb-m">Palette Swatches</h3>
+                    <h3 class="title-medium mb-m" data-i18n="palette_swatches">Palette Swatches</h3>
                     <div id="palette-colors" class="palette-grid" style="grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 12px;">
                         <!-- Saved colors -->
                     </div>
