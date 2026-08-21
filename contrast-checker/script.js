@@ -35,13 +35,20 @@ function bindDOM() {
         ratio: document.getElementById('custom-contrast-ratio'),
         badges: document.getElementById('custom-contrast-badges'),
         apcaRatio: document.getElementById('custom-apca-ratio'),
-        apcaBadge: document.getElementById('custom-apca-badge')
+        apcaBadge: document.getElementById('custom-apca-badge'),
+        bgEyeDropper: document.getElementById('bg-eyedropper-btn'),
+        fgEyeDropper: document.getElementById('fg-eyedropper-btn')
     });
 
     if (dom.bgHex) dom.bgHex.value = state.bg;
     if (dom.fgHex) dom.fgHex.value = state.fg;
     if (dom.bgPicker) dom.bgPicker.value = `#${state.bg}`;
     if (dom.fgPicker) dom.fgPicker.value = `#${state.fg}`;
+
+    if ('EyeDropper' in window) {
+        if (dom.bgEyeDropper) dom.bgEyeDropper.style.display = 'flex';
+        if (dom.fgEyeDropper) dom.fgEyeDropper.style.display = 'flex';
+    }
 }
 
 function attachEvents() {
@@ -66,6 +73,26 @@ function attachEvents() {
 
     onInput(dom.bgHex, dom.bgPicker, 'bg');
     onInput(dom.fgHex, dom.fgPicker, 'fg');
+
+    const setupEyeDropper = (btnEl, inputEl, pickerEl, stateKey) => {
+        if (!btnEl) return;
+        btnEl.addEventListener('click', async () => {
+            try {
+                const eyeDropper = new EyeDropper();
+                const result = await eyeDropper.open();
+                const hex = result.sRGBHex.replace('#', '').toUpperCase();
+                state[stateKey] = hex;
+                inputEl.value = hex;
+                pickerEl.value = `#${hex}`;
+                updateCustomContrast();
+            } catch (err) {
+                console.warn('EyeDropper cancelled:', err);
+            }
+        });
+    };
+
+    setupEyeDropper(dom.bgEyeDropper, dom.bgHex, dom.bgPicker, 'bg');
+    setupEyeDropper(dom.fgEyeDropper, dom.fgHex, dom.fgPicker, 'fg');
 
     dom.swapBtn.addEventListener('click', () => {
         const temp = state.bg;

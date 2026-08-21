@@ -1,6 +1,7 @@
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
 import { initLayout, layoutState, applyColorTheme } from '../assets/script/shared/layout.js';
+import { ProjectManager } from '../assets/script/projects.js';
 
 // --- Page Specific State ---
 const state = {
@@ -111,7 +112,20 @@ function bindDOM() {
 
         // History
         historyContainer: document.getElementById('history-container'),
-        clearHistoryBtn: document.getElementById('clear-history-btn')
+        clearHistoryBtn: document.getElementById('clear-history-btn'),
+
+        // Project Manager DOM
+        projectSelect: document.getElementById('project-select'),
+        newProjBtn: document.getElementById('new-proj-btn'),
+        renameProjBtn: document.getElementById('rename-proj-btn'),
+        deleteProjBtn: document.getElementById('delete-proj-btn'),
+        sharePaletteBtn: document.getElementById('share-palette-btn'),
+        exportGplBtn: document.getElementById('export-gpl-btn'),
+        exportJsonBtn: document.getElementById('export-json-btn'),
+        importJsonTrigger: document.getElementById('import-json-trigger'),
+        importJsonFile: document.getElementById('import-json-file'),
+        quickPaletteContainer: document.getElementById('quick-palette-colors'),
+        goToProjectsBtn: document.getElementById('go-to-projects-tab')
     });
 
     // Handle Eyedropper visibility
@@ -229,6 +243,103 @@ function attachEvents() {
     dom.shareBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(`${location.origin}${location.pathname}?color=${state.hex}`).then(showToast);
     });
+
+    // Project Manager Event Listeners
+    if (dom.projectSelect) {
+        dom.projectSelect.addEventListener('change', (e) => {
+            ProjectManager.setActiveProjectId(e.target.value);
+            renderSavedPalette();
+        });
+    }
+
+    if (dom.newProjBtn) {
+        dom.newProjBtn.addEventListener('click', () => {
+            const name = prompt(translations[layoutState.currentLang].new_project || 'New Project Name:', 'Project Palette');
+            if (name !== null) {
+                ProjectManager.createProject(name);
+                renderSavedPalette();
+            }
+        });
+    }
+
+    if (dom.renameProjBtn) {
+        dom.renameProjBtn.addEventListener('click', () => {
+            const active = ProjectManager.getActiveProject();
+            if (!active) return;
+            const newName = prompt(translations[layoutState.currentLang].rename_project || 'Rename Project:', active.name);
+            if (newName && newName.trim()) {
+                ProjectManager.renameProject(active.id, newName);
+                renderSavedPalette();
+            }
+        });
+    }
+
+    if (dom.deleteProjBtn) {
+        dom.deleteProjBtn.addEventListener('click', () => {
+            const active = ProjectManager.getActiveProject();
+            if (!active) return;
+            if (confirm(`Delete project "${active.name}"?`)) {
+                if (!ProjectManager.deleteProject(active.id)) {
+                    alert('Cannot delete the last remaining project.');
+                } else {
+                    renderSavedPalette();
+                }
+            }
+        });
+    }
+
+    if (dom.sharePaletteBtn) {
+        dom.sharePaletteBtn.addEventListener('click', () => {
+            const active = ProjectManager.getActiveProject();
+            if (!active || active.colors.length === 0) {
+                alert(translations[layoutState.currentLang].no_colors_saved || 'No colors in palette.');
+                return;
+            }
+            const url = ProjectManager.getSharedURL(active.colors);
+            navigator.clipboard.writeText(url).then(showToast);
+        });
+    }
+
+    if (dom.exportGplBtn) {
+        dom.exportGplBtn.addEventListener('click', () => {
+            ProjectManager.exportProjectGPL(ProjectManager.getActiveProjectId());
+        });
+    }
+
+    if (dom.exportJsonBtn) {
+        dom.exportJsonBtn.addEventListener('click', () => {
+            ProjectManager.exportProjectsJSON();
+        });
+    }
+
+    if (dom.importJsonTrigger && dom.importJsonFile) {
+        dom.importJsonTrigger.addEventListener('click', () => dom.importJsonFile.click());
+        dom.importJsonFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const res = ProjectManager.importProjectsJSON(evt.target.result);
+                if (res.success) {
+                    showToast();
+                    renderSavedPalette();
+                } else {
+                    alert('Import failed: ' + res.message);
+                }
+                dom.importJsonFile.value = '';
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    if (dom.goToProjectsBtn) {
+        dom.goToProjectsBtn.addEventListener('click', () => {
+            const trigger = document.querySelector('.tab-trigger[data-tab="tab-projects"]');
+            if (trigger) trigger.click();
+        });
+    }
+
+    window.addEventListener('projectschange', renderSavedPalette);
 
     // Advanced UI Preview switch
     if (dom.advancedPreviewToggle) {
@@ -435,8 +546,27 @@ function updateBestText() {
 }
 
 function renderSavedPalette() {
-    dom.paletteContainer.innerHTML = '';
-    state.palette.forEach((hex, index) => {
+    if (!dom.paletteContainer) return;
+    
+    // Update Project Dropdown
+    if (dom.projectSelect) {
+        const projects = ProjectManager.getProjects();
+        const activeId = ProjectManager.getActiveProjectId();
+        dom.projectSelect.innerHTML = '';
+        projects.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = `${p.name} (${p.colors.length})`;
+            if (p.id === activeId) opt.selected = true;
+            dom.projectSelect.appendChild(opt);
+        });
+    }
+
+    const activeProject = ProjectManager.getActiveProject();
+    const colors = activeProject ? activeProject.colors : [];
+    state.palette = colors;
+
+    const createPaletteItem = (hex, index) => {
         const item = document.createElement('div');
         item.className = 'palette-item';
         item.style.backgroundColor = `#${hex}`;
@@ -455,22 +585,35 @@ function renderSavedPalette() {
         };
 
         item.appendChild(removeBtn);
-        dom.paletteContainer.appendChild(item);
-    });
+        return item;
+    };
+
+    if (dom.paletteContainer) {
+        dom.paletteContainer.innerHTML = '';
+        colors.forEach((hex, index) => {
+            dom.paletteContainer.appendChild(createPaletteItem(hex, index));
+        });
+    }
+
+    if (dom.quickPaletteContainer) {
+        dom.quickPaletteContainer.innerHTML = '';
+        colors.forEach((hex, index) => {
+            dom.quickPaletteContainer.appendChild(createPaletteItem(hex, index));
+        });
+    }
 }
 
 function saveToPalette() {
-    if (state.palette.includes(state.hex)) return;
-    if (state.palette.length >= state.MAX_PALETTE_SIZE) state.palette.shift();
-    state.palette.push(state.hex);
-    localStorage.setItem('saved_palette', JSON.stringify(state.palette));
-    renderSavedPalette();
-    showToast();
+    if (ProjectManager.addColorToActiveProject(state.hex)) {
+        renderSavedPalette();
+        showToast();
+    } else {
+        showToast();
+    }
 }
 
 function removeFromPalette(index) {
-    state.palette.splice(index, 1);
-    localStorage.setItem('saved_palette', JSON.stringify(state.palette));
+    ProjectManager.removeColorFromActiveProject(index);
     renderSavedPalette();
 }
 

@@ -74,6 +74,7 @@
         <!-- Subpage Header & Tabs -->
         <div class="tabs-header">
             <button class="tab-trigger active" data-tab="tab-single" data-i18n="input_color">Input Color</button>
+            <button class="tab-trigger" data-tab="tab-projects" data-i18n="project_manager">Project Palettes</button>
             <button class="tab-trigger" data-tab="tab-smart" data-i18n="smart_palette">Smart Palette</button>
             <button class="tab-trigger" data-tab="tab-history" data-i18n="color_history">Color History</button>
         </div>
@@ -191,11 +192,17 @@
                         </div>
                     </div>
 
-                    <!-- Saved Palette -->
+                    <!-- Quick Saved Palette Swatches -->
                     <div class="card card-tonal mt-l">
-                        <h2 class="title-medium" data-i18n="saved_palette">Saved Palette</h2>
-                        <div id="palette-colors" class="palette-grid">
-                            <!-- Saved colors -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h2 class="title-medium mb-0" data-i18n="saved_palette">Saved Palette</h2>
+                            <md-text-button id="go-to-projects-tab" style="--md-text-button-label-text-size: 0.85rem;">
+                                <span data-i18n="project_manager">Manage Projects</span>
+                                <md-icon slot="icon">arrow_forward</md-icon>
+                            </md-text-button>
+                        </div>
+                        <div id="quick-palette-colors" class="palette-grid">
+                            <!-- Quick saved swatches -->
                         </div>
                     </div>
 
@@ -347,7 +354,69 @@
             </div>
         </div>
 
-        <!-- TAB 2: SMART PALETTE -->
+        <!-- TAB 2: PROJECT PALETTES MANAGER -->
+        <div id="tab-projects" class="tab-panel">
+            <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                    <div>
+                        <h2 class="headline-medium mb-xs" data-i18n="project_manager">Project Palettes</h2>
+                        <p class="body-medium mb-0" style="opacity: 0.8;">Organize custom color palettes, export GPL/JSON formats, and share links.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <md-filled-button id="new-proj-btn">
+                            <md-icon slot="icon">add</md-icon>
+                            <span data-i18n="new_project">New Project</span>
+                        </md-filled-button>
+                        <md-outlined-button id="rename-proj-btn">
+                            <md-icon slot="icon">edit</md-icon>
+                            <span data-i18n="rename_project">Rename</span>
+                        </md-outlined-button>
+                        <md-outlined-button id="delete-proj-btn">
+                            <md-icon slot="icon">delete</md-icon>
+                            <span data-i18n="delete_project">Delete</span>
+                        </md-outlined-button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
+                    <label for="project-select" class="title-medium mb-0" style="min-width: 130px;">Active Project:</label>
+                    <select id="project-select" style="flex: 1; min-width: 220px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--md-sys-color-outline); background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); font-family: inherit; font-size: 1rem; outline: none; cursor: pointer;">
+                        <!-- JS Populated -->
+                    </select>
+                </div>
+
+                <!-- Palette Colors Grid -->
+                <div class="card card-tonal mb-l" style="padding: 20px;">
+                    <h3 class="title-medium mb-m">Palette Swatches</h3>
+                    <div id="palette-colors" class="palette-grid" style="grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 12px;">
+                        <!-- Saved colors -->
+                    </div>
+                </div>
+
+                <!-- Actions Bar -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <md-outlined-button id="share-palette-btn" style="flex: 1; min-width: 160px;">
+                        <md-icon slot="icon">share</md-icon>
+                        <span data-i18n="share_palette_link">Share Palette Link</span>
+                    </md-outlined-button>
+                    <md-outlined-button id="export-gpl-btn" style="flex: 1; min-width: 160px;">
+                        <md-icon slot="icon">download</md-icon>
+                        <span data-i18n="export_gpl">Export GPL Palette</span>
+                    </md-outlined-button>
+                    <md-outlined-button id="export-json-btn" style="flex: 1; min-width: 160px;">
+                        <md-icon slot="icon">upload_file</md-icon>
+                        <span data-i18n="export_json">Export JSON</span>
+                    </md-outlined-button>
+                    <md-outlined-button id="import-json-trigger" style="flex: 1; min-width: 160px;">
+                        <md-icon slot="icon">file_open</md-icon>
+                        <span data-i18n="import_json">Import JSON</span>
+                    </md-outlined-button>
+                    <input type="file" id="import-json-file" accept=".json" style="display: none;">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SMART PALETTE -->
         <div id="tab-smart" class="tab-panel">
             <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
                 <h2 class="headline-medium mb-m" data-i18n="palette_generator">Smart Palette Generator</h2>

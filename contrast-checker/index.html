@@ -34,7 +34,10 @@
                     <label class="label-large mb-s" data-i18n="background_color">Background</label>
                     <div class="hex-wrapper">
                         <span>#</span>
-                        <input type="text" id="custom-bg-hex" value="FFFFFF" maxlength="6">
+                        <input type="text" id="custom-bg-hex" value="FFFFFF" maxlength="6" style="width: calc(100% - 76px);">
+                        <button id="bg-eyedropper-btn" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
+                            <span class="material-symbols-rounded" style="font-size: 20px;">colorize</span>
+                        </button>
                         <input type="color" id="custom-bg-picker" value="#FFFFFF">
                     </div>
                 </div>
@@ -45,7 +48,10 @@
                     <label class="label-large mb-s" data-i18n="foreground_color">Foreground</label>
                     <div class="hex-wrapper">
                         <span>#</span>
-                        <input type="text" id="custom-fg-hex" value="000000" maxlength="6">
+                        <input type="text" id="custom-fg-hex" value="000000" maxlength="6" style="width: calc(100% - 76px);">
+                        <button id="fg-eyedropper-btn" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
+                            <span class="material-symbols-rounded" style="font-size: 20px;">colorize</span>
+                        </button>
                         <input type="color" id="custom-fg-picker" value="#000000">
                     </div>
                 </div>

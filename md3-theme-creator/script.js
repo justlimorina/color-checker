@@ -192,6 +192,24 @@ function updateExportContent() {
     const twCodeEl = document.getElementById('code-tailwind');
     if (twCodeEl) twCodeEl.textContent = tailwind;
 
+    // Figma Tokens (W3C Standard)
+    const figmaTokens = {
+        color: {
+            brand: {
+                base: { "$value": `#${state.hex}`, "$type": "color" },
+                tints: Object.fromEntries(tints.map((h, i) => [`tint-${(i+1)*10}`, { "$value": `#${h}`, "$type": "color" }])),
+                shades: Object.fromEntries(shades.map((h, i) => [`shade-${(i+1)*10}`, { "$value": `#${h}`, "$type": "color" }]))
+            }
+        }
+    };
+    const figmaCodeEl = document.getElementById('code-figma');
+    if (figmaCodeEl) figmaCodeEl.textContent = JSON.stringify(figmaTokens, null, 2);
+
+    // Flutter / Dart
+    let flutter = `import 'package:flutter/material.dart';\n\nclass AppTheme {\n  static const Color primarySeed = Color(0xFF${state.hex});\n\n  static final ColorScheme lightColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.light,\n  );\n\n  static final ColorScheme darkColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.dark,\n  );\n}\n`;
+    const flutterCodeEl = document.getElementById('code-flutter');
+    if (flutterCodeEl) flutterCodeEl.textContent = flutter;
+
     // SCSS Map
     let scss = `$brand-color: (\n  base: #${state.hex},\n  tints: (\n`;
     tints.forEach((h, i) => scss += `    ${(i+1)*10}: #${h},\n`);

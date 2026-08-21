@@ -1,9 +1,9 @@
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
 import { initLayout, layoutState } from '../assets/script/shared/layout.js';
+import { ProjectManager } from '../assets/script/projects.js';
 
 const state = {
-    palette: JSON.parse(localStorage.getItem('saved_palette') || '[]'),
     matrixMode: "wcag"
 };
 
@@ -18,10 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderContrastMatrix();
 });
 
-// Watch language changes from shared layout
-window.addEventListener('langchange', () => {
-    renderContrastMatrix();
-});
+// Watch language & projects changes
+window.addEventListener('langchange', renderContrastMatrix);
+window.addEventListener('projectschange', renderContrastMatrix);
 
 function bindDOM() {
     Object.assign(dom, {
@@ -47,13 +46,16 @@ function attachEvents() {
 function renderContrastMatrix() {
     if (!dom.table) return;
     
-    if (state.palette.length === 0) {
+    const activeProj = ProjectManager.getActiveProject();
+    const palette = activeProj ? activeProj.colors : [];
+
+    if (palette.length === 0) {
         const noColorsLabel = translations[layoutState.currentLang].no_colors_saved || "No colors in palette. Save some colors first!";
         dom.table.innerHTML = `<tr><td style="padding: 32px; text-align: center;">${noColorsLabel}</td></tr>`;
         return;
     }
     
-    const colors = ['FFFFFF', '000000', ...state.palette];
+    const colors = ['FFFFFF', '000000', ...palette];
     
     let html = '<tr><th>Bg \\ Fg</th>';
     colors.forEach(c => {
