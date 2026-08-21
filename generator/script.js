@@ -343,21 +343,10 @@ function attachEvents() {
 
     // Advanced UI Preview switch
     if (dom.advancedPreviewToggle) {
-        const toggleAdvancedPreview = (e) => {
-            const target = dom.advancedPreviewToggle;
-            if (target.selected !== undefined) {
-                state.advancedPreviewActive = Boolean(target.selected);
-            } else if (target.checked !== undefined) {
-                state.advancedPreviewActive = Boolean(target.checked);
-            } else {
-                state.advancedPreviewActive = !state.advancedPreviewActive;
-                target.toggleAttribute('selected', state.advancedPreviewActive);
-            }
+        dom.advancedPreviewToggle.addEventListener('change', (e) => {
+            state.advancedPreviewActive = Boolean(e.target.selected !== undefined ? e.target.selected : e.target.checked);
             updateUISamples();
-        };
-
-        dom.advancedPreviewToggle.addEventListener('change', toggleAdvancedPreview);
-        dom.advancedPreviewToggle.addEventListener('click', toggleAdvancedPreview);
+        });
     }
 
     // Copy action buttons on HEX displays
@@ -471,43 +460,75 @@ function updateUISamples() {
     const rgb = state.rgb || ColorUtils.hexToRgb(state.hex || '624E9A');
     const isLight = ColorUtils.getLuminance(rgb.r, rgb.g, rgb.b) > 0.5;
 
+    const container = dom.uiSamplesCard;
+
     if (state.advancedPreviewActive) {
-        // Toggle advanced M3 layout states
-        const container = dom.uiSamplesCard;
+        // Advanced M3 Design Tokens System
         if (container) {
-            container.style.backgroundColor = 'var(--md-sys-color-surface-container)';
+            container.style.backgroundColor = 'var(--md-sys-color-surface-container-low)';
+            container.style.borderColor = 'var(--md-sys-color-outline-variant)';
         }
         document.querySelectorAll('.sample-btn-primary').forEach(el => {
             el.style.backgroundColor = 'var(--md-sys-color-primary)';
             el.style.color = 'var(--md-sys-color-on-primary)';
+            el.style.borderColor = 'transparent';
+        });
+        document.querySelectorAll('.sample-btn-tonal').forEach(el => {
+            el.style.backgroundColor = 'var(--md-sys-color-primary-container)';
+            el.style.color = 'var(--md-sys-color-on-primary-container)';
+            el.style.borderColor = 'transparent';
         });
         document.querySelectorAll('.sample-btn-outline').forEach(el => {
             el.style.borderColor = 'var(--md-sys-color-outline)';
             el.style.color = 'var(--md-sys-color-primary)';
             el.style.backgroundColor = 'transparent';
         });
+        document.querySelectorAll('.sample-card').forEach(el => {
+            el.style.backgroundColor = 'var(--md-sys-color-secondary-container)';
+            el.style.color = 'var(--md-sys-color-on-secondary-container)';
+            el.style.borderColor = 'var(--md-sys-color-outline-variant)';
+        });
         document.querySelectorAll('.sample-dot').forEach(el => {
-            el.style.backgroundColor = 'var(--md-sys-color-tertiary)';
+            el.style.backgroundColor = 'var(--md-sys-color-primary)';
         });
         document.querySelectorAll('.sample-text').forEach(el => {
-            el.style.color = 'var(--md-sys-color-on-surface)';
+            el.style.color = 'var(--md-sys-color-primary)';
+        });
+        document.querySelectorAll('.sample-subtext').forEach(el => {
+            el.style.color = 'var(--md-sys-color-on-surface-variant)';
         });
     } else {
-        const container = dom.uiSamplesCard;
+        // Direct Input Color Mode
         if (container) {
             container.style.backgroundColor = '';
+            container.style.borderColor = '';
         }
+        const tonalBg = `#${ColorUtils.mixColors(rgb, isLight ? {r:0,g:0,b:0} : {r:255,g:255,b:255}, 15)}`;
+        const cardBg = `#${ColorUtils.mixColors(rgb, isLight ? {r:255,g:255,b:255} : {r:0,g:0,b:0}, 90)}`;
+
         document.querySelectorAll('.sample-btn-primary').forEach(el => {
             el.style.backgroundColor = `#${state.hex}`;
-            el.style.color = isLight ? 'black' : 'white';
+            el.style.color = isLight ? '#000000' : '#FFFFFF';
+            el.style.borderColor = 'transparent';
+        });
+        document.querySelectorAll('.sample-btn-tonal').forEach(el => {
+            el.style.backgroundColor = tonalBg;
+            el.style.color = `#${state.hex}`;
+            el.style.borderColor = 'transparent';
         });
         document.querySelectorAll('.sample-btn-outline').forEach(el => {
             el.style.borderColor = `#${state.hex}`;
             el.style.color = `#${state.hex}`;
             el.style.backgroundColor = 'transparent';
         });
+        document.querySelectorAll('.sample-card').forEach(el => {
+            el.style.backgroundColor = cardBg;
+            el.style.color = `#${state.hex}`;
+            el.style.borderColor = `#${state.hex}40`;
+        });
         document.querySelectorAll('.sample-dot').forEach(el => el.style.backgroundColor = `#${state.hex}`);
         document.querySelectorAll('.sample-text').forEach(el => el.style.color = `#${state.hex}`);
+        document.querySelectorAll('.sample-subtext').forEach(el => el.style.color = 'var(--md-sys-color-on-surface-variant)');
     }
 }
 

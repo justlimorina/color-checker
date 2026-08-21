@@ -296,22 +296,25 @@
                             </div>
                         </div>
                         
-                        <div class="ui-samples-grid">
+                        <div class="ui-samples-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div class="ui-sample-item">
-                                <button class="sample-btn-primary" data-i18n-target="btn_solid">Solid Button</button>
+                                <button class="sample-btn-primary" style="width: 100%; border-radius: 20px; padding: 10px; border: none; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" data-i18n-target="btn_solid">Primary Button</button>
                             </div>
                             <div class="ui-sample-item">
-                                <button class="sample-btn-outline" data-i18n-target="btn_outline">Outline Button</button>
+                                <button class="sample-btn-tonal" style="width: 100%; border-radius: 20px; padding: 10px; border: none; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" data-i18n-target="btn_tonal">Tonal Button</button>
                             </div>
                             <div class="ui-sample-item">
-                                <div class="sample-card">
+                                <button class="sample-btn-outline" style="width: 100%; border-radius: 20px; padding: 10px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" data-i18n-target="btn_outline">Outline Button</button>
+                            </div>
+                            <div class="ui-sample-item">
+                                <div class="sample-card" style="padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease;">
                                     <span class="label-small" data-i18n="sample_card">Surface Card</span>
-                                    <div class="sample-dot"></div>
+                                    <div class="sample-dot" style="width: 16px; height: 16px; border-radius: 50%; transition: all 0.2s ease;"></div>
                                 </div>
                             </div>
-                            <div class="ui-sample-item">
-                                <div class="sample-text" data-i18n="sample_text_heading">Sample Text Heading</div>
-                                <p class="label-small" data-i18n="sample_text_secondary">Secondary description text</p>
+                            <div class="ui-sample-item" style="grid-column: span 2;">
+                                <div class="sample-text" style="font-size: 1.1rem; font-weight: 700; transition: color 0.2s ease;" data-i18n="sample_text_heading">Sample Text Heading</div>
+                                <p class="sample-subtext label-small" style="margin-top: 2px; opacity: 0.8;" data-i18n="sample_text_secondary">Secondary description text</p>
                             </div>
                         </div>
                     </div>
