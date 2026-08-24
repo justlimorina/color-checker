@@ -43,7 +43,7 @@ export const colorNames = [
     "hex": "#9f9978"
   },
   {
-    "name": "À l’Orange",
+    "name": "\u00c0 l\u2019Orange",
     "hex": "#f2850d"
   },
   {
@@ -69,6 +69,10 @@ export const colorNames = [
   {
     "name": "Abyssal Waters",
     "hex": "#005765"
+  },
+  {
+    "name": "Acai",
+    "hex": "#48295b"
   },
   {
     "name": "Acapulco Dive",
@@ -343,7 +347,7 @@ export const colorNames = [
     "hex": "#f3dfd7"
   },
   {
-    "name": "Angel’s Trumpet",
+    "name": "Angel\u2019s Trumpet",
     "hex": "#f6dd34"
   },
   {
@@ -451,7 +455,7 @@ export const colorNames = [
     "hex": "#f81404"
   },
   {
-    "name": "Après-Ski",
+    "name": "Apr\u00e8s-Ski",
     "hex": "#ced5e4"
   },
   {
@@ -607,7 +611,7 @@ export const colorNames = [
     "hex": "#f2ab46"
   },
   {
-    "name": "Artist’s Charcoal",
+    "name": "Artist\u2019s Charcoal",
     "hex": "#37393e"
   },
   {
@@ -647,7 +651,7 @@ export const colorNames = [
     "hex": "#2d4f83"
   },
   {
-    "name": "Assassin’s Red",
+    "name": "Assassin\u2019s Red",
     "hex": "#f60206"
   },
   {
@@ -819,15 +823,15 @@ export const colorNames = [
     "hex": "#b4da55"
   },
   {
-    "name": "Baker’s Bread",
+    "name": "Baker\u2019s Bread",
     "hex": "#d0b393"
   },
   {
-    "name": "Baker’s Dozen",
+    "name": "Baker\u2019s Dozen",
     "hex": "#ceb997"
   },
   {
-    "name": "Baker’s Dream",
+    "name": "Baker\u2019s Dream",
     "hex": "#c98f70"
   },
   {
@@ -849,6 +853,10 @@ export const colorNames = [
   {
     "name": "Ballet Slippers",
     "hex": "#fca2ad"
+  },
+  {
+    "name": "Ballet White",
+    "hex": "#f2e7d8"
   },
   {
     "name": "Balsamico",
@@ -907,7 +915,7 @@ export const colorNames = [
     "hex": "#eefe02"
   },
   {
-    "name": "Banana Frappé",
+    "name": "Banana Frapp\u00e9",
     "hex": "#ddd5b6"
   },
   {
@@ -991,7 +999,7 @@ export const colorNames = [
     "hex": "#d6e3e7"
   },
   {
-    "name": "Barista’s Favourite",
+    "name": "Barista\u2019s Favourite",
     "hex": "#bb8d4e"
   },
   {
@@ -1031,7 +1039,7 @@ export const colorNames = [
     "hex": "#feff00"
   },
   {
-    "name": "Bat’s Blood Soup",
+    "name": "Bat\u2019s Blood Soup",
     "hex": "#ee3366"
   },
   {
@@ -1119,7 +1127,7 @@ export const colorNames = [
     "hex": "#c99680"
   },
   {
-    "name": "Béchamel",
+    "name": "B\u00e9chamel",
     "hex": "#f4eee0"
   },
   {
@@ -1247,7 +1255,7 @@ export const colorNames = [
     "hex": "#ab7cb4"
   },
   {
-    "name": "Berries N’ Cream",
+    "name": "Berries N\u2019 Cream",
     "hex": "#f2b8ca"
   },
   {
@@ -1511,7 +1519,11 @@ export const colorNames = [
     "hex": "#77150e"
   },
   {
-    "name": "Blackn’t",
+    "name": "Blackmail",
+    "hex": "#220066"
+  },
+  {
+    "name": "Blackn\u2019t",
     "hex": "#020f03"
   },
   {
@@ -1523,7 +1535,7 @@ export const colorNames = [
     "hex": "#545663"
   },
   {
-    "name": "Blanc Cassé",
+    "name": "Blanc Cass\u00e9",
     "hex": "#f1eee2"
   },
   {
@@ -1759,7 +1771,7 @@ export const colorNames = [
     "hex": "#0020ef"
   },
   {
-    "name": "Blue Öyster Cult",
+    "name": "Blue \u00d6yster Cult",
     "hex": "#5577ee"
   },
   {
@@ -1827,7 +1839,7 @@ export const colorNames = [
     "hex": "#dd99aa"
   },
   {
-    "name": "Blush d’Amour",
+    "name": "Blush d\u2019Amour",
     "hex": "#de5d83"
   },
   {
@@ -2219,7 +2231,7 @@ export const colorNames = [
     "hex": "#e7feff"
   },
   {
-    "name": "Büchel Cherry",
+    "name": "B\u00fcchel Cherry",
     "hex": "#aa1111"
   },
   {
@@ -2239,7 +2251,7 @@ export const colorNames = [
     "hex": "#79b465"
   },
   {
-    "name": "Buddha’s Love Handles",
+    "name": "Buddha\u2019s Love Handles",
     "hex": "#ffbb33"
   },
   {
@@ -2451,11 +2463,11 @@ export const colorNames = [
     "hex": "#eedd22"
   },
   {
-    "name": "Café au Lait",
+    "name": "Caf\u00e9 au Lait",
     "hex": "#a57c5b"
   },
   {
-    "name": "Café Crème",
+    "name": "Caf\u00e9 Cr\u00e8me",
     "hex": "#c79685"
   },
   {
@@ -2463,7 +2475,7 @@ export const colorNames = [
     "hex": "#d6c6b4"
   },
   {
-    "name": "Café Noir",
+    "name": "Caf\u00e9 Noir",
     "hex": "#4b3621"
   },
   {
@@ -2919,6 +2931,10 @@ export const colorNames = [
     "hex": "#efd7ab"
   },
   {
+    "name": "Ceremonial Red Ribbon",
+    "hex": "#e63127"
+  },
+  {
     "name": "Cerulean",
     "hex": "#55aaee"
   },
@@ -3039,11 +3055,11 @@ export const colorNames = [
     "hex": "#f0e093"
   },
   {
-    "name": "Chef’s Hat",
+    "name": "Chef\u2019s Hat",
     "hex": "#f3f4f5"
   },
   {
-    "name": "Chef’s Kiss",
+    "name": "Chef\u2019s Kiss",
     "hex": "#cc3b3b"
   },
   {
@@ -3275,7 +3291,7 @@ export const colorNames = [
     "hex": "#8c9632"
   },
   {
-    "name": "Choux à la Crème",
+    "name": "Choux \u00e0 la Cr\u00e8me",
     "hex": "#ebcf7d"
   },
   {
@@ -3399,7 +3415,7 @@ export const colorNames = [
     "hex": "#605e63"
   },
   {
-    "name": "Cloisonné",
+    "name": "Cloisonn\u00e9",
     "hex": "#0773af"
   },
   {
@@ -3479,7 +3495,7 @@ export const colorNames = [
     "hex": "#994a25"
   },
   {
-    "name": "Coco’s Black",
+    "name": "Coco\u2019s Black",
     "hex": "#1c1c1a"
   },
   {
@@ -3563,6 +3579,10 @@ export const colorNames = [
     "hex": "#9ba0ef"
   },
   {
+    "name": "Cold Omen",
+    "hex": "#d6eae8"
+  },
+  {
     "name": "Cold Press Coffee",
     "hex": "#6c2e09"
   },
@@ -3583,7 +3603,7 @@ export const colorNames = [
     "hex": "#edfcfb"
   },
   {
-    "name": "Columbo’s Coat",
+    "name": "Columbo\u2019s Coat",
     "hex": "#d0cbce"
   },
   {
@@ -3831,7 +3851,7 @@ export const colorNames = [
     "hex": "#494e4f"
   },
   {
-    "name": "Cow’s Milk",
+    "name": "Cow\u2019s Milk",
     "hex": "#f1ede5"
   },
   {
@@ -3931,23 +3951,23 @@ export const colorNames = [
     "hex": "#f2e5bf"
   },
   {
-    "name": "Crème Brûlée",
+    "name": "Cr\u00e8me Br\u00fbl\u00e9e",
     "hex": "#ffe39b"
   },
   {
-    "name": "Crème de la Crème",
+    "name": "Cr\u00e8me de la Cr\u00e8me",
     "hex": "#f3e7b4"
   },
   {
-    "name": "Crème de Pêche",
+    "name": "Cr\u00e8me de P\u00eache",
     "hex": "#fdf5e0"
   },
   {
-    "name": "Crème Fraîche",
+    "name": "Cr\u00e8me Fra\u00eeche",
     "hex": "#eceee6"
   },
   {
-    "name": "Crème Pâtissière",
+    "name": "Cr\u00e8me P\u00e2tissi\u00e8re",
     "hex": "#fdd77a"
   },
   {
@@ -3997,6 +4017,14 @@ export const colorNames = [
   {
     "name": "Croissant",
     "hex": "#c4ab86"
+  },
+  {
+    "name": "Cross My Heart",
+    "hex": "#ad2a2d"
+  },
+  {
+    "name": "Crossing the Line",
+    "hex": "#dd2244"
   },
   {
     "name": "Crow",
@@ -4107,7 +4135,7 @@ export const colorNames = [
     "hex": "#f5b2c5"
   },
   {
-    "name": "Cupid’s Eye",
+    "name": "Cupid\u2019s Eye",
     "hex": "#ff22dd"
   },
   {
@@ -4543,7 +4571,7 @@ export const colorNames = [
     "hex": "#ffefdd"
   },
   {
-    "name": "Délicieux au Chocolat",
+    "name": "D\u00e9licieux au Chocolat",
     "hex": "#412010"
   },
   {
@@ -4557,6 +4585,10 @@ export const colorNames = [
   {
     "name": "Demeter Green",
     "hex": "#02cc02"
+  },
+  {
+    "name": "Demon Princess",
+    "hex": "#d2144b"
   },
   {
     "name": "Demonic Kiss",
@@ -4623,11 +4655,11 @@ export const colorNames = [
     "hex": "#8b8685"
   },
   {
-    "name": "Devil’s Advocate",
+    "name": "Devil\u2019s Advocate",
     "hex": "#ff3344"
   },
   {
-    "name": "Devil’s Grass",
+    "name": "Devil\u2019s Grass",
     "hex": "#44aa55"
   },
   {
@@ -4735,7 +4767,7 @@ export const colorNames = [
     "hex": "#fa427e"
   },
   {
-    "name": "Diver’s Eden",
+    "name": "Diver\u2019s Eden",
     "hex": "#3a797e"
   },
   {
@@ -4779,7 +4811,7 @@ export const colorNames = [
     "hex": "#86c4da"
   },
   {
-    "name": "Don’t Be Shy",
+    "name": "Don\u2019t Be Shy",
     "hex": "#ed2c1a"
   },
   {
@@ -4787,7 +4819,7 @@ export const colorNames = [
     "hex": "#115500"
   },
   {
-    "name": "Döner Kebab",
+    "name": "D\u00f6ner Kebab",
     "hex": "#bb7766"
   },
   {
@@ -4815,7 +4847,7 @@ export const colorNames = [
     "hex": "#b3ada7"
   },
   {
-    "name": "Dove’s Wing",
+    "name": "Dove\u2019s Wing",
     "hex": "#f4f2ea"
   },
   {
@@ -4839,19 +4871,19 @@ export const colorNames = [
     "hex": "#d75969"
   },
   {
-    "name": "Dragon’s Blood",
+    "name": "Dragon\u2019s Blood",
     "hex": "#b84048"
   },
   {
-    "name": "Dragon’s Breath",
+    "name": "Dragon\u2019s Breath",
     "hex": "#d41003"
   },
   {
-    "name": "Dragon’s Fire",
+    "name": "Dragon\u2019s Fire",
     "hex": "#fc4a14"
   },
   {
-    "name": "Dragon’s Gold",
+    "name": "Dragon\u2019s Gold",
     "hex": "#e7e04e"
   },
   {
@@ -4969,6 +5001,10 @@ export const colorNames = [
   {
     "name": "Dune",
     "hex": "#d5c0a1"
+  },
+  {
+    "name": "Dune Spice",
+    "hex": "#b66e45"
   },
   {
     "name": "Dungeon Keeper",
@@ -5339,7 +5375,7 @@ export const colorNames = [
     "hex": "#8ba58f"
   },
   {
-    "name": "Envy’s Love",
+    "name": "Envy\u2019s Love",
     "hex": "#2dd78d"
   },
   {
@@ -5407,6 +5443,10 @@ export const colorNames = [
     "hex": "#a5af76"
   },
   {
+    "name": "Eternal Darkness",
+    "hex": "#1c2841"
+  },
+  {
     "name": "Eternal Flame",
     "hex": "#a13f49"
   },
@@ -5461,6 +5501,10 @@ export const colorNames = [
   {
     "name": "Everlasting Ice",
     "hex": "#f6fdfa"
+  },
+  {
+    "name": "Everlasting Night",
+    "hex": "#000099"
   },
   {
     "name": "Evil Cigar",
@@ -5655,7 +5699,7 @@ export const colorNames = [
     "hex": "#7fa2bf"
   },
   {
-    "name": "Farmer’s Market",
+    "name": "Farmer\u2019s Market",
     "hex": "#8f917c"
   },
   {
@@ -5895,6 +5939,10 @@ export const colorNames = [
     "hex": "#ee8866"
   },
   {
+    "name": "First Blood",
+    "hex": "#ed1c24"
+  },
+  {
     "name": "First Crush",
     "hex": "#f6e2ea"
   },
@@ -6027,6 +6075,10 @@ export const colorNames = [
     "hex": "#ee6655"
   },
   {
+    "name": "Flesh and Blood",
+    "hex": "#cf3f4f"
+  },
+  {
     "name": "Fleur de Sel Caramel",
     "hex": "#da8704"
   },
@@ -6087,7 +6139,7 @@ export const colorNames = [
     "hex": "#73fa79"
   },
   {
-    "name": "Florida’s Alligator",
+    "name": "Florida\u2019s Alligator",
     "hex": "#664422"
   },
   {
@@ -6175,7 +6227,7 @@ export const colorNames = [
     "hex": "#fdf5c4"
   },
   {
-    "name": "Fool’s Gold",
+    "name": "Fool\u2019s Gold",
     "hex": "#cad175"
   },
   {
@@ -6287,11 +6339,11 @@ export const colorNames = [
     "hex": "#7ba05b"
   },
   {
-    "name": "Frappé",
+    "name": "Frapp\u00e9",
     "hex": "#ceae99"
   },
   {
-    "name": "Frappé au Chocolat",
+    "name": "Frapp\u00e9 au Chocolat",
     "hex": "#9a6840"
   },
   {
@@ -6383,7 +6435,7 @@ export const colorNames = [
     "hex": "#663322"
   },
   {
-    "name": "Fricassée",
+    "name": "Fricass\u00e9e",
     "hex": "#ffe6c2"
   },
   {
@@ -6555,7 +6607,7 @@ export const colorNames = [
     "hex": "#ee2277"
   },
   {
-    "name": "Furious Piñata",
+    "name": "Furious Pi\u00f1ata",
     "hex": "#e34d41"
   },
   {
@@ -6727,7 +6779,7 @@ export const colorNames = [
     "hex": "#9d913c"
   },
   {
-    "name": "Gecko’s Dream",
+    "name": "Gecko\u2019s Dream",
     "hex": "#669900"
   },
   {
@@ -7003,6 +7055,10 @@ export const colorNames = [
     "hex": "#ece086"
   },
   {
+    "name": "Gold of Triumph",
+    "hex": "#e2b051"
+  },
+  {
     "name": "Gold Rush",
     "hex": "#c4a777"
   },
@@ -7037,6 +7093,10 @@ export const colorNames = [
   {
     "name": "Golden Coin",
     "hex": "#fcd975"
+  },
+  {
+    "name": "Golden Eye",
+    "hex": "#ffd789"
   },
   {
     "name": "Golden Fizz",
@@ -7223,11 +7283,11 @@ export const colorNames = [
     "hex": "#c38d87"
   },
   {
-    "name": "Grandma’s Cameo",
+    "name": "Grandma\u2019s Cameo",
     "hex": "#f7e7dd"
   },
   {
-    "name": "Grandma’s Pink Tiles",
+    "name": "Grandma\u2019s Pink Tiles",
     "hex": "#e0b8c0"
   },
   {
@@ -7235,7 +7295,7 @@ export const colorNames = [
     "hex": "#746a5e"
   },
   {
-    "name": "Grannie’s Pearls",
+    "name": "Grannie\u2019s Pearls",
     "hex": "#f6eeed"
   },
   {
@@ -7527,7 +7587,7 @@ export const colorNames = [
     "hex": "#64e986"
   },
   {
-    "name": "Gruyère Cheese",
+    "name": "Gruy\u00e8re Cheese",
     "hex": "#f5deb3"
   },
   {
@@ -7571,7 +7631,7 @@ export const colorNames = [
     "hex": "#536267"
   },
   {
-    "name": "Guns N’ Roses",
+    "name": "Guns N\u2019 Roses",
     "hex": "#ff0077"
   },
   {
@@ -7579,19 +7639,19 @@ export const colorNames = [
     "hex": "#7a7c76"
   },
   {
-    "name": "H₂O",
+    "name": "H\u2082O",
     "hex": "#bfe1e6"
   },
   {
-    "name": "Habañero",
+    "name": "Haba\u00f1ero",
     "hex": "#f98513"
   },
   {
-    "name": "Habañero Gold",
+    "name": "Haba\u00f1ero Gold",
     "hex": "#fecf3c"
   },
   {
-    "name": "Haddock’s Sweater",
+    "name": "Haddock\u2019s Sweater",
     "hex": "#277aba"
   },
   {
@@ -7683,7 +7743,7 @@ export const colorNames = [
     "hex": "#006383"
   },
   {
-    "name": "Harlock’s Cape",
+    "name": "Harlock\u2019s Cape",
     "hex": "#bb0000"
   },
   {
@@ -7701,6 +7761,10 @@ export const colorNames = [
   {
     "name": "Hatoba Pigeon",
     "hex": "#95859c"
+  },
+  {
+    "name": "Haunt Mist",
+    "hex": "#5f6d91"
   },
   {
     "name": "Haunted Candelabra",
@@ -7775,7 +7839,7 @@ export const colorNames = [
     "hex": "#a97fb1"
   },
   {
-    "name": "Heart’s Content",
+    "name": "Heart\u2019s Content",
     "hex": "#e2b5bd"
   },
   {
@@ -7801,10 +7865,6 @@ export const colorNames = [
   {
     "name": "Heather Berry",
     "hex": "#e75480"
-  },
-  {
-    "name": "Heaven Gates",
-    "hex": "#c7f1ff"
   },
   {
     "name": "Heavenly Sky",
@@ -7923,7 +7983,7 @@ export const colorNames = [
     "hex": "#969e86"
   },
   {
-    "name": "Herbalist’s Garden",
+    "name": "Herbalist\u2019s Garden",
     "hex": "#119900"
   },
   {
@@ -8099,7 +8159,7 @@ export const colorNames = [
     "hex": "#01ad8f"
   },
   {
-    "name": "Hōjicha",
+    "name": "H\u014djicha",
     "hex": "#424f3b"
   },
   {
@@ -8297,6 +8357,10 @@ export const colorNames = [
   {
     "name": "Horseradish",
     "hex": "#e6dfc4"
+  },
+  {
+    "name": "Hot",
+    "hex": "#ac4362"
   },
   {
     "name": "Hot Beach",
@@ -8899,7 +8963,7 @@ export const colorNames = [
     "hex": "#494d55"
   },
   {
-    "name": "It’s a Girl!",
+    "name": "It\u2019s a Girl!",
     "hex": "#ffdae2"
   },
   {
@@ -8983,7 +9047,7 @@ export const colorNames = [
     "hex": "#efddc3"
   },
   {
-    "name": "Jalapeño",
+    "name": "Jalape\u00f1o",
     "hex": "#9a8d3f"
   },
   {
@@ -9015,7 +9079,7 @@ export const colorNames = [
     "hex": "#55ddcc"
   },
   {
-    "name": "Je t’aime",
+    "name": "Je t\u2019aime",
     "hex": "#b36b92"
   },
   {
@@ -9043,7 +9107,7 @@ export const colorNames = [
     "hex": "#353337"
   },
   {
-    "name": "Jet d’Eau",
+    "name": "Jet d\u2019Eau",
     "hex": "#d1eaec"
   },
   {
@@ -9075,7 +9139,7 @@ export const colorNames = [
     "hex": "#eeff22"
   },
   {
-    "name": "Joker’s Smile",
+    "name": "Joker\u2019s Smile",
     "hex": "#d70141"
   },
   {
@@ -9287,11 +9351,11 @@ export const colorNames = [
     "hex": "#3c85be"
   },
   {
-    "name": "King’s Field",
+    "name": "King\u2019s Field",
     "hex": "#f2e887"
   },
   {
-    "name": "King’s Plum Pie",
+    "name": "King\u2019s Plum Pie",
     "hex": "#b3107a"
   },
   {
@@ -9359,7 +9423,7 @@ export const colorNames = [
     "hex": "#ff6677"
   },
   {
-    "name": "Kitten’s Eye",
+    "name": "Kitten\u2019s Eye",
     "hex": "#8aadf7"
   },
   {
@@ -9383,7 +9447,7 @@ export const colorNames = [
     "hex": "#0f0707"
   },
   {
-    "name": "Knight’s Armour",
+    "name": "Knight\u2019s Armour",
     "hex": "#5c5d5d"
   },
   {
@@ -9403,7 +9467,7 @@ export const colorNames = [
     "hex": "#882d17"
   },
   {
-    "name": "Köfte Brown",
+    "name": "K\u00f6fte Brown",
     "hex": "#773644"
   },
   {
@@ -9491,7 +9555,7 @@ export const colorNames = [
     "hex": "#e0bb95"
   },
   {
-    "name": "Lamb’s Wool",
+    "name": "Lamb\u2019s Wool",
     "hex": "#ffffe3"
   },
   {
@@ -9499,7 +9563,7 @@ export const colorNames = [
     "hex": "#edabe6"
   },
   {
-    "name": "Landjäger",
+    "name": "Landj\u00e4ger",
     "hex": "#af403c"
   },
   {
@@ -9703,7 +9767,7 @@ export const colorNames = [
     "hex": "#999a86"
   },
   {
-    "name": "Les Demoiselles d’Avignon",
+    "name": "Les Demoiselles d\u2019Avignon",
     "hex": "#e59d7b"
   },
   {
@@ -9915,7 +9979,7 @@ export const colorNames = [
     "hex": "#dd9933"
   },
   {
-    "name": "Lion’s Roar",
+    "name": "Lion\u2019s Roar",
     "hex": "#f5dab3"
   },
   {
@@ -10029,6 +10093,10 @@ export const colorNames = [
   {
     "name": "Long Beach",
     "hex": "#faefdf"
+  },
+  {
+    "name": "Long Passionate Night",
+    "hex": "#5b365e"
   },
   {
     "name": "Long-Haul Flight",
@@ -10335,6 +10403,10 @@ export const colorNames = [
     "hex": "#f8a200"
   },
   {
+    "name": "Mad Pinker",
+    "hex": "#ff9899"
+  },
+  {
     "name": "Made in the Shade",
     "hex": "#6b717a"
   },
@@ -10423,7 +10495,7 @@ export const colorNames = [
     "hex": "#eaeadb"
   },
   {
-    "name": "Magician’s Cloak",
+    "name": "Magician\u2019s Cloak",
     "hex": "#784467"
   },
   {
@@ -10471,7 +10543,7 @@ export const colorNames = [
     "hex": "#a56531"
   },
   {
-    "name": "Maiden’s Blush",
+    "name": "Maiden\u2019s Blush",
     "hex": "#f3d3bf"
   },
   {
@@ -11003,7 +11075,7 @@ export const colorNames = [
     "hex": "#d9e6a6"
   },
   {
-    "name": "Mermaid’s Kiss",
+    "name": "Mermaid\u2019s Kiss",
     "hex": "#59c8a5"
   },
   {
@@ -11407,7 +11479,7 @@ export const colorNames = [
     "hex": "#e8c690"
   },
   {
-    "name": "Mom’s Pancake",
+    "name": "Mom\u2019s Pancake",
     "hex": "#f5c553"
   },
   {
@@ -11489,6 +11561,10 @@ export const colorNames = [
   {
     "name": "Moon Rock",
     "hex": "#897d76"
+  },
+  {
+    "name": "Moon Sugar",
+    "hex": "#f5f5da"
   },
   {
     "name": "Moon Veil",
@@ -11619,7 +11695,7 @@ export const colorNames = [
     "hex": "#bde1c4"
   },
   {
-    "name": "Mother’s Milk",
+    "name": "Mother\u2019s Milk",
     "hex": "#f7edca"
   },
   {
@@ -11651,7 +11727,7 @@ export const colorNames = [
     "hex": "#394c3b"
   },
   {
-    "name": "Moutarde de Bénichon",
+    "name": "Moutarde de B\u00e9nichon",
     "hex": "#bf9005"
   },
   {
@@ -11719,7 +11795,7 @@ export const colorNames = [
     "hex": "#a18162"
   },
   {
-    "name": "Mummy’s Tomb",
+    "name": "Mummy\u2019s Tomb",
     "hex": "#828e84"
   },
   {
@@ -11907,7 +11983,7 @@ export const colorNames = [
     "hex": "#080813"
   },
   {
-    "name": "Nattō",
+    "name": "Natt\u014d",
     "hex": "#c79843"
   },
   {
@@ -12059,11 +12135,11 @@ export const colorNames = [
     "hex": "#7fbb9e"
   },
   {
-    "name": "Neptune’s Dream",
+    "name": "Neptune\u2019s Dream",
     "hex": "#003368"
   },
   {
-    "name": "Neptune’s Realm",
+    "name": "Neptune\u2019s Realm",
     "hex": "#97c0d1"
   },
   {
@@ -12231,11 +12307,11 @@ export const colorNames = [
     "hex": "#a2919b"
   },
   {
-    "name": "No Way Rosé",
+    "name": "No Way Ros\u00e9",
     "hex": "#fbaa95"
   },
   {
-    "name": "№5",
+    "name": "\u21165",
     "hex": "#f8d68b"
   },
   {
@@ -12415,7 +12491,7 @@ export const colorNames = [
     "hex": "#e9e3cb"
   },
   {
-    "name": "Nymph’s Delight",
+    "name": "Nymph\u2019s Delight",
     "hex": "#7b6c8e"
   },
   {
@@ -12479,7 +12555,7 @@ export const colorNames = [
     "hex": "#41767b"
   },
   {
-    "name": "Ocean’s Embrace",
+    "name": "Ocean\u2019s Embrace",
     "hex": "#306a78"
   },
   {
@@ -12579,7 +12655,7 @@ export const colorNames = [
     "hex": "#4e4b35"
   },
   {
-    "name": "Olive Niçoise",
+    "name": "Olive Ni\u00e7oise",
     "hex": "#88432e"
   },
   {
@@ -12711,7 +12787,7 @@ export const colorNames = [
     "hex": "#ff7f00"
   },
   {
-    "name": "Orange Piñata",
+    "name": "Orange Pi\u00f1ata",
     "hex": "#ff6611"
   },
   {
@@ -12773,6 +12849,10 @@ export const colorNames = [
   {
     "name": "Our Little Secret",
     "hex": "#a84b7a"
+  },
+  {
+    "name": "Out Cold",
+    "hex": "#e2ecf2"
   },
   {
     "name": "Out of Left Field",
@@ -12879,7 +12959,7 @@ export const colorNames = [
     "hex": "#8c8e65"
   },
   {
-    "name": "Painter’s Canvas",
+    "name": "Painter\u2019s Canvas",
     "hex": "#f9f2de"
   },
   {
@@ -12887,7 +12967,7 @@ export const colorNames = [
     "hex": "#f1efa6"
   },
   {
-    "name": "Pale King’s Blue",
+    "name": "Pale King\u2019s Blue",
     "hex": "#abf5ed"
   },
   {
@@ -12919,7 +12999,7 @@ export const colorNames = [
     "hex": "#f7d788"
   },
   {
-    "name": "Pandora’s Box",
+    "name": "Pandora\u2019s Box",
     "hex": "#fedbb7"
   },
   {
@@ -13155,7 +13235,7 @@ export const colorNames = [
     "hex": "#eddbc8"
   },
   {
-    "name": "Pāua",
+    "name": "P\u0101ua",
     "hex": "#2a2551"
   },
   {
@@ -13199,7 +13279,7 @@ export const colorNames = [
     "hex": "#fff0db"
   },
   {
-    "name": "Peach Crème Brûlée",
+    "name": "Peach Cr\u00e8me Br\u00fbl\u00e9e",
     "hex": "#ffe19d"
   },
   {
@@ -13239,7 +13319,7 @@ export const colorNames = [
     "hex": "#f7b28b"
   },
   {
-    "name": "Peach’s Daydream",
+    "name": "Peach\u2019s Daydream",
     "hex": "#fd9b88"
   },
   {
@@ -13511,7 +13591,7 @@ export const colorNames = [
     "hex": "#2f3434"
   },
   {
-    "name": "Pharaoh’s Gold",
+    "name": "Pharaoh\u2019s Gold",
     "hex": "#ead765"
   },
   {
@@ -13623,7 +13703,7 @@ export const colorNames = [
     "hex": "#dc5d47"
   },
   {
-    "name": "Pimm’s",
+    "name": "Pimm\u2019s",
     "hex": "#c3585c"
   },
   {
@@ -13803,6 +13883,10 @@ export const colorNames = [
     "hex": "#ff99ff"
   },
   {
+    "name": "Pinking. Fast and Slow",
+    "hex": "#df7ba4"
+  },
+  {
     "name": "Pinkling",
     "hex": "#eb84f5"
   },
@@ -13835,7 +13919,7 @@ export const colorNames = [
     "hex": "#ddca69"
   },
   {
-    "name": "Pirate’s Hook",
+    "name": "Pirate\u2019s Hook",
     "hex": "#b08f42"
   },
   {
@@ -14167,6 +14251,10 @@ export const colorNames = [
     "hex": "#f7d07a"
   },
   {
+    "name": "Popcorn Pause",
+    "hex": "#f4ede0"
+  },
+  {
     "name": "Poppy",
     "hex": "#c23c47"
   },
@@ -14231,7 +14319,7 @@ export const colorNames = [
     "hex": "#fddc57"
   },
   {
-    "name": "Potion № 9",
+    "name": "Potion \u2116 9",
     "hex": "#8f3129"
   },
   {
@@ -14559,7 +14647,7 @@ export const colorNames = [
     "hex": "#543254"
   },
   {
-    "name": "Purple Protégé",
+    "name": "Purple Prot\u00e9g\u00e9",
     "hex": "#593569"
   },
   {
@@ -14587,7 +14675,7 @@ export const colorNames = [
     "hex": "#a15589"
   },
   {
-    "name": "Purple’s Baby Sister",
+    "name": "Purple\u2019s Baby Sister",
     "hex": "#eec3ee"
   },
   {
@@ -14767,7 +14855,7 @@ export const colorNames = [
     "hex": "#c19a13"
   },
   {
-    "name": "Rapture’s Light",
+    "name": "Rapture\u2019s Light",
     "hex": "#f6f3e7"
   },
   {
@@ -14799,7 +14887,7 @@ export const colorNames = [
     "hex": "#0b0b0b"
   },
   {
-    "name": "Raven’s Coat",
+    "name": "Raven\u2019s Coat",
     "hex": "#030205"
   },
   {
@@ -14883,7 +14971,7 @@ export const colorNames = [
     "hex": "#bb1e1e"
   },
   {
-    "name": "Red Jalapeño",
+    "name": "Red Jalape\u00f1o",
     "hex": "#c01141"
   },
   {
@@ -14975,7 +15063,7 @@ export const colorNames = [
     "hex": "#d90b0b"
   },
   {
-    "name": "RedЯum",
+    "name": "Red\u042fum",
     "hex": "#ff2200"
   },
   {
@@ -15063,7 +15151,7 @@ export const colorNames = [
     "hex": "#f00b52"
   },
   {
-    "name": "Rock’n’Rose",
+    "name": "Rock\u2019n\u2019Rose",
     "hex": "#fc8aaa"
   },
   {
@@ -15119,7 +15207,7 @@ export const colorNames = [
     "hex": "#c77579"
   },
   {
-    "name": "Rosé",
+    "name": "Ros\u00e9",
     "hex": "#f7746b"
   },
   {
@@ -15307,7 +15395,7 @@ export const colorNames = [
     "hex": "#f1edd4"
   },
   {
-    "name": "Ruminant’s Paradise",
+    "name": "Ruminant\u2019s Paradise",
     "hex": "#5ca904"
   },
   {
@@ -15347,7 +15435,7 @@ export const colorNames = [
     "hex": "#573894"
   },
   {
-    "name": "Sablé",
+    "name": "Sabl\u00e9",
     "hex": "#f6d8be"
   },
   {
@@ -15435,6 +15523,10 @@ export const colorNames = [
     "hex": "#ffee00"
   },
   {
+    "name": "Sailor Moonlight",
+    "hex": "#f6f1a9"
+  },
+  {
     "name": "Sakura",
     "hex": "#dfb1b6"
   },
@@ -15467,7 +15559,7 @@ export const colorNames = [
     "hex": "#f9906f"
   },
   {
-    "name": "Salmon Poké Bowl",
+    "name": "Salmon Pok\u00e9 Bowl",
     "hex": "#ee7777"
   },
   {
@@ -15671,7 +15763,7 @@ export const colorNames = [
     "hex": "#900405"
   },
   {
-    "name": "Screamin’ Green",
+    "name": "Screamin\u2019 Green",
     "hex": "#66ff66"
   },
   {
@@ -15723,7 +15815,7 @@ export const colorNames = [
     "hex": "#4bc7cf"
   },
   {
-    "name": "Sea Serpent’s Tears",
+    "name": "Sea Serpent\u2019s Tears",
     "hex": "#5511cc"
   },
   {
@@ -15819,7 +15911,7 @@ export const colorNames = [
     "hex": "#76baa8"
   },
   {
-    "name": "Serenity’s Reign",
+    "name": "Serenity\u2019s Reign",
     "hex": "#507bce"
   },
   {
@@ -15923,7 +16015,7 @@ export const colorNames = [
     "hex": "#efecee"
   },
   {
-    "name": "Shepherd’s Green",
+    "name": "Shepherd\u2019s Green",
     "hex": "#5a8643"
   },
   {
@@ -15959,7 +16051,7 @@ export const colorNames = [
     "hex": "#4f6f85"
   },
   {
-    "name": "Shiritorier’s Orange",
+    "name": "Shiritorier\u2019s Orange",
     "hex": "#f19000"
   },
   {
@@ -15983,7 +16075,7 @@ export const colorNames = [
     "hex": "#ff006a"
   },
   {
-    "name": "Shōji",
+    "name": "Sh\u014dji",
     "hex": "#ded5c7"
   },
   {
@@ -16239,7 +16331,7 @@ export const colorNames = [
     "hex": "#4477dd"
   },
   {
-    "name": "Skinny Dippin’",
+    "name": "Skinny Dippin\u2019",
     "hex": "#c3d7e0"
   },
   {
@@ -16555,7 +16647,7 @@ export const colorNames = [
     "hex": "#f1d058"
   },
   {
-    "name": "Soufflé",
+    "name": "Souffl\u00e9",
     "hex": "#edd1a8"
   },
   {
@@ -16675,7 +16767,7 @@ export const colorNames = [
     "hex": "#22eeff"
   },
   {
-    "name": "Spätzle Yellow",
+    "name": "Sp\u00e4tzle Yellow",
     "hex": "#ffee88"
   },
   {
@@ -16783,7 +16875,7 @@ export const colorNames = [
     "hex": "#f3d48b"
   },
   {
-    "name": "Squid’s Ink",
+    "name": "Squid\u2019s Ink",
     "hex": "#041330"
   },
   {
@@ -16947,6 +17039,10 @@ export const colorNames = [
     "hex": "#3d3d63"
   },
   {
+    "name": "Storm Rising",
+    "hex": "#4d5a6b"
+  },
+  {
     "name": "Stormy",
     "hex": "#b0bcc3"
   },
@@ -17015,7 +17111,7 @@ export const colorNames = [
     "hex": "#fa8383"
   },
   {
-    "name": "Strawberry Frappé",
+    "name": "Strawberry Frapp\u00e9",
     "hex": "#ffa2aa"
   },
   {
@@ -17175,11 +17271,11 @@ export const colorNames = [
     "hex": "#cbeaee"
   },
   {
-    "name": "Summer of ’82",
+    "name": "Summer of \u201982",
     "hex": "#74cdd8"
   },
   {
-    "name": "Summer’s End",
+    "name": "Summer\u2019s End",
     "hex": "#dc9367"
   },
   {
@@ -17551,7 +17647,7 @@ export const colorNames = [
     "hex": "#303a40"
   },
   {
-    "name": "Templar’s Gold",
+    "name": "Templar\u2019s Gold",
     "hex": "#f2e688"
   },
   {
@@ -17603,7 +17699,7 @@ export const colorNames = [
     "hex": "#bbffff"
   },
   {
-    "name": "The Count’s Black",
+    "name": "The Count\u2019s Black",
     "hex": "#102030"
   },
   {
@@ -17611,7 +17707,7 @@ export const colorNames = [
     "hex": "#2a2a2a"
   },
   {
-    "name": "The Grape War of 97’",
+    "name": "The Grape War of 97\u2019",
     "hex": "#bb00ff"
   },
   {
@@ -17635,6 +17731,10 @@ export const colorNames = [
     "hex": "#d3003f"
   },
   {
+    "name": "Thicker Than Water",
+    "hex": "#e02006"
+  },
+  {
     "name": "Think Brick",
     "hex": "#834841"
   },
@@ -17643,7 +17743,7 @@ export const colorNames = [
     "hex": "#e5a5c1"
   },
   {
-    "name": "Thor’s Thunder",
+    "name": "Thor\u2019s Thunder",
     "hex": "#44ccff"
   },
   {
@@ -17963,6 +18063,14 @@ export const colorNames = [
     "hex": "#2f4a15"
   },
   {
+    "name": "Trial by Fire",
+    "hex": "#ef3939"
+  },
+  {
+    "name": "Triforce",
+    "hex": "#f0f00f"
+  },
+  {
     "name": "Trippy Velvet",
     "hex": "#cc00ee"
   },
@@ -18239,7 +18347,7 @@ export const colorNames = [
     "hex": "#ba0728"
   },
   {
-    "name": "Valentine’s Kiss",
+    "name": "Valentine\u2019s Kiss",
     "hex": "#b63364"
   },
   {
@@ -19051,7 +19159,7 @@ export const colorNames = [
     "hex": "#607c8e"
   },
   {
-    "name": "Whale’s Tale",
+    "name": "Whale\u2019s Tale",
     "hex": "#115a82"
   },
   {
@@ -19059,7 +19167,7 @@ export const colorNames = [
     "hex": "#441122"
   },
   {
-    "name": "What’s Left",
+    "name": "What\u2019s Left",
     "hex": "#fff4e8"
   },
   {
@@ -19383,8 +19491,12 @@ export const colorNames = [
     "hex": "#a0e6ff"
   },
   {
-    "name": "Winter’s Breath",
+    "name": "Winter\u2019s Breath",
     "hex": "#deeced"
+  },
+  {
+    "name": "Winter\u2019s Fury",
+    "hex": "#c7ccd8"
   },
   {
     "name": "Wintermint",
@@ -19423,11 +19535,11 @@ export const colorNames = [
     "hex": "#4d5b88"
   },
   {
-    "name": "Wizard’s Brew",
+    "name": "Wizard\u2019s Brew",
     "hex": "#a090b8"
   },
   {
-    "name": "Wizard’s Potion",
+    "name": "Wizard\u2019s Potion",
     "hex": "#5d6098"
   },
   {
@@ -19503,7 +19615,7 @@ export const colorNames = [
     "hex": "#76856a"
   },
   {
-    "name": "Writer’s Parchment",
+    "name": "Writer\u2019s Parchment",
     "hex": "#e9d6bd"
   },
   {
@@ -19599,8 +19711,12 @@ export const colorNames = [
     "hex": "#f9f59f"
   },
   {
-    "name": "Yoghurt Brûlée",
+    "name": "Yoghurt Br\u00fbl\u00e9e",
     "hex": "#f5e9ce"
+  },
+  {
+    "name": "Yolk",
+    "hex": "#eec701"
   },
   {
     "name": "York Pink",
@@ -19619,7 +19735,7 @@ export const colorNames = [
     "hex": "#55aa00"
   },
   {
-    "name": "You’re Blushing",
+    "name": "You\u2019re Blushing",
     "hex": "#ee7776"
   },
   {
@@ -19671,7 +19787,7 @@ export const colorNames = [
     "hex": "#ffd766"
   },
   {
-    "name": "Yuzukoshō",
+    "name": "Yuzukosh\u014d",
     "hex": "#d4de49"
   },
   {
@@ -19695,7 +19811,7 @@ export const colorNames = [
     "hex": "#497a9f"
   },
   {
-    "name": "Zeus’s Bolt",
+    "name": "Zeus\u2019s Bolt",
     "hex": "#eeff00"
   },
   {
