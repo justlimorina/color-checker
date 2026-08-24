@@ -368,6 +368,11 @@ export function applyColorTheme(hex) {
         setProp('--md-sys-color-surface-container-high', hexFromArgb(palettes.neutral.tone(17)));
         setProp('--md-sys-color-surface-container-highest', hexFromArgb(palettes.neutral.tone(22)));
     }
+
+    // Dynamic Material You Ambient Aura Gradients
+    setProp('--gradient-color-1', hexFromArgb(scheme.primaryContainer));
+    setProp('--gradient-color-2', hexFromArgb(scheme.secondaryContainer));
+    setProp('--gradient-color-3', hexFromArgb(scheme.tertiaryContainer));
 }
 
 function applyTheme(theme) {
