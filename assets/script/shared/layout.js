@@ -214,6 +214,10 @@ export function initLayout(activePageKey) {
 
             <p class="md-nav-drawer__headline" data-i18n="settings">Settings & Support</p>
             <md-list class="md-nav-drawer__list">
+                <md-list-item id="theme-toggle-drawer" class="md-nav-item" style="cursor: pointer;">
+                    <md-icon slot="start">dark_mode</md-icon>
+                    <div slot="headline" data-i18n="theme">Theme Mode</div>
+                </md-list-item>
                 <md-list-item id="help-btn-drawer" class="md-nav-item" style="cursor: pointer;">
                     <md-icon slot="start">help</md-icon>
                     <div slot="headline" data-i18n="help_title">User Guide</div>
@@ -230,6 +234,48 @@ export function initLayout(activePageKey) {
                 </div>
             </div>
         </div>
+    `;
+
+    // 5.5 Setup Mobile Bottom Navigation Bar (Material Design 3 Icon-Only)
+    let bottomNav = document.getElementById('bottomNav');
+    if (!bottomNav) {
+        bottomNav = document.createElement('nav');
+        bottomNav.id = 'bottomNav';
+        bottomNav.className = 'md-bottom-nav';
+        bottomNav.setAttribute('aria-label', 'Mobile Navigation');
+        document.body.appendChild(bottomNav);
+    }
+    bottomNav.innerHTML = `
+        <a href="${prefix}index.html" class="md-bottom-nav__item ${activePageKey === 'landing' ? 'active' : ''}" title="Home">
+            <div class="md-bottom-nav__icon-container">
+                <md-ripple></md-ripple>
+                <md-icon class="md-bottom-nav__icon">home</md-icon>
+            </div>
+        </a>
+        <a href="${prefix}generator/" class="md-bottom-nav__item ${activePageKey === 'generator' ? 'active' : ''}" title="Palette Generator">
+            <div class="md-bottom-nav__icon-container">
+                <md-ripple></md-ripple>
+                <md-icon class="md-bottom-nav__icon">auto_awesome</md-icon>
+            </div>
+        </a>
+        <a href="${prefix}image-extractor/" class="md-bottom-nav__item ${activePageKey === 'image' ? 'active' : ''}" title="Image Extractor">
+            <div class="md-bottom-nav__icon-container">
+                <md-ripple></md-ripple>
+                <md-icon class="md-bottom-nav__icon">image_search</md-icon>
+            </div>
+        </a>
+        <a href="${prefix}md3-theme-creator/" class="md-bottom-nav__item ${activePageKey === 'theme' ? 'active' : ''}" title="MD3 Theme Builder">
+            <div class="md-bottom-nav__icon-container">
+                <md-ripple></md-ripple>
+                <md-icon class="md-bottom-nav__icon">palette</md-icon>
+            </div>
+        </a>
+        <button class="md-bottom-nav__item" id="bottomNavMoreBtn" title="More Options" aria-label="More Navigation Options">
+            <div class="md-bottom-nav__icon-container">
+                <md-ripple></md-ripple>
+                <md-icon class="md-bottom-nav__icon">more_horiz</md-icon>
+            </div>
+        </button>
     `;
 
     // 6. Inject Help Modal if not present
@@ -386,7 +432,7 @@ function applyTheme(theme) {
     document.body.classList.toggle('light-mode', theme === 'light');
     
     // Update theme toggle icons
-    document.querySelectorAll('#theme-toggle md-icon, #theme-toggle-mobile md-icon').forEach(icon => {
+    document.querySelectorAll('#theme-toggle md-icon, #theme-toggle-mobile md-icon, #theme-toggle-drawer md-icon').forEach(icon => {
         icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
     });
     
@@ -459,17 +505,22 @@ function setupLayoutEvents() {
     const langBtn = document.getElementById('lang-btn');
     const langMenu = document.getElementById('lang-menu');
 
+    const bottomNavMoreBtn = document.getElementById('bottomNavMoreBtn');
+
     // Sidebar Drawer Toggles
-    if (toggleBtn && drawer && scrim) {
-        toggleBtn.addEventListener('click', () => {
+    const openDrawer = () => {
+        if (drawer && scrim) {
             drawer.classList.add('is-open');
             scrim.classList.add('is-visible');
             drawer.removeAttribute('aria-hidden');
             if (window.innerWidth < 1200) {
                 document.body.style.overflow = 'hidden';
             }
-        });
-    }
+        }
+    };
+
+    if (toggleBtn) toggleBtn.addEventListener('click', openDrawer);
+    if (bottomNavMoreBtn) bottomNavMoreBtn.addEventListener('click', openDrawer);
 
     const hideSidebar = () => {
         if (drawer && scrim) {
@@ -505,13 +556,15 @@ function setupLayoutEvents() {
         if (event.key === 'Escape') hideHelp();
     });
 
-    // Theme Toggle (Dual)
+    // Theme Toggle (Dual + Drawer)
+    const themeToggleDrawer = document.getElementById('theme-toggle-drawer');
     const onThemeClick = () => {
         const nextTheme = layoutState.theme === 'dark' ? 'light' : 'dark';
         applyTheme(nextTheme);
     };
     if (themeToggle) themeToggle.addEventListener('click', onThemeClick);
     if (themeToggleMobile) themeToggleMobile.addEventListener('click', onThemeClick);
+    if (themeToggleDrawer) themeToggleDrawer.addEventListener('click', onThemeClick);
 
     // Language Dropdown Toggles (Desktop Nav Rail)
     const toggleDropdown = (menu, e) => {
