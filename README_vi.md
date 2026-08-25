@@ -102,7 +102,7 @@ Công cụ phân tích màu sắc và thiết kế chuyên nghiệp, được x�
 
 ## 🖥️ Hướng dẫn khởi động
 
-Chỉ cần mở `index.html` trên bất kỳ trình duyệt hiện đại nào.
+Chỉ cần mở `index.html` trên bất kỳ trình duyệt hiện đại nào. **Lưu ý**, nếu muốn dùng tính năng giao diện gốc của Web Components (ví dụ dropdown menu) thì cần chạy thông qua máy chủ cục bộ hoặc đảm bảo file đang được host trên domain (HTTPS). Nếu mở trực tiếp từ đường dẫn file (file://), một số trình duyệt sẽ chặn các tính năng bảo mật của Web Components.
 
 ```bash
 git clone https://github.com/justlimorina/color-checker.git

@@ -103,7 +103,7 @@ A professional-grade color analysis and design tool built with Material Design 3
 
 ## 🖥️ Getting Started
 
-Simply open `index.html` in any modern browser.
+Simply open `index.html` in any modern browser. **Note**, if you want to use the native interface features of Web Components (such as dropdown menus), you need to run the application through a local server or ensure the file is hosted on a domain (HTTPS). If opened directly from the file path (file://), some browsers will block the security features of Web Components.
 
 ```bash
 git clone https://github.com/justlimorina/color-checker.git
