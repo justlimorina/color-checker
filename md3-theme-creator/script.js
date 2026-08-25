@@ -29,39 +29,144 @@ window.addEventListener('langchange', () => {
     renderAll();
 });
 
+const FORMAT_META = {
+    css: {
+        filename: 'theme.css',
+        badge: 'CSS',
+        icon: 'css',
+        mime: 'text/css'
+    },
+    tailwind: {
+        filename: 'theme.tailwind.css',
+        badge: 'Tailwind v4',
+        icon: 'style',
+        mime: 'text/css'
+    },
+    figma: {
+        filename: 'tokens.json',
+        badge: 'Figma W3C',
+        icon: 'token',
+        mime: 'application/json'
+    },
+    flutter: {
+        filename: 'app_theme.dart',
+        badge: 'Flutter',
+        icon: 'smartphone',
+        mime: 'text/plain'
+    },
+    scss: {
+        filename: '_colors.scss',
+        badge: 'SCSS',
+        icon: 'code',
+        mime: 'text/x-scss'
+    },
+    android: {
+        filename: 'colors.xml',
+        badge: 'Android',
+        icon: 'android',
+        mime: 'application/xml'
+    },
+    swiftui: {
+        filename: 'AppTheme.swift',
+        badge: 'SwiftUI',
+        icon: 'phone_iphone',
+        mime: 'text/plain'
+    },
+    json: {
+        filename: 'palette.json',
+        badge: 'JSON',
+        icon: 'data_object',
+        mime: 'application/json'
+    },
+    python: {
+        filename: 'theme_colors.py',
+        badge: 'Python',
+        icon: 'terminal',
+        mime: 'text/x-python'
+    }
+};
+
 function bindDOM() {
     Object.assign(dom, {
         grid: document.getElementById('theme-colors-grid'),
-        exportTabs: document.getElementById('export-tabs'),
+        exportSelect: document.getElementById('export-format-select'),
+        downloadExportBtn: document.getElementById('download-export-btn'),
         copyExportBtn: document.getElementById('copy-export'),
+        exportHeaderIcon: document.getElementById('export-header-icon'),
+        exportFilenameBadge: document.getElementById('export-filename-badge'),
+        exportFormatBadge: document.getElementById('export-format-badge'),
+        exportLineCount: document.getElementById('export-line-count'),
         toast: document.getElementById('toast')
     });
 }
 
 function attachEvents() {
-    // Export Hub Tabs
-    if (dom.exportTabs) {
-        dom.exportTabs.addEventListener('change', () => {
-            const activeTab = dom.exportTabs.activeTab;
-            const tabName = activeTab ? activeTab.getAttribute('data-tab') : 'css';
-            
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.style.display = content.id === `export-content-${tabName}` ? 'block' : 'none';
-            });
+    // Export Hub Floating Select
+    if (dom.exportSelect) {
+        dom.exportSelect.addEventListener('change', () => {
+            const format = dom.exportSelect.value || 'css';
+            switchExportFormat(format);
         });
+    }
+
+    // Export Download Button
+    if (dom.downloadExportBtn) {
+        dom.downloadExportBtn.addEventListener('click', downloadExportFile);
     }
 
     // Export Hub Copy Active Template
     if (dom.copyExportBtn) {
         dom.copyExportBtn.addEventListener('click', () => {
-            const activeTab = dom.exportTabs.activeTab;
-            const tabName = activeTab ? activeTab.getAttribute('data-tab') : 'css';
-            const codeEl = document.getElementById(`code-${tabName}`);
+            const format = dom.exportSelect ? (dom.exportSelect.value || 'css') : 'css';
+            const codeEl = document.getElementById(`code-${format}`);
             if (codeEl) {
-                navigator.clipboard.writeText(codeEl.textContent).then(showToast);
+                navigator.clipboard.writeText(codeEl.textContent).then(() => {
+                    showToast(translations[layoutState.currentLang].copied || 'Copied to clipboard!');
+                });
             }
         });
     }
+}
+
+function switchExportFormat(format) {
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.style.display = content.id === `export-content-${format}` ? 'block' : 'none';
+    });
+
+    const meta = FORMAT_META[format] || { filename: 'export.txt', badge: format.toUpperCase(), icon: 'code', mime: 'text/plain' };
+    if (dom.exportHeaderIcon) dom.exportHeaderIcon.textContent = meta.icon;
+    if (dom.exportFilenameBadge) dom.exportFilenameBadge.textContent = meta.filename;
+    if (dom.exportFormatBadge) dom.exportFormatBadge.textContent = meta.badge;
+
+    updateActiveLineCount(format);
+}
+
+function updateActiveLineCount(format) {
+    const activeFormat = format || (dom.exportSelect ? (dom.exportSelect.value || 'css') : 'css');
+    const codeEl = document.getElementById(`code-${activeFormat}`);
+    if (codeEl && dom.exportLineCount) {
+        const lines = codeEl.textContent.trim() ? codeEl.textContent.trim().split('\n').length : 0;
+        dom.exportLineCount.textContent = `${lines} ${lines === 1 ? 'line' : 'lines'}`;
+    }
+}
+
+function downloadExportFile() {
+    const format = dom.exportSelect ? (dom.exportSelect.value || 'css') : 'css';
+    const codeEl = document.getElementById(`code-${format}`);
+    if (!codeEl) return;
+
+    const meta = FORMAT_META[format] || { filename: 'export.txt', mime: 'text/plain' };
+    const blob = new Blob([codeEl.textContent], { type: meta.mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = meta.filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast(translations[layoutState.currentLang].download_success || 'File downloaded!');
 }
 
 function renderAll() {
@@ -259,11 +364,15 @@ function updateExportContent() {
     const pythonCode = `# Code template for materialyoucolor-python\n# Install: pip install materialyoucolor\n\nfrom materialyoucolor.theme import Theme\nfrom materialyoucolor.rgba import RGBA\n\n# Initialize dynamic theme using active color: #${state.hex}\ntheme = Theme(RGBA(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b}, 255))\n\n# Retrieve dynamic colors for Light & Dark schemes\nlight = theme.schemes.light\ndark = theme.schemes.dark\n\nprint("=== LIGHT SYSTEM COLORS ===")\nprint(f"Primary:           {light.primary}")\nprint(f"On Primary:        {light.onPrimary}")\nprint(f"Primary Container: {light.primaryContainer}")\nprint(f"Surface:           {light.surface}")\n\nprint("\\n=== DARK SYSTEM COLORS ===")\nprint(f"Primary:           {dark.primary}")\nprint(f"On Primary:        {dark.onPrimary}")\nprint(f"Primary Container: {dark.primaryContainer}")\nprint(f"Surface:           {dark.surface}")\n`;
     const pythonCodeEl = document.getElementById('code-python');
     if (pythonCodeEl) pythonCodeEl.textContent = pythonCode;
+
+    // Refresh active format header and line count
+    const activeFormat = dom.exportSelect ? (dom.exportSelect.value || 'css') : 'css';
+    switchExportFormat(activeFormat);
 }
 
-function showToast() {
+function showToast(msg) {
     if (!dom.toast) return;
-    dom.toast.textContent = translations[layoutState.currentLang].copied || 'Copied!';
+    dom.toast.textContent = msg || (translations[layoutState.currentLang].copied || 'Copied!');
     dom.toast.classList.add('show');
     setTimeout(() => dom.toast.classList.remove('show'), 2000);
 }

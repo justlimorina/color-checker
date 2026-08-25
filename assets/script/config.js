@@ -144,7 +144,11 @@ export const translations = {
         time_left: "Time Left",
         start_game: "Start Challenge",
         game_over: "Game Over!",
-        play_again: "Play Again"
+        play_again: "Play Again",
+        export_format: "Export Format",
+        download_file: "Download File",
+        download_success: "File downloaded!",
+        copy_code: "Copy Code"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -291,7 +295,11 @@ export const translations = {
         time_left: "Thời gian",
         start_game: "Bắt đầu Thử thách",
         game_over: "Kết thúc!",
-        play_again: "Chơi lại"
+        play_again: "Chơi lại",
+        export_format: "Định dạng xuất",
+        download_file: "Tải tệp xuống",
+        download_success: "Đã tải tệp xuống!",
+        copy_code: "Sao chép mã"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -425,7 +433,11 @@ export const translations = {
         export_gpl: "GPLパレットをエクスポート",
         figma_tokens: "Figma トークン",
         flutter_dart: "Flutter / Dart",
-        share_palette_link: "パレットリンクを共有"
+        share_palette_link: "パレットリンクを共有",
+        export_format: "エクスポート形式",
+        download_file: "ファイルをダウンロード",
+        download_success: "ファイルをダウンロードしました！",
+        copy_code: "コードをコピー"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -559,6 +571,10 @@ export const translations = {
         export_gpl: "导出 GPL 调色板",
         figma_tokens: "Figma Tokens",
         flutter_dart: "Flutter / Dart",
-        share_palette_link: "分享调色板链接"
+        share_palette_link: "分享调色板链接",
+        export_format: "导出格式",
+        download_file: "下载文件",
+        download_success: "文件已下载！",
+        copy_code: "复制代码"
     }
 };

@@ -37,54 +37,113 @@
 
         <!-- Export Hub Section -->
         <div class="card card-elevated mt-l">
-            <h2 class="headline-medium mb-m" data-i18n="export_hub">Export Hub</h2>
-            <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="export_desc">Export color data and CSS/SCSS/Android/SwiftUI code templates.</p>
-             <md-tabs id="export-tabs">
-                 <md-primary-tab class="export-tab-btn" active data-tab="css">CSS</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="tailwind">Tailwind</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="figma">Figma Tokens</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="flutter">Flutter</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="scss">SCSS</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="android">Android</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="swiftui">SwiftUI</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="json">JSON</md-primary-tab>
-                 <md-primary-tab class="export-tab-btn" data-tab="python">Python</md-primary-tab>
-             </md-tabs>
-             <div class="modal-body" style="overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; margin-top: 16px;">
-                 <div id="export-content-css" class="tab-content active">
-                     <pre><code id="code-css"></code></pre>
-                 </div>
-                 <div id="export-content-tailwind" class="tab-content" style="display:none;">
-                     <pre><code id="code-tailwind"></code></pre>
-                 </div>
-                 <div id="export-content-figma" class="tab-content" style="display:none;">
-                     <pre><code id="code-figma"></code></pre>
-                 </div>
-                 <div id="export-content-flutter" class="tab-content" style="display:none;">
-                     <pre><code id="code-flutter"></code></pre>
-                 </div>
-                 <div id="export-content-scss" class="tab-content" style="display:none;">
-                     <pre><code id="code-scss"></code></pre>
-                 </div>
-                 <div id="export-content-android" class="tab-content" style="display:none;">
-                     <pre><code id="code-android"></code></pre>
-                 </div>
-                 <div id="export-content-swiftui" class="tab-content" style="display:none;">
-                     <pre><code id="code-swiftui"></code></pre>
-                 </div>
-                 <div id="export-content-json" class="tab-content" style="display:none;">
-                     <pre><code id="code-json"></code></pre>
-                 </div>
-                 <div id="export-content-python" class="tab-content" style="display:none;">
-                     <pre><code id="code-python"></code></pre>
-                 </div>
-             </div>
-             <div class="modal-footer" style="padding-top: var(--spacing-m); display: flex; justify-content: flex-end;">
-                 <md-filled-button id="copy-export">
-                     <md-icon slot="icon">content_copy</md-icon>
-                     <span data-i18n="copy_active">Copy Active Template</span>
-                 </md-filled-button>
-             </div>
+            <h2 class="headline-medium mb-s" data-i18n="export_hub">Export Hub</h2>
+            <p class="body-medium mb-m" style="opacity: 0.8;" data-i18n="export_desc">Export color data and CSS/SCSS/Android/SwiftUI code templates.</p>
+            
+            <div class="export-toolbar">
+                <div class="export-select-wrapper">
+                    <md-outlined-select id="export-format-select">
+                        <md-select-option value="css" selected>
+                            <md-icon slot="start">css</md-icon>
+                            <div slot="headline">CSS (:root Variables)</div>
+                            <div slot="supporting-text">Web tokens & CSS variables</div>
+                        </md-select-option>
+                        <md-select-option value="tailwind">
+                            <md-icon slot="start">style</md-icon>
+                            <div slot="headline">Tailwind CSS (v4 @theme)</div>
+                            <div slot="supporting-text">Tailwind theme directives</div>
+                        </md-select-option>
+                        <md-select-option value="figma">
+                            <md-icon slot="start">token</md-icon>
+                            <div slot="headline">Figma Tokens (W3C JSON)</div>
+                            <div slot="supporting-text">DTCG standard format</div>
+                        </md-select-option>
+                        <md-select-option value="flutter">
+                            <md-icon slot="start">smartphone</md-icon>
+                            <div slot="headline">Flutter (Dart Theme)</div>
+                            <div slot="supporting-text">ColorScheme.fromSeed</div>
+                        </md-select-option>
+                        <md-select-option value="scss">
+                            <md-icon slot="start">code</md-icon>
+                            <div slot="headline">SCSS ($brand-color map)</div>
+                            <div slot="supporting-text">Sass map & variables</div>
+                        </md-select-option>
+                        <md-select-option value="android">
+                            <md-icon slot="start">android</md-icon>
+                            <div slot="headline">Android (XML & Compose)</div>
+                            <div slot="supporting-text">colors.xml & Jetpack Compose</div>
+                        </md-select-option>
+                        <md-select-option value="swiftui">
+                            <md-icon slot="start">phone_iphone</md-icon>
+                            <div slot="headline">SwiftUI (iOS Extension)</div>
+                            <div slot="supporting-text">Swift Color struct & extensions</div>
+                        </md-select-option>
+                        <md-select-option value="json">
+                            <md-icon slot="start">data_object</md-icon>
+                            <div slot="headline">JSON Palette Data</div>
+                            <div slot="supporting-text">Raw JSON values & shades</div>
+                        </md-select-option>
+                        <md-select-option value="python">
+                            <md-icon slot="start">terminal</md-icon>
+                            <div slot="headline">Python (Material You)</div>
+                            <div slot="supporting-text">materialyoucolor integration</div>
+                        </md-select-option>
+                    </md-outlined-select>
+                </div>
+                
+                <div class="export-actions-wrapper">
+                    <md-outlined-button id="download-export-btn" title="Download File">
+                        <md-icon slot="icon">download</md-icon>
+                        <span data-i18n="download_file">Download</span>
+                    </md-outlined-button>
+                    <md-filled-button id="copy-export">
+                        <md-icon slot="icon">content_copy</md-icon>
+                        <span data-i18n="copy_code">Copy Code</span>
+                    </md-filled-button>
+                </div>
+            </div>
+
+            <div class="code-preview-container">
+                <div class="code-preview-header">
+                    <div class="code-preview-header-left">
+                        <span class="material-symbols-rounded" id="export-header-icon" style="font-size: 18px; color: var(--md-sys-color-primary);">css</span>
+                        <span id="export-filename-badge" class="export-filename-badge">theme.css</span>
+                        <span id="export-format-badge" class="export-format-badge">CSS</span>
+                    </div>
+                    <div class="code-preview-header-right">
+                        <span id="export-line-count" class="export-line-count">0 lines</span>
+                    </div>
+                </div>
+                <div class="code-preview-body">
+                    <div id="export-content-css" class="tab-content active">
+                        <pre><code id="code-css"></code></pre>
+                    </div>
+                    <div id="export-content-tailwind" class="tab-content" style="display:none;">
+                        <pre><code id="code-tailwind"></code></pre>
+                    </div>
+                    <div id="export-content-figma" class="tab-content" style="display:none;">
+                        <pre><code id="code-figma"></code></pre>
+                    </div>
+                    <div id="export-content-flutter" class="tab-content" style="display:none;">
+                        <pre><code id="code-flutter"></code></pre>
+                    </div>
+                    <div id="export-content-scss" class="tab-content" style="display:none;">
+                        <pre><code id="code-scss"></code></pre>
+                    </div>
+                    <div id="export-content-android" class="tab-content" style="display:none;">
+                        <pre><code id="code-android"></code></pre>
+                    </div>
+                    <div id="export-content-swiftui" class="tab-content" style="display:none;">
+                        <pre><code id="code-swiftui"></code></pre>
+                    </div>
+                    <div id="export-content-json" class="tab-content" style="display:none;">
+                        <pre><code id="code-json"></code></pre>
+                    </div>
+                    <div id="export-content-python" class="tab-content" style="display:none;">
+                        <pre><code id="code-python"></code></pre>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
