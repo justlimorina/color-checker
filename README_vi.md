@@ -2,119 +2,133 @@
 
 > [English](README.md) | **Tiếng Việt**
 
-Công cụ phân tích màu sắc và thiết kế chuyên nghiệp, được xây dựng theo chuẩn Material Design 3 và nguyên lý thiết kế màu động Material You. Hỗ trợ cài đặt hoàn chỉnh dưới dạng Progressive Web App (PWA) để chạy ngoại tuyến (offline). Phân tích màu, kiểm tra độ tương phản, mô phỏng mù màu và xuất bảng màu — tất cả ngay trên trình duyệt, không cần cài đặt.
+Bộ công cụ phân tích màu sắc, tạo theme và quản lý bảng màu chuyên nghiệp được xây dựng theo chuẩn Material Design 3 cùng nguyên lý màu sắc động Material You của Google. Hỗ trợ cài đặt hoàn chỉnh dưới dạng Progressive Web App (PWA) để chạy ngoại tuyến (offline). Dễ dàng tạo bảng màu hài hòa, kiểm tra độ tương phản theo chuẩn WCAG & APCA, mô phỏng mù màu, trích xuất màu từ ảnh và xuất mã nguồn sẵn sàng cho sản phẩm trên 9 nền tảng — tất cả thực hiện trực tiếp trên trình duyệt web.
 
 ---
 
-## ✨ Tính năng
+## 🌟 Tổng quan bộ công cụ
 
-### 🖌️ Nhập & Trộn màu
-- **Nhập mã HEX** kèm bộ chọn màu trực quan.
-- **Nhập RGB** (0–255) và **HSL** (H: 0–360, S/L: 0–100%) đồng bộ theo thời gian thực.
-- **Không gian màu hiện đại:** Hỗ trợ nhập và đồng bộ hóa trực tiếp theo thời gian thực cho hệ màu **OKLCH** và **LAB**.
-- Tất cả định dạng tự động cập nhật lẫn nhau.
+Limorina Color Checker được cấu trúc thành một bộ ứng dụng dạng mô-đun thống nhất gồm 6 công cụ chuyên sâu cùng 1 trang điều hướng trung tâm:
 
-### 🎭 Nền Động Thông Minh (Material You)
-- **Bảng màu động HCT:** Tự động tạo ra toàn bộ hệ màu chuẩn Material Design 3 bằng thuật toán HCT (Hue, Chroma, Tone) chính thức từ thư viện `@material/material-color-utilities` cho cả chế độ sáng và tối.
-- **Logo Ngôi sao 8 cánh sinh động:** File SVG logo ngôi sao 8 cánh bo góc Material Design trong header tự động đổi màu theo tông màu đang chọn và xoay 45° khi hover chuột.
-
-### 🏷️ Nhận diện tên màu
-- Tự động xác định tên màu gần nhất bằng tập dữ liệu **color-name-list** (bản rút gọn bestOf) chứa dữ liệu của hơn 4.900 tên màu được tuyển chọn.
-
-### 🌈 Sắc độ & Sắc thái (Tints, Shades, Tones)
-- 9 bước chuyển màu pha với **Trắng** (Tints), **Đen** (Shades) và **Xám** (Tones).
-- **Thiết kế Thích ứng:** Tự động hiển thị dưới dạng thanh trượt cuộn ngang trên máy tính và chuyển thành lưới Grid 5 cột 2 hàng cực kỳ ngay ngắn trên điện thoại di động để tránh cuộn ngang.
-
-### 🎼 Nguyên tắc phối màu
-- **Bổ túc, Tương đồng, Tam giác, Chữ nhật, Đơn sắc**.
-- Nhấp vào ô màu bất kỳ để chuyển sang màu đó ngay lập tức.
-
-### ♿ WCAG & APCA, Tương phản Tự do & Ma trận Tương phản
-- Tỉ lệ tương phản tương thích trên nền **Trắng** và **Đen** theo cả hai tiêu chuẩn WCAG 2.1 và W3C APCA Beta 0.1.9 (Lc score).
-- **Trang Tương phản tự do:** Một không gian độc lập cho phép người dùng tự do nhập màu nền và màu chữ tùy ý để kiểm tra tương phản song song giữa huy hiệu đạt/không đạt WCAG và điểm số APCA Lc cảm nhận trực quan.
-- **Ma trận tương phản (Contrast Matrix):** Bảng so sánh chéo tỉ lệ tương phản giữa toàn bộ các màu bạn đã lưu (Saved Palette) cùng Trắng và Đen.
-- **Công tắc đổi chế độ xem:** Dễ dàng chuyển đổi hiển thị ma trận giữa tỉ số **WCAG 2.1** và điểm số **APCA (Lc)**.
-- Gợi ý tự động **màu chữ tốt nhất** (Trắng hoặc Đen).
-
-### 🎨 Trình tạo phối màu thông minh (Smart Palette Generator)
-- Tự động tạo phối màu hài hòa gồm 5 màu dựa trên 6 quy luật phối màu chính: **Complementary** (Bổ túc), **Analogous** (Tương đồng), **Triadic** (Tam giác), **Tetradic** (Chữ nhật), **Monochromatic** (Đơn sắc), và **Freestyle** (Tự do/Ngẫu nhiên).
-- **Khóa màu riêng biệt (Color Locking):** Khóa/Mở khóa độc lập bất kỳ swatch nào trong 5 màu để làm điểm neo cố định khi tạo ngẫu nhiên dải màu mới.
-- Một chạm chọn màu swatch bất kỳ làm màu chính cho toàn bộ ứng dụng.
-- Lưu nhanh toàn bộ bảng phối 5 màu vào danh sách Saved Palette chỉ với một nút bấm.
-- Giao diện thích ứng (Responsive): Swatches hiển thị dạng cột trên màn hình máy tính và tự động xếp thành hàng ngang tiện dụng trên di động.
-
-### 🌈 Trình tạo CSS Gradient
-- Tạo dải màu Linear (cho phép trượt chỉnh góc xoay) hoặc Radial trực quan dựa trên màu đang chọn.
-- **Đồng bộ hóa hai chiều thông minh:** Nhập mã HEX dạng chữ hoặc nhấp chọn màu qua ô màu hình tròn đều được.
-- Một chạm sao chép nhanh mã CSS Gradient sạch sẽ vào clipboard.
-
-### 🎨 Trình tạo Theme MD3 (Theme Builder)
-- Tự động sinh ra toàn bộ hệ màu chuẩn Material Design 3 (`:root` CSS variables) bao gồm Primary, Secondary, Surface, Container (Lowest đến Highest), Outline, Error, v.v. bằng thuật toán HCT chính thức.
-- Trực quan hóa dưới dạng lưới Grid responsive trực quan, minh họa rõ ràng các biến thể kèm tương phản chữ thích ứng (on-colors).
-- Xuất và sao chép nhanh toàn bộ mã CSS variables để dán thẳng vào dự án.
-
-### 🖼️ Trích xuất màu từ ảnh & Xuất ảnh bảng màu
-- Kéo thả hoặc tải ảnh lên để trích xuất ra 6 màu nổi bật nhất bằng thuật toán lọc khoảng cách thông minh.
-- Nhấp vào một ô màu bất kỳ để lấy làm màu chính.
-- **Xuất ảnh bảng màu (Export Palette Image):** Hỗ trợ xuất bảng màu trích xuất (hoặc bảng màu đã lưu) thành file ảnh PNG dạng dải màu ngang kèm mã HEX chuyên nghiệp, tự động căn chỉnh kích thước.
-
-
-### 👁️ Trình mô phỏng mù màu
-- Mô phỏng 4 dạng khiếm khuyết thị giác màu sắc:
-  - Mù đỏ (Protanopia)
-  - Mù xanh lá (Deuteranopia)
-  - Mù xanh lam (Tritanopia)
-  - Mù toàn sắc (Achromatopsia)
-
-### 🖥️ Xem trước giao diện UI & Chế độ nâng cao
-- Xem màu sắc trên các thành phần UI thực tế (Nút đặc & Nút viền, Thẻ giao diện, Font chữ Roboto/Roboto Slab).
-- **Chế độ Nâng cao:** Bật tắt để mô phỏng hiển thị bảng màu trên một cấu trúc giao diện ứng dụng hoàn chỉnh.
-
-### 💾 Bảng màu đã lưu & Lịch sử màu
-- **Bảng màu đã lưu:** Lưu tối đa **10 màu** bền vững qua các phiên làm việc nhờ `localStorage`.
-- **Trang Lịch sử màu:** Tự động theo dõi, lưu trữ và hiển thị các màu sắc bạn vừa tạo trong một lưới lịch sử riêng biệt.
-
-### 📤 Cổng xuất dữ liệu
-- Xuất dữ liệu màu dưới dạng các định dạng phong phú:
-  - **CSS custom properties** (biến `:root`)
-  - **Tailwind v4** — khối `@theme` dùng giá trị OKLCH
-  - **SCSS** — cấu trúc SCSS Map hoàn chỉnh của bảng màu chính và tints/shades
-  - **Android** — tài nguyên XML color và lớp màu Jetpack Compose Kotlin Color
-  - **SwiftUI** — tiện ích mở rộng Color Extension trong Swift với thuật toán chuyển đổi RGB chính xác
-  - **JSON** — đối tượng đầy đủ tất cả các định dạng màu
-  - **Python** — mẫu mã nguồn sử dụng thư viện `materialyoucolor-python` để tái tạo bảng màu tự động.
-
-### 🌐 Hỗ trợ đa ngôn ngữ
-- Menu chọn ngôn ngữ thả nổi hỗ trợ:
-  - 🇬🇧 English | 🇻🇳 Tiếng Việt | 🇯🇵 日本語 | 🇨🇳 简体中文
-
-### 📱 Tối ưu hóa 100% cho Di động (Boxed Layout)
-- Không có bất kỳ thanh cuộn ngang nào ở màn hình di động (`overflow-x: hidden`). Bố cục co giãn dọc hoàn hảo.
-- **Logo chuyển đổi:** Tiêu đề chữ tự động ẩn đi trên điện thoại, nhường chỗ cho logo Ngôi sao 8 cánh MD3 nổi bật.
-- **Sidebar Backdrop:** Thiết kế Sidebar dạng Modal Drawer trên di động kèm lớp phủ mờ blur làm nhòa cực đẹp.
-
-### ⚡ Ứng dụng Web Lũy tiến (PWA)
-- **Hỗ trợ cài đặt:** Cài đặt trực tiếp như một ứng dụng độc lập trên máy tính, điện thoại hoặc máy tính bảng.
-- **Hoạt động ngoại tuyến (Offline):** Sử dụng Service Worker để lưu trữ cache tài nguyên, cho phép truy cập ngay cả khi không có kết nối internet.
-- **Tích hợp màu hệ thống:** Màu chủ đề (theme-color) tự động ăn khớp với thanh trạng thái của hệ điều hành.
+| Công cụ | Đường dẫn | Mô tả |
+|---|---|---|
+| **Hub / Trang chủ** | `/index.html` | Giới thiệu với hiệu ứng chuyển động Material You và phím tắt mở nhanh toàn bộ công cụ. |
+| **Generator & Bảng màu** | `/generator/` | Không gian làm việc đa tab: Kiểm tra 1 màu, Quản lý dự án, Phối màu thông minh & Lịch sử màu. |
+| **Trích xuất màu từ ảnh** | `/image-extractor/` | Trích xuất dải màu từ ảnh với chốt định vị (pins) tương tác trực tiếp trên canvas và thanh chế độ lọc màu. |
+| **Trình tạo Theme MD3** | `/md3-theme-creator/` | Tạo toàn bộ hệ thống biến màu Material Design 3 HCT cùng Cổng xuất mã nguồn đa nền tảng (9 định dạng). |
+| **Kiểm tra tương phản** | `/contrast-checker/` | Kiểm tra độ tương phản chữ/nền tự do với tỉ số WCAG 2.1 và điểm số cảm nhận APCA Lc. |
+| **Ma trận tương phản** | `/matrix/` | Bảng ma trận so sánh chéo khả năng tiếp cận giữa toàn bộ các màu đã lưu trong dự án. |
+| **Trình tạo CSS Gradient** | `/css-gradient-generator/` | Thiết kế dải màu Linear & Radial trực quan, điều chỉnh góc xoay và sao chép mã CSS tiện lợi. |
 
 ---
 
-## 🖥️ Hướng dẫn khởi động
+## ✨ Chi tiết tính năng theo từng công cụ
 
-Chỉ cần mở `index.html` trên bất kỳ trình duyệt hiện đại nào. **Lưu ý**, nếu muốn dùng tính năng giao diện gốc của Web Components (ví dụ dropdown menu) thì cần chạy thông qua máy chủ cục bộ hoặc đảm bảo file đang được host trên domain (HTTPS). Nếu mở trực tiếp từ đường dẫn file (file://), một số trình duyệt sẽ chặn các tính năng bảo mật của Web Components.
+### 1. 🎨 Generator & Bảng màu (`/generator/`)
+Không gian làm việc "4 trong 1" với điều hướng tab tiện lợi:
 
-```bash
-git clone https://github.com/justlimorina/color-checker.git
-cd color-checker
-# Mở index.html trên trình duyệt
-```
+- **Tab 1: Kiểm tra & Trộn màu đơn (Single Color Checker)**
+  - **Nhập & đồng bộ đa định dạng:** Chuyển đổi hai chiều theo thời gian thực giữa **HEX**, **RGB** (0–255), **HSL** (0–360, 0–100%), **OKLCH** (Lightness, Chroma, Hue), và **Oklab** (L\*, a\*, b\*).
+  - **Công cụ hút màu màn hình (EyeDropper):** Tích hợp trực tiếp Browser EyeDropper API cho phép chấm chọn bất kỳ màu nào từ màn hình máy tính của bạn.
+  - **Nhận diện tên màu tự động:** Tự động tìm tên màu gần nhất dựa trên tập dữ liệu tuyển chọn hơn 4.900 tên màu từ `color-name-list`.
+  - **Hiển thị nhanh mã màu:** Thẻ sao chép nhanh cho RGB, HSL, OKLCH và **CMYK** (0–100%).
+  - **Sắc độ, Sắc thái & Tông màu (Tints, Shades & Tones):** 9 bước chuyển màu pha với Trắng (Tints), Đen (Shades) và Xám trung tính (Tones).
+  - **Quy luật phối màu (Color Harmonies):** Tính toán tức thì các phối màu: Bổ túc (Complementary), Tương đồng (Analogous), Tam giác (Triadic), Chữ nhật (Tetradic) và Đơn sắc (Monochromatic).
+  - **Độ tương phản WCAG & APCA:** Kiểm tra khả năng hiển thị trên nền Trắng và Đen với huy hiệu đạt chuẩn WCAG 2.1 AA/AAA và điểm số APCA Beta (Lc).
+  - **Gợi ý màu chữ tốt nhất:** Tự động đề xuất màu chữ tối ưu nhất cho khả năng đọc (Trắng hoặc Đen).
+  - **Xem trước giao diện (UI Prototype Preview):** Mô phỏng nút bấm (Primary, Tonal, Outlined), Thẻ giao diện (Surface Card) và Đoạn văn bản mẫu. Có công tắc chuyển sang **Chế độ nâng cao (Advanced Mode)** để xem trước trên bố cục ứng dụng đầy đủ.
+  - **Mô phỏng khiếm khuyết thị giác (Mù màu):** Ma trận mô phỏng chính xác 4 dạng khiếm khuyết thị giác màu sắc phổ biến:
+    - Protanopia (Mù màu đỏ)
+    - Deuteranopia (Mù màu xanh lá)
+    - Tritanopia (Mù màu xanh lam)
+    - Achromatopsia (Mù màu toàn phần / Đơn sắc)
+  - **Thao tác nhanh:** Lưu vào bảng màu dự án, tạo liên kết chia sẻ (`?color=HEX`), và xuất dải màu thành file ảnh PNG.
 
-Hoặc chạy máy chủ cục bộ để cho phép ESM:
-```bash
-python3 -m http.server 5500
-# Truy cập http://localhost:5500
-```
+- **Tab 2: Quản lý bảng màu dự án (Project Palettes Manager)**
+  - **Quản lý đa dự án:** Tạo mới, đổi tên, xóa và chuyển đổi linh hoạt giữa nhiều dự án màu khác nhau được lưu bền vững trong `localStorage`.
+  - **Quản lý ô màu (Swatches):** Thêm, xem thông tin, sao chép hoặc xóa từng ô màu trong dự án đang chọn.
+  - **Xuất bảng màu GPL:** Xuất file bảng màu `.gpl` tương thích chuẩn với GIMP, Inkscape và Adobe Photoshop.
+  - **Sao lưu & Phục hồi JSON:** Xuất toàn bộ dữ liệu dự án ra JSON hoặc nhập file JSON bảng màu có sẵn vào ứng dụng.
+  - **Liên kết chia sẻ bảng màu:** Tạo liên kết chia sẻ chứa toàn bộ dải màu (`?palette=HEX1,HEX2...`).
+
+- **Tab 3: Phối màu thông minh (Smart Palette Generator)**
+  - Tự động tạo dải 5 màu hài hòa theo 6 nguyên lý phối màu: **Complementary** (Bổ túc), **Analogous** (Tương đồng), **Triadic** (Tam giác), **Tetradic** (Chữ nhật), **Monochromatic** (Đơn sắc), và **Freestyle** (Tự do/Ngẫu nhiên).
+  - **Khóa màu độc lập (Color Locking):** Khóa/Mở khóa từng swatch riêng lẻ để giữ cố định các màu bạn ưng ý trong khi tạo ngẫu nhiên lại các màu còn lại.
+  - Một chạm để lấy màu swatch làm màu chính cho toàn bộ ứng dụng hoặc lưu cả bộ 5 màu vào dự án.
+
+- **Tab 4: Lịch sử màu (Color History)**
+  - Tự động ghi lại danh sách các màu bạn vừa tạo hoặc khám phá, kèm nút dọn dẹp lịch sử tiện lợi.
+
+---
+
+### 2. 🖼️ Trích xuất màu từ ảnh (`/image-extractor/`)
+- **Kéo thả & Tải ảnh lên:** Thả file ảnh trực tiếp vào khung tải hoặc duyệt file từ máy tính.
+- **Chốt định vị tương tác trên Canvas:** Các chấm tròn đánh dấu vị trí lấy màu hiển thị trực quan ngay trên bề mặt ảnh. Người dùng có thể kéo thả chốt đến bất kỳ vị trí nào trên ảnh để lấy mẫu màu theo thời gian thực.
+- **Thanh trượt chế độ trích xuất:** Chuyển đổi nhanh giữa các thuật toán lọc màu:
+  - *Muted* (Trầm tính)
+  - *Soft* (Dịu nhẹ)
+  - *Pastel* (Màu phấn)
+  - *Vibrant* (Rực rỡ)
+  - *Balanced* (Cân bằng)
+- **Tùy chỉnh số lượng màu:** Dễ dàng tăng (`+`) hoặc giảm (`-`) số lượng chốt lấy mẫu màu.
+- **Xuất bảng màu trích xuất:** Xuất bảng màu vừa lấy từ ảnh thành file ảnh PNG dải màu chuyên nghiệp kèm mã HEX.
+
+---
+
+### 3. 🎨 Trình tạo Theme MD3 & Cổng xuất mã nguồn (`/md3-theme-creator/`)
+- **Tạo hệ thống token MD3 đầy đủ:** Tự động tính toán trọn bộ mã màu Material Design 3 (Primary, Secondary, Tertiary, Surface, Surface Containers 1–5, Outline, Error, cùng toàn bộ các biến thể màu chữ on-colors tương ứng) bằng thuật toán HCT chuẩn từ thư viện `@material/material-color-utilities`.
+- **Lưới trực quan hóa token:** Minh họa rõ ràng mối quan hệ giữa màu nền và màu chữ on-color tương ứng.
+- **Cổng xuất mã nguồn (Export Hub) hỗ trợ 9 định dạng tiêu chuẩn ngành:**
+  1. **CSS Variables (`theme.css`):** Các biến `:root` CSS dùng ngay cho web.
+  2. **Tailwind CSS v4 (`theme.tailwind.css`):** Khối `@theme` sử dụng giá trị hệ màu OKLCH hiện đại.
+  3. **Figma Tokens (`tokens.json`):** Định dạng chuẩn W3C Design Tokens Community Group (DTCG).
+  4. **Flutter (`app_theme.dart`):** Cấu hình `ColorScheme.fromSeed` và `ThemeData` bằng mã nguồn Dart.
+  5. **SCSS (`_colors.scss`):** Cấu trúc Sass map `$brand-color` và danh sách biến màu riêng rẽ.
+  6. **Android (`colors.xml`):** Tài nguyên XML color truyền thống và mã nguồn Jetpack Compose Kotlin Color.
+  7. **SwiftUI (`AppTheme.swift`):** Tiện ích mở rộng struct `Color` trong Swift với thuật toán quy đổi RGB chuẩn xác.
+  8. **JSON (`palette.json`):** Đối tượng JSON chi tiết bao gồm mọi không gian màu và các bước sắc độ.
+  9. **Python (`theme_colors.py`):** Đoạn mã tái tạo bảng màu bằng thư viện `materialyoucolor`.
+- Xem trước mã nguồn trực tiếp kèm huy hiệu định dạng, số dòng code, một nút bấm Sao chép mã (Copy Code) và nút Tải về file (Download).
+
+---
+
+### 4. ♿ Kiểm tra tương phản tùy chỉnh (`/contrast-checker/`)
+- **Kiểm tra tự do:** Tự do ghép bất kỳ màu chữ và màu nền nào để kiểm tra khả năng đọc.
+- **Hút màu tích hợp:** Chấm chọn màu trực tiếp từ màn hình vào ô màu nền hoặc màu chữ qua EyeDropper.
+- **Đảo màu nhanh:** Nhấp nút `sync_alt` để hoán đổi ngay màu nền và màu chữ cho nhau.
+- **Đánh giá theo 2 tiêu chuẩn khả năng tiếp cận:**
+  - **WCAG 2.1:** Tính toán tỉ lệ tương phản kèm huy hiệu Đạt/Không đạt chuẩn AA và AAA cho cỡ chữ thường và chữ lớn.
+  - **W3C APCA Beta (Điểm Lc):** Đánh giá độ tương phản cảm nhận thị giác thực tế kèm huy hiệu Pass/Fail.
+
+---
+
+### 5. 📊 Ma trận tương phản (`/matrix/`)
+- **So sánh chéo toàn bộ bảng màu:** Tự động tạo bảng ma trận N×N so sánh độ tương phản của tất cả các màu đã lưu trong dự án với nhau, cũng như với màu Trắng và Đen thuần.
+- **2 chế độ xem linh hoạt:** Chuyển đổi nhanh giữa hiển thị tỉ số **WCAG 2.1** và điểm số **APCA (Lc)**.
+- **Huy hiệu màu sắc trực quan:** Đánh dấu màu sắc rõ ràng giúp kiểm duyệt nhanh tính tiếp cận của toàn bộ hệ thống màu thiết kế.
+
+---
+
+### 6. 🌈 Trình tạo CSS Gradient (`/css-gradient-generator/`)
+- **Kiểu Gradient:** Hỗ trợ tạo dải màu dạng **Linear** (đường thẳng) và **Radial** (tỏa tròn).
+- **Thanh trượt góc xoay:** Điều chỉnh góc từ 0° đến 360° theo thời gian thực kèm số đo góc trực quan.
+- **Bộ chọn 2 màu chuyển sắc:** Hỗ trợ nhập mã HEX, dùng bảng chọn màu gốc hoặc công cụ hút màu màn hình.
+- **Xem trước & Xuất mã:** Xem trước dải màu tức thì và sao chép mã CSS (`background: linear-gradient(...)`) chỉ với 1 click.
+
+---
+
+### 📱 Kiến trúc giao diện & Trải nghiệm người dùng
+- **Thanh điều hướng Desktop (Navigation Rail):** Bố cục thanh trượt bên cạnh tinh gọn, có icon rõ ràng, hiển thị trạng thái đang xem và chú thích nhanh (tooltip).
+- **Thanh tiêu đề & Drawer trên Mobile:** Thanh Top App Bar kèm Navigation Drawer mở mượt mà với hiệu ứng làm nhòa nền phía sau (`backdrop-filter`).
+- **Thanh điều hướng chân trang Mobile (Bottom Nav):** Thanh điều hướng dạng icon-only chuẩn Material Design 3, thao tác ngón cái cực kỳ tiện lợi trên điện thoại.
+- **Hệ thống màu động toàn diện (Material You):** Toàn bộ giao diện (thanh điều hướng, thẻ, nút bấm, viền) tự động đổi màu theo màu chính đang chọn ở cả chế độ Sáng (Light) và Tối (Dark).
+- **Hướng dẫn sử dụng tích hợp (User Guide Modal):** Bảng tra cứu tóm tắt các không gian màu (HEX, RGB, HSL, OKLCH, LAB), sắc độ (Tints, Shades, Tones) và các cấp độ chuẩn tiếp cận WCAG.
+- **Hỗ trợ 4 ngôn ngữ:** Thay đổi ngôn ngữ ngay tức thì không cần tải lại trang:
+  - 🇬🇧 English (Tiếng Anh)
+  - 🇻🇳 Tiếng Việt
+  - 🇯🇵 日本語 (Tiếng Nhật)
+  - 🇨🇳 简体中文 (Tiếng Trung giản thể)
+- **Progressive Web App (PWA):** Cài đặt trực tiếp lên màn hình chính máy tính hoặc điện thoại, hoạt động ngoại tuyến nhờ bộ nhớ đệm Service Worker (`sw.js`), đồng bộ màu với thanh trạng thái hệ điều hành.
 
 ---
 
@@ -122,66 +136,115 @@ python3 -m http.server 5500
 
 | Thành phần | Công nghệ |
 |---|---|
-| Cấu trúc | HTML5 |
-| Logic | Vanilla JavaScript dạng Module (ES2020+) |
-| Hệ màu động | Thư viện chính thức `@material/material-color-utilities` |
-| Giao diện thành phần | Thư viện Web Components chính thức `@material/web` |
-| Kiểu dáng | Vanilla CSS với hệ thống phân cấp font chữ (Roboto Slab, Roboto, Roboto Mono) |
-| Hệ thống thiết kế | Material Design 3 (Material You Dynamic Theme) |
-| Logo | File vector SVG nội tuyến |
+| **Cấu trúc** | HTML5 ngữ nghĩa & Kiến trúc Đa trang Mô-đun (Multi-Page Architecture) |
+| **Kiểu dáng** | Vanilla CSS3 với hệ thống Design Tokens & Phân cấp Typography Material Design 3 |
+| **Logic xử lý** | JavaScript thuần dạng Module (ES Modules, ES2020+) |
+| **Hệ thống màu động** | Thư viện chính thức `@material/material-color-utilities` (Không gian màu HCT) |
+| **Thành phần UI** | Thư viện Web Components chính thức `@material/web` của Google |
+| **Bộ đo tương phản** | Thuật toán độ chói tương đối WCAG 2.1 và thuật toán cảm nhận W3C APCA Beta 0.1.9 |
+| **Hút màu màn hình** | Native Browser EyeDropper API |
+| **PWA & Ngoại tuyến** | Service Worker (`sw.js`) & Web App Manifest (`manifest.json`) |
+| **Font & Biểu tượng** | Google Fonts (*Roboto*, *Roboto Slab*, *Roboto Mono*, *Material Symbols Rounded*) |
 
 ---
 
 ## 📂 Cấu trúc dự án
 
-Dự án được tổ chức theo cấu trúc Module cực kỳ khoa học và sạch sẽ:
-
 ```
 color-checker/
-├── index.html            # Khung ứng dụng & các trang SPA
-├── LICENSE               # Giấy phép MIT (MIT License)
-├── manifest.json         # Web App Manifest phục vụ PWA
-├── sw.js                 # Service Worker phục vụ offline caching
-├── README.md             # README tiếng Anh
-├── README_vi.md          # Tệp này (tiếng Việt)
-└── assets/               # Thư mục tài nguyên
-    ├── logo.svg          # Logo SVG ngôi sao 8 cánh
-    ├── styles.css        # Hệ thống biến CSS & layout
-    └── script/           # Thư mục script module
-        ├── app.js        # Khởi tạo ứng dụng & điều phối state
-        ├── config.js     # Cấu hình dùng chung (dịch thuật ngôn ngữ)
-        ├── events.js     # Bản đồ lắng nghe sự kiện DOM
-        ├── features.js   # Logic kiểm tra tương phản & preview nâng cao
-        ├── navigation.js # Bộ định tuyến SPA và Sidebar
-        ├── colornames.bestof.js # Bản màu rút gọn bestOf từ thư viện color-names
-        ├── sidebar.js    # Logic đóng mở Sidebar
-        ├── state.js      # Lưu trữ state toàn cục & cache DOM
-        ├── ui.js         # Render giao diện, xuất ảnh & Nền động
-        └── utils.js      # Công thức chuyển đổi màu & accessibility
+├── index.html                  # Trang chủ & hub liên kết các công cụ
+├── CNAME                       # Cấu hình tên miền tùy chỉnh
+├── LICENSE                     # Giấy phép mã nguồn mở MIT
+├── manifest.json               # Web App Manifest phục vụ cài đặt PWA
+├── sw.js                       # Service Worker phục vụ lưu cache ngoại tuyến
+├── README.md                   # Tài liệu tiếng Anh
+├── README_vi.md                # Tài liệu tiếng Việt (tệp này)
+├── generator/                  # Không gian làm việc Generator & Bảng màu
+│   ├── index.html              # Bố cục 4 tab (Kiểm tra màu, Dự án, Phối màu, Lịch sử)
+│   └── script.js               # Logic trộn màu, phối màu, WCAG và UI preview
+├── image-extractor/            # Công cụ trích xuất màu từ ảnh
+│   ├── index.html              # Vùng kéo thả & không gian canvas
+│   └── script.js               # Chốt định vị trên canvas & các chế độ trích xuất
+├── md3-theme-creator/          # Trình tạo Theme Material Design 3
+│   ├── index.html              # Lưới token & giao diện Cổng xuất mã nguồn
+│   └── script.js               # Sinh token HCT & 9 mẫu mã nguồn xuất bản
+├── contrast-checker/           # Kiểm tra tương phản tùy chỉnh
+│   ├── index.html              # Khung nhập màu nền / màu chữ tự do
+│   └── script.js               # Đánh giá tương phản WCAG 2.1 & APCA
+├── matrix/                     # Ma trận so sánh tương phản
+│   ├── index.html              # Bảng ma trận so sánh kèm nút chuyển chế độ
+│   └── script.js               # Tính toán ma trận độ tương phản
+├── css-gradient-generator/     # Trình tạo dải màu CSS Gradient
+│   ├── index.html              # Giao diện thiết kế Linear/Radial gradient
+│   └── script.js               # Điều khiển góc xoay & tạo mã CSS
+└── assets/                     # Tài nguyên dùng chung
+    ├── images/                 # Logo vector SVG
+    │   ├── amelia_logo.svg     # Favicon & biểu trưng
+    │   ├── logo-black.svg      # Logo điều hướng (nền sáng)
+    │   └── logo-white.svg      # Logo điều hướng (nền tối)
+    ├── styles.css              # Toàn bộ biến token MD3 & CSS responsive
+    └── script/                 # Các mô-đun JavaScript dùng chung
+        ├── config.js           # Từ điển đa ngôn ngữ (EN, VI, JA, ZH)
+        ├── colornames.bestof.js# Tập dữ liệu 4.900+ tên màu tuyển chọn
+        ├── projects.js         # Quản lý đa dự án, xuất nhập GPL/JSON, chia sẻ URL
+        ├── utils.js            # Công thức toán màu (HEX, RGB, HSL, CMYK, OKLCH, OKLab, WCAG, APCA)
+        └── shared/
+            └── layout.js       # Vỏ giao diện thích ứng (Nav Rail, Drawer, Bottom Nav, Nền động)
 ```
+
+---
+
+## 🖥️ Hướng dẫn khởi chạy
+
+### Chạy cục bộ (Local Development)
+
+Do dự án sử dụng chuẩn ES Modules (`import`/`export`) và Web Components, bạn cần khởi chạy qua một máy chủ HTTP cục bộ:
+
+```bash
+# 1. Clone mã nguồn về máy
+git clone https://github.com/justlimorina/color-checker.git
+cd color-checker
+
+# 2. Khởi động local server (chọn 1 trong các cách sau)
+# Cách A: Dùng Python 3
+python3 -m http.server 5500
+
+# Cách B: Dùng Node.js (npx serve)
+npx serve .
+
+# Cách C: Dùng tiện ích Live Server trong VS Code
+# Nhấp chuột phải vào index.html -> Chọn "Open with Live Server"
+
+# 3. Mở trên trình duyệt
+# Truy cập đường dẫn: http://localhost:5500
+```
+
+> [!NOTE]
+> Mở trực tiếp `index.html` bằng giao thức đường dẫn tệp (`file:///`) có thể khiến chính sách bảo mật trình duyệt chặn nạp các mô-đun ES Module và Web Components. Hãy luôn chạy qua máy chủ HTTP (`http://` hoặc `https://`).
+
+---
+
+## 🔗 Tham số URL & Tích hợp chia sẻ
+
+Bạn có thể tạo liên kết trực tiếp để chia sẻ trạng thái màu cụ thể qua tham số URL:
+
+- **Một màu cụ thể:**  
+  `https://justlimorina.github.io/color-checker/generator/?color=624E9A`
+- **Chia sẻ cả bảng màu:**  
+  `https://justlimorina.github.io/color-checker/generator/?palette=624E9A,EADDFF,381E72,49454F,CAC4D0`
+
+---
+
+## 📣 Ghi công bên thứ ba
+
+- **[color-name-list](https://github.com/meodai/color-names):** Tập dữ liệu tên màu tuyển chọn `bestOf` bởi David Aerne ([@meodai](https://github.com/meodai)) theo [Giấy phép MIT](https://github.com/meodai/color-names/blob/master/LICENSE).
+- **[@material/material-color-utilities](https://github.com/material-foundation/material-color-utilities):** Thuật toán màu HCT chính thức của Google Material Design 3 theo Giấy phép Apache-2.0.
+- **[@material/web](https://github.com/material-components/material-web):** Bộ Web Components Material Design 3 của Google theo Giấy phép Apache-2.0.
+- **[APCA (Advanced Perceptual Contrast Algorithm)](https://github.com/Myndex/apca-w3):** Thuật toán đánh giá độ tương phản theo cảm nhận thị giác W3C Silver/WCAG3 của Andrew Somers (Myndex Research).
 
 ---
 
 ## ⚖️ Giấy phép
- 
-Dự án này được phát hành theo **Giấy phép MIT (MIT License)**.  
-Xem file [LICENSE](LICENSE) để biết toàn văn.
 
----
-
-## 📣 Ghi công thành phần bên thứ ba
-
-### color-names (color-name-list)
-- **Tác giả:** meodai (David Aerne) — [https://github.com/meodai/color-names](https://github.com/meodai/color-names)
-- **Giấy phép:** [Giấy phép MIT](https://github.com/meodai/color-names/blob/master/LICENSE)
-- **Mục đích sử dụng:** Cung cấp danh sách tên màu tuyển chọn `bestOf` được sử dụng để tìm kiếm tên màu gần nhất trong `colornames.bestof.js`.
-
----
-
-## 🙏 Lời cảm ơn
-
-- [Material Design 3](https://m3.material.io/) — Hướng dẫn hệ thống thiết kế
-- [Google Fonts](https://fonts.google.com/) — Font Roboto, Roboto Slab & Roboto Mono
-- [Material Symbols](https://fonts.google.com/icons) — Bộ biểu tượng
-- [WCAG 2.1](https://www.w3.org/TR/WCAG21/) — Tiêu chuẩn tương phản khả năng tiếp cận
-- [OKLCH color space](https://oklch.com/) — Không gian màu đồng đều về mặt cảm nhận, dùng cho xuất Tailwind v4
+Dự án được phát hành theo **[Giấy phép MIT (MIT License)](LICENSE)**.  
+&copy; 2024 – Hiện tại **Limorina**. Bảo lưu mọi quyền.

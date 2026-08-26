@@ -2,120 +2,132 @@
 
 > **English** | [Tiếng Việt](README_vi.md)
 
-A professional-grade color analysis and design tool built with Material Design 3 and Material You dynamic theming principles. Fully installable as a Progressive Web App (PWA) with offline support. Analyze colors, check accessibility, simulate color blindness, and export palettes — all in your browser, no installation required.
+A modern, professional-grade color analysis, theme generation, and palette workstation built with Material Design 3 and Material You dynamic theming principles. Fully installable as a Progressive Web App (PWA) with offline support. Create harmonized palettes, check WCAG & APCA accessibility, simulate color blindness, extract colors from images, and export production-ready code across 9 platforms — all directly in your browser.
 
 ---
 
-## ✨ Features
+## 🌟 Suite Overview
 
-### 🖌️ Color Input & Mixer
-- **HEX input** with live color picker.
-- **RGB inputs** (0–255) and **HSL inputs** (H: 0–360, S/L: 0–100%) synchronized in real time.
-- **Modern Color Spaces:** Direct input and real-time synchronization for **OKLCH** and **LAB** color spaces.
-- All input formats update each other automatically.
+Limorina Color Checker is structured as a unified modular suite comprising 6 dedicated tools and a central hub:
 
-### 🎭 Dynamic Theme Tinting (Material You)
-- **HCT Dynamic Palette:** Automatically generates the entire suite of standard Material Design 3 system colors using the official `@material/material-color-utilities` HCT (Hue, Chroma, Tone) algorithm for light and dark modes.
-- **Interactive SVG Logo:** A beautifully curved 8-pointed star in the header dynamically changes its color to match the selected theme and rotates 45° on hover.
-
-### 🏷️ Color Name Identification
-- Automatically identifies the nearest named color using a curated **color-name-list** (bestOf subset) containing 4,900+ color names.
-
-### 🌈 Tints, Shades & Tones
-- 9-step gradients mixed with **White** (Tints), **Black** (Shades), and **Grey** (Tones).
-- **Responsive Layout:** Automatically displays as a swipeable row on desktop, and transitions into a clean 5-column grid wrap on mobile to fit the viewport perfectly.
-
-### 🎼 Color Harmonies
-- **Complementary**, **Analogous**, **Triadic**, **Tetradic**, **Monochromatic**.
-- Click any harmony swatch to instantly switch to that color.
-
-### ♿ WCAG & APCA Accessibility, Freestyle Contrast & Matrix
-- Contrast ratios against **White** and **Black** backgrounds using both WCAG 2.1 and W3C APCA Beta 0.1.9 (Lc score).
-- **Freestyle Contrast Page:** A standalone page to analyze contrast between custom foreground and background colors with both WCAG pass/fail badges and APCA perceptual scores.
-- **Contrast Matrix:** A cross-comparison matrix table checking the contrast of all your saved colors against each other, as well as against pure White and Black.
-- **Matrix View Toggle:** Quickly switch the Contrast Matrix layout between standard **WCAG 2.1** ratios and **APCA (Lc)** scores.
-- Automatic **Best Text Color** recommendation (White or Black).
-
-### 🎨 Smart Palette Generator
-- Generate beautiful 5-color palettes based on 6 color harmony rules: **Complementary**, **Analogous**, **Triadic**, **Tetradic**, **Monochromatic**, and **Freestyle (Random)**.
-- **Color Locking:** Individually lock/unlock any of the 5 swatches to serve as anchor points while generating new variations.
-- Easily set any generated swatch as the main app color with a single click.
-- Instantly save the entire 5-color palette into your Saved Palette.
-- Fully responsive layout that automatically adjusts swatches vertically for desktop and horizontally for mobile display.
-
-### 🌈 CSS Gradient Generator
-- Draw linear or radial gradients dynamically from your active color.
-- Tweak rotation angles in real time using a smooth slider.
-- **Dual Input Syncing:** Edit gradient colors using either text HEX boxes or absolute color pickers.
-- Quick one-click action to copy clean, raw CSS code to your clipboard.
-
-### 🎨 MD3 Theme Builder
-- Instantly generate a complete suite of standard Material Design 3 color tokens (Primary, Secondary, Surface, Outline, Error, Surface Containers, and their variants) using the official `@material/material-color-utilities` HCT algorithm.
-- Visualized in a responsive grid illustrating each token's background and on-color contrast interaction.
-- One-click export to copy the generated `:root` CSS variables block directly into your stylesheet.
-
-### 🖼️ Image Extractor & Palette Export
-- Drag-and-drop or upload images to automatically extract a 6-color dominant palette using a proximity-aware algorithm.
-- Click any extracted color to set it as the active color.
-- **Export Palette Image:** Exports your saved palette or extracted image palette as a clean, horizontal color strip (palette strip) with clearly labeled HEX values below each swatch, adjusting its width dynamically.
-
-### 📤 Export Hub
-- Export color data as:
-  - **CSS custom properties** (`:root` variables)
-  - **Tailwind v4** `@theme` block using OKLCH values
-  - **SCSS** color map structure
-  - **Android** XML color resources and Jetpack Compose Kotlin color objects
-  - **SwiftUI** Color extension templates with precise RGB scaling
-  - **JSON** object with all color formats
-  - **Python** `materialyoucolor` code templates demonstrating how to programmatically recreate the theme.
-
-### 👁️ Color Blindness Simulator
-- Simulates 4 types of color vision deficiency using transformation matrices:
-  - Protanopia (no red)
-  - Deuteranopia (no green)
-  - Tritanopia (no blue)
-  - Achromatopsia (total color blindness)
-
-### 🖥️ UI Prototype Preview & Advanced View
-- See how your color looks on real UI components (Solid & Outline buttons, Surface cards, Typography).
-- **Advanced Mode:** Toggle to inspect your theme in a comprehensive mock interface layout.
-
-### 💾 Saved Palette & History
-- **Saved Palette:** Save up to **10 colors** persisted via `localStorage`.
-- **Color History Page:** Automatically tracks and displays recently browsed colors in a dedicated history grid.
-
-
-### 🌐 Multi-language Support
-- Floating language menu supporting:
-  - 🇬🇧 English | 🇻🇳 Tiếng Việt | 🇯🇵 日本語 | 🇨🇳 简体中文
-
-### 📱 100% Mobile Optimized (Boxed Layout)
-- Zero horizontal overflow (`overflow-x: hidden`). All layout containers dynamically stack on smaller viewports.
-- **Logo Transition:** The header text automatically hides on mobile screens, leaving the dynamic SVG star logo as the sole brand anchor.
-- **Sidebar Backdrop:** A beautiful modal Navigation Drawer on mobile with a blurred backdrop overlay.
-
-### ⚡ Progressive Web App (PWA)
-- **Installable:** Install as a standalone application on desktop, mobile, or tablet.
-- **Offline Capable:** Cached using Service Worker for access without internet connectivity.
-- **Theme Color Integration:** Merges seamlessly with native status bars and system colors.
+| Tool | Route | Description |
+|---|---|---|
+| **Hub / Landing Page** | `/index.html` | Animated hero showcase and quick launchpad for all utilities. |
+| **Generator & Palette** | `/generator/` | Multi-tab workstation: Single Color Checker, Project Palettes, Smart Harmonizer & History. |
+| **Image Extractor** | `/image-extractor/` | Drag-and-drop image color extractor with draggable canvas pins and preset sliders. |
+| **MD3 Theme Builder** | `/md3-theme-creator/` | Material Design 3 dynamic token generator with a 9-target multi-language Export Hub. |
+| **Contrast Checker** | `/contrast-checker/` | Freestyle foreground/background contrast tester with WCAG 2.1 & APCA Lc scores. |
+| **Contrast Matrix** | `/matrix/` | Cross-comparison matrix evaluating all saved palette colors against each other. |
+| **CSS Gradient Generator** | `/css-gradient-generator/` | Visual linear & radial gradient creator with custom angles and instant CSS export. |
 
 ---
 
-## 🖥️ Getting Started
+## ✨ Features by Module
 
-Simply open `index.html` in any modern browser. **Note**, if you want to use the native interface features of Web Components (such as dropdown menus), you need to run the application through a local server or ensure the file is hosted on a domain (HTTPS). If opened directly from the file path (file://), some browsers will block the security features of Web Components.
+### 1. 🎨 Generator & Palette Workstation (`/generator/`)
+A 4-in-1 workspace equipped with tabbed navigation:
 
-```bash
-git clone https://github.com/justlimorina/color-checker.git
-cd color-checker
-# Open index.html in your browser
-```
+- **Tab 1: Single Color Checker & Mixer**
+  - **Multi-Format Synchronized Input:** Real-time bi-directional conversion across **HEX**, **RGB** (0–255), **HSL** (0–360, 0–100%), **OKLCH** (Lightness, Chroma, Hue), and **Oklab** (L\*, a\*, b\*).
+  - **Native EyeDropper:** Pick any color directly from your desktop screen via the browser EyeDropper API.
+  - **Color Name Identification:** Instant nearest color matching powered by a curated subset of 4,900+ names from `color-name-list`.
+  - **Color Code Outputs:** Quick copy cards for RGB, HSL, OKLCH, and **CMYK** (0–100%).
+  - **Tints, Shades & Tones:** 9-step variation strips mixed with pure White (Tints), Black (Shades), and Neutral Grey (Tones).
+  - **Color Harmonies:** Instant calculation for Complementary, Analogous, Triadic, Tetradic, and Monochromatic palettes.
+  - **WCAG & APCA Contrast:** Live contrast validation on White and Black backgrounds featuring WCAG 2.1 AA/AAA compliance badges and W3C APCA Beta (Lc perceptual score).
+  - **Best Text Color:** Automatic recommendation for optimal text legibility (White vs. Black).
+  - **UI Prototype Preview:** Interactive mock UI with Primary Button, Tonal Button, Outline Button, Surface Card, and Typography preview. Includes an **Advanced Mode** toggle for a full mock application layout.
+  - **Color Blindness Simulator:** Accurate matrix simulations for 4 common color vision deficiencies:
+    - Protanopia (Red-blind)
+    - Deuteranopia (Green-blind)
+    - Tritanopia (Blue-blind)
+    - Achromatopsia (Monochromacy / Total color blindness)
+  - **Quick Actions:** Save to active palette, generate a shareable URL (`?color=HEX`), and export as a PNG palette strip.
 
-Or serve locally to allow ESM imports:
-```bash
-python3 -m http.server 5500
-# Then visit http://localhost:5500
-```
+- **Tab 2: Project Palettes Manager**
+  - **Multi-Project Organization:** Create, rename, delete, and switch between named color projects persisted in `localStorage`.
+  - **Swatches Management:** Add, inspect, copy, or remove swatches in your active project.
+  - **GPL Palette Export:** Export palette files (`.gpl`) compatible with GIMP, Inkscape, and Adobe Photoshop.
+  - **JSON Backup & Restore:** Export project data as structured JSON or import existing JSON palette files.
+  - **Shareable Palette Link:** Generate sharable URLs encoded with palette colors (`?palette=HEX1,HEX2...`).
+
+- **Tab 3: Smart Palette Generator**
+  - Generate cohesive 5-color palettes using 6 harmony rules: **Complementary**, **Analogous**, **Triadic**, **Tetradic**, **Monochromatic**, and **Freestyle (Random)**.
+  - **Color Locking:** Independently lock/unlock individual swatches to anchor desired colors while randomizing the rest.
+  - One-click action to set any generated swatch as the active color or save the whole 5-color set to your project.
+
+- **Tab 4: Color History**
+  - Automatically records recently explored colors into a visual grid with one-click cleanup.
+
+---
+
+### 2. 🖼️ Interactive Image Extractor (`/image-extractor/`)
+- **Drag-and-Drop / File Upload:** Drop image files directly onto the drop zone or browse your local storage.
+- **Interactive Canvas Pinning:** Color extraction markers (pins) render directly over the image canvas. Drag pins anywhere on the image to resample specific colors in real time.
+- **Palette Presets Slider:** Switch algorithmic color extraction modes on the fly:
+  - *Muted*
+  - *Soft*
+  - *Pastel*
+  - *Vibrant*
+  - *Balanced*
+- **Dynamic Swatch Count:** Dynamically add (`+`) or remove (`-`) color sampling pins.
+- **Export Extracted Palette:** Export your extracted image palette as a formatted PNG color strip or copy hex values.
+
+---
+
+### 3. 🎨 Material Design 3 Theme Builder & Export Hub (`/md3-theme-creator/`)
+- **Full MD3 Token Generation:** Computes a full suite of standard Material Design 3 color tokens (Primary, Secondary, Tertiary, Surface, Surface Containers Lowest–Highest, Outline, Error, and all associated On-colors) using the official `@material/material-color-utilities` HCT algorithm.
+- **Responsive Token Grid:** Visualizes token relationships with live background and text contrast pairs.
+- **Production Export Hub:** 9 export targets with syntax-highlighted preview, line counts, one-click copy, and file download:
+  1. **CSS Variables (`theme.css`):** Ready-to-use `:root` custom properties.
+  2. **Tailwind CSS v4 (`theme.tailwind.css`):** `@theme` block utilizing OKLCH color values.
+  3. **Figma Tokens (`tokens.json`):** W3C Design Tokens Community Group (DTCG) standard format.
+  4. **Flutter (`app_theme.dart`):** Dart `ColorScheme.fromSeed` and `ThemeData` setup.
+  5. **SCSS (`_colors.scss`):** Sass `$brand-color` map and individual color variables.
+  6. **Android (`colors.xml`):** Android XML color resources alongside Jetpack Compose Kotlin color definitions.
+  7. **SwiftUI (`AppTheme.swift`):** Swift `Color` struct extensions with normalized RGB scaling.
+  8. **JSON (`palette.json`):** Comprehensive JSON object with all color spaces and shade mappings.
+  9. **Python (`theme_colors.py`):** Programmatic theme reconstruction snippet using `materialyoucolor`.
+
+---
+
+### 4. ♿ Custom Contrast Checker (`/contrast-checker/`)
+- **Freestyle Pairings:** Test any foreground text color against any background color.
+- **Integrated EyeDroppers:** Sample screen colors directly into background or foreground inputs.
+- **Quick Swap:** One-click button (`sync_alt`) to invert foreground and background colors.
+- **Dual Accessibility Standards:**
+  - **WCAG 2.1:** Contrast ratio calculation with AA / AAA compliance badges for both Normal and Large text.
+  - **W3C APCA Beta (Lc Score):** Perceptually uniform contrast scoring with visual Pass/Fail badges.
+
+---
+
+### 5. 📊 Contrast Matrix (`/matrix/`)
+- **Full Palette Cross-Comparison:** Automatically generates an N×N matrix table comparing all colors in your active project palette against each other, as well as against pure White and Black.
+- **Dual View Modes:** Toggle seamlessly between **WCAG 2.1 ratios** and **APCA (Lc) scores**.
+- **Visual Accessibility Badges:** Color-coded pass/fail badges for rapid audit of entire design system palettes.
+
+---
+
+### 6. 🌈 CSS Gradient Generator (`/css-gradient-generator/`)
+- **Gradient Types:** Seamlessly switch between **Linear** and **Radial** gradients.
+- **Angle Controller:** 0° to 360° interactive slider with real-time numeric degree readout.
+- **Dual Color Controls:** Edit gradient stop colors via HEX inputs, native color pickers, or desktop eyedroppers.
+- **Live Preview & Copy:** Real-time CSS gradient preview with single-click CSS rule copy (`background: linear-gradient(...)`).
+
+---
+
+### 📱 Responsive Shell & Layout Architecture
+- **Desktop Navigation Rail:** Clean, collapsible side rail featuring icon shortcuts, dynamic active states, and quick tooltips.
+- **Mobile Top App Bar & Drawer:** Modal Navigation Drawer with backdrop blur (`backdrop-filter`) and smooth transition animations.
+- **Mobile Bottom Navigation Bar:** Compact icon-only bottom navigation designed for thumb-friendly mobile navigation.
+- **Dynamic Theme Engine:** Real-time Material You dynamic theming that retints the entire interface (navigation, surfaces, buttons, highlights) to match the active primary color in both Light and Dark modes.
+- **User Guide Modal:** Built-in cheat sheet explaining color formats (HEX, RGB, HSL, OKLCH, LAB), variations (Tints, Shades, Tones), and WCAG compliance standards.
+- **Multi-Language Support:** Instant runtime language switching across 4 languages:
+  - 🇬🇧 English
+  - 🇻🇳 Tiếng Việt
+  - 🇯🇵 日本語
+  - 🇨🇳 简体中文
+- **Progressive Web App (PWA):** Installable to homescreen/desktop, offline-capable via Service Worker caching (`sw.js`), and synchronized with system status bar colors.
 
 ---
 
@@ -123,66 +135,115 @@ python3 -m http.server 5500
 
 | Layer | Technology |
 |---|---|
-| Structure | HTML5 |
-| Logic | Modular Vanilla JavaScript (ES2020+) |
-| Dynamic Colors | Official `@material/material-color-utilities` |
-| UI Components | Official `@material/web` Components |
-| Styling | Vanilla CSS with MD3 design tokens, typography hierarchy (Roboto Slab, Roboto, Roboto Mono) |
-| Design System | Material Design 3 (Material You Dynamic Theme) |
-| Logo | Embedded SVG (Vector Path) |
+| **Structure** | Semantic HTML5 & Multi-Page Modular Architecture |
+| **Styling** | Vanilla CSS3 with Material Design 3 Design Tokens & Typography Hierarchy |
+| **Logic** | Vanilla JavaScript (ES Modules, ES2020+) |
+| **Color Science** | Official `@material/material-color-utilities` (HCT Color Space) |
+| **Components** | Official `@material/web` Web Components |
+| **Accessibility Engines** | WCAG 2.1 relative luminance & W3C APCA Beta 0.1.9 algorithms |
+| **Screen Color Sampling** | Native Browser EyeDropper API |
+| **Offline & PWA** | Service Worker (`sw.js`) & Web App Manifest (`manifest.json`) |
+| **Typography** | Google Fonts (*Roboto*, *Roboto Slab*, *Roboto Mono*, *Material Symbols Rounded*) |
 
 ---
 
 ## 📂 Project Structure
 
-The project uses a highly modular and organized structure:
-
 ```
 color-checker/
-├── index.html            # Application shell & SPA page wrappers
-├── LICENSE               # MIT License
-├── manifest.json         # Web App Manifest for PWA support
-├── sw.js                 # Service Worker for offline caching
-├── README.md             # English README
-├── README_vi.md          # Vietnamese README
-└── assets/               # Assets directory
-    ├── logo.svg          # 8-pointed star SVG file
-    ├── styles.css        # CSS variable tokens & layout styling
-    └── script/           # Modular JS scripts
-        ├── app.js        # Core app initialization & state controller
-        ├── config.js     # Shared configuration (e.g., translation data)
-        ├── events.js     # DOM event listeners
-        ├── features.js   # Contrast checker & advanced preview logic
-        ├── colornames.bestof.js # Curated bestOf subset from color-names library
-        ├── navigation.js # SPA router and sidebar navigation
-        ├── sidebar.js    # Sidebar Drawer toggle logic
-        ├── state.js      # Global state variables & DOM cache
-        ├── ui.js         # UI updates, image exporter, & dynamic tinting
-        └── utils.js      # Color conversions & accessibility formulas
+├── index.html                  # Landing page & tool hub
+├── CNAME                       # Custom domain routing
+├── LICENSE                     # MIT License
+├── manifest.json               # Web App Manifest for PWA installation
+├── sw.js                       # Service Worker for offline asset caching
+├── README.md                   # English documentation (this file)
+├── README_vi.md                # Vietnamese documentation
+├── generator/                  # Generator & Palette Workstation
+│   ├── index.html              # Multi-tab layout (Single, Projects, Smart, History)
+│   └── script.js               # Color mixer, harmonies, WCAG, and UI preview logic
+├── image-extractor/            # Image Palette Extractor
+│   ├── index.html              # Image drop-zone & canvas workspace
+│   └── script.js               # Interactive canvas pins & extraction presets
+├── md3-theme-creator/          # Material Design 3 Theme Builder
+│   ├── index.html              # Token grid & Export Hub interface
+│   └── script.js               # HCT token generator & 9 export templates
+├── contrast-checker/           # Custom Contrast Checker
+│   ├── index.html              # Freestyle foreground/background tester
+│   └── script.js               # Live WCAG 2.1 & APCA scoring logic
+├── matrix/                     # Contrast Matrix Cross-Comparison
+│   ├── index.html              # Matrix table layout with mode toggle
+│   └── script.js               # Matrix calculation engine (WCAG & APCA)
+├── css-gradient-generator/     # CSS Gradient Generator
+│   ├── index.html              # Linear & radial gradient designer
+│   └── script.js               # Gradient angle slider & CSS code generator
+└── assets/                     # Shared static resources
+    ├── images/                 # SVG logos and icons
+    │   ├── amelia_logo.svg     # Favicon & brand mark
+    │   ├── logo-black.svg      # Navigation logo (light theme)
+    │   └── logo-white.svg      # Navigation logo (dark theme)
+    ├── styles.css              # Global MD3 design tokens, components & responsive styles
+    └── script/                 # Shared JavaScript modules
+        ├── config.js           # Multi-language localization dictionaries (EN, VI, JA, ZH)
+        ├── colornames.bestof.js# Curated 4,900+ color names dataset
+        ├── projects.js         # Multi-project manager, GPL/JSON import/export, URL sharing
+        ├── utils.js            # Color math (HEX, RGB, HSL, CMYK, OKLCH, OKLab, WCAG, APCA)
+        └── shared/
+            └── layout.js       # Responsive shell (Nav Rail, Drawer, Bottom Nav, Theming)
 ```
 
 ---
 
-## ⚖️ License
+## 🖥️ Getting Started
 
-Released under the **MIT License**.  
-See [LICENSE](LICENSE) for the full text.
+### Local Development
+
+Because the project utilizes native ES Modules (`import`/`export`) and Web Components, run it through a local HTTP server:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/justlimorina/color-checker.git
+cd color-checker
+
+# 2. Start a local server (choose any option below)
+# Option A: Python 3
+python3 -m http.server 5500
+
+# Option B: Node.js (npx serve)
+npx serve .
+
+# Option C: VS Code Live Server extension
+# Right-click index.html -> "Open with Live Server"
+
+# 3. Open in browser
+# Navigate to http://localhost:5500
+```
+
+> [!NOTE]
+> Opening `index.html` directly via `file:///` protocol may cause browser security policies (CORS) to block ES Module imports and Web Component assets. Always serve via `http://` or `https://`.
+
+---
+
+## 🔗 URL Parameters & Integration
+
+You can deep-link into the application and share specific color states using URL parameters:
+
+- **Single Color:**  
+  `https://justlimorina.github.io/color-checker/generator/?color=624E9A`
+- **Shared Palette:**  
+  `https://justlimorina.github.io/color-checker/generator/?palette=624E9A,EADDFF,381E72,49454F,CAC4D0`
 
 ---
 
 ## 📣 Third-Party Attributions
 
-### color-names (color-name-list)
-- **Author:** meodai (David Aerne) — [https://github.com/meodai/color-names](https://github.com/meodai/color-names)
-- **License:** [MIT License](https://github.com/meodai/color-names/blob/master/LICENSE)
-- **Usage:** Provides the curated `bestOf` color names dataset utilized for the nearest color name lookups in `colornames.bestof.js`.
+- **[color-name-list](https://github.com/meodai/color-names):** Curated `bestOf` color dataset by David Aerne ([@meodai](https://github.com/meodai)) under the [MIT License](https://github.com/meodai/color-names/blob/master/LICENSE).
+- **[@material/material-color-utilities](https://github.com/material-foundation/material-color-utilities):** Official Google Material Design 3 HCT color algorithms under the Apache-2.0 License.
+- **[@material/web](https://github.com/material-components/material-web):** Google Material Design 3 Web Components under the Apache-2.0 License.
+- **[APCA (Advanced Perceptual Contrast Algorithm)](https://github.com/Myndex/apca-w3):** W3C Silver/WCAG3 perceptual contrast algorithm by Andrew Somers (Myndex Research).
 
 ---
 
-## 🙏 Acknowledgements
+## ⚖️ License
 
-- [Material Design 3](https://m3.material.io/) — Design system guidelines
-- [Google Fonts](https://fonts.google.com/) — Roboto, Roboto Slab & Roboto Mono typefaces
-- [Material Symbols](https://fonts.google.com/icons) — Icon set
-- [WCAG 2.1](https://www.w3.org/TR/WCAG21/) — Accessibility contrast standards
-- [OKLCH color space](https://oklch.com/) — Perceptually uniform color for Tailwind v4 export
+Released under the **[MIT License](LICENSE)**.  
+&copy; 2024 – Present **Limorina**. All rights reserved.
