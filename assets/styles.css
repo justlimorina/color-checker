@@ -2217,18 +2217,11 @@ md-outlined-button > md-icon[slot="icon"] + span {
     #image-extractor-workspace > div {
         width: 100% !important;
     }
-}/* ============================================================
+}
+
+/* ============================================================
    Material Design 3 — justlimorina.github.io
    ============================================================ */
-
-/* ---------- Adwaita Sans (local, kept as secondary option) -- */
-@font-face {
-    font-family: 'Adwaita Sans';
-    src: url("../fonts/adwaita/adwaita-sans/AdwaitaSans-Regular.ttf") format('truetype'),
-         local('Adwaita Sans');
-    font-weight: normal;
-    font-style: normal;
-}
 
 /* ============================================================
    BASE RESET & BODY
@@ -2244,7 +2237,7 @@ html {
 }
 
 body {
-    font-family: 'Roboto', 'Adwaita Sans', Arial, Helvetica, sans-serif;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
     background-color: var(--md-sys-color-background);
     color: var(--md-sys-color-on-background);
     min-height: 100vh;
