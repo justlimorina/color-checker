@@ -2,6 +2,13 @@
 
 > [English](README.md) | **Tiếng Việt**
 
+[![Website](https://img.shields.io/badge/Website-Live_Demo-2E7D32?style=flat-square&logo=googlechrome&logoColor=white)](https://justlimorina.github.io/color-checker/)
+[![License](https://img.shields.io/github/license/justlimorina/color-checker?style=flat-square&color=1976D2)](LICENSE)
+[![PWA](https://img.shields.io/badge/PWA-Offline_Ready-5C6BC0?style=flat-square&logo=pwa&logoColor=white)](https://justlimorina.github.io/color-checker/)
+[![Design](https://img.shields.io/badge/UI_System-Material_You_MD3-6750A4?style=flat-square)](https://m3.material.io/)
+[![Stars](https://img.shields.io/github/stars/justlimorina/color-checker?style=flat-square&color=F57C00)](https://github.com/justlimorina/color-checker/stargazers)
+[![Forks](https://img.shields.io/github/forks/justlimorina/color-checker?style=flat-square&color=7B1FA2)](https://github.com/justlimorina/color-checker/network/members)
+
 Bộ công cụ phân tích màu sắc, tạo theme và quản lý bảng màu chuyên nghiệp được xây dựng theo chuẩn Material Design 3 cùng nguyên lý màu sắc động Material You của Google. Hỗ trợ cài đặt hoàn chỉnh dưới dạng Progressive Web App (PWA) để chạy ngoại tuyến (offline). Dễ dàng tạo bảng màu hài hòa, kiểm tra độ tương phản theo chuẩn WCAG & APCA, mô phỏng mù màu, trích xuất màu từ ảnh và xuất mã nguồn sẵn sàng cho sản phẩm trên 9 nền tảng — tất cả thực hiện trực tiếp trên trình duyệt web.
 
 ---

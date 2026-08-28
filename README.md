@@ -2,6 +2,13 @@
 
 > **English** | [Tiếng Việt](README_vi.md)
 
+[![Website](https://img.shields.io/badge/Website-Live_Demo-2E7D32?style=flat-square&logo=googlechrome&logoColor=white)](https://justlimorina.github.io/color-checker/)
+[![License](https://img.shields.io/github/license/justlimorina/color-checker?style=flat-square&color=1976D2)](LICENSE)
+[![PWA](https://img.shields.io/badge/PWA-Offline_Ready-5C6BC0?style=flat-square&logo=pwa&logoColor=white)](https://justlimorina.github.io/color-checker/)
+[![Design](https://img.shields.io/badge/UI_System-Material_You_MD3-6750A4?style=flat-square)](https://m3.material.io/)
+[![Stars](https://img.shields.io/github/stars/justlimorina/color-checker?style=flat-square&color=F57C00)](https://github.com/justlimorina/color-checker/stargazers)
+[![Forks](https://img.shields.io/github/forks/justlimorina/color-checker?style=flat-square&color=7B1FA2)](https://github.com/justlimorina/color-checker/network/members)
+
 A modern, professional-grade color analysis, theme generation, and palette workstation built with Material Design 3 and Material You dynamic theming principles. Fully installable as a Progressive Web App (PWA) with offline support. Create harmonized palettes, check WCAG & APCA accessibility, simulate color blindness, extract colors from images, and export production-ready code across 9 platforms — all directly in your browser.
 
 ---
