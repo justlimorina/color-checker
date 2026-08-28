@@ -6,6 +6,7 @@
 [![License](https://img.shields.io/github/license/justlimorina/color-checker?style=flat-square&color=1976D2)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-Offline_Ready-5C6BC0?style=flat-square&logo=pwa&logoColor=white)](https://justlimorina.github.io/color-checker/)
 [![Design](https://img.shields.io/badge/UI_System-Material_You_MD3-6750A4?style=flat-square)](https://m3.material.io/)
+[![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-0070F3?style=flat-square)](https://deepwiki.com/justlimorina/color-checker)
 [![Stars](https://img.shields.io/github/stars/justlimorina/color-checker?style=flat-square&color=F57C00)](https://github.com/justlimorina/color-checker/stargazers)
 [![Forks](https://img.shields.io/github/forks/justlimorina/color-checker?style=flat-square&color=7B1FA2)](https://github.com/justlimorina/color-checker/network/members)
 
