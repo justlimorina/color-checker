@@ -24,8 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAll();
 });
 
-// Watch language changes from shared layout
+// Watch language & theme mode changes from shared layout
 window.addEventListener('langchange', () => {
+    renderAll();
+});
+
+window.addEventListener('themechange', () => {
     renderAll();
 });
 
@@ -297,13 +301,49 @@ function updateExportContent() {
     const twCodeEl = document.getElementById('code-tailwind');
     if (twCodeEl) twCodeEl.textContent = tailwind;
 
-    // Figma Tokens (W3C Standard)
+    // Figma Tokens (W3C DTCG Standard)
+    const oklch = ColorUtils.rgbToOklch(state.rgb.r, state.rgb.g, state.rgb.b);
+    const colorName = ColorUtils.getColorName(state.hex);
+    const whiteRatio = ColorUtils.getContrastRatio(state.rgb, {r:255,g:255,b:255});
+    const blackRatio = ColorUtils.getContrastRatio(state.rgb, {r:0,g:0,b:0});
+
     const figmaTokens = {
+        "$schema": "https://design-tokens.github.io/community-group/format/",
         color: {
             brand: {
-                base: { "$value": `#${state.hex}`, "$type": "color" },
-                tints: Object.fromEntries(tints.map((h, i) => [`tint-${(i+1)*10}`, { "$value": `#${h}`, "$type": "color" }])),
-                shades: Object.fromEntries(shades.map((h, i) => [`shade-${(i+1)*10}`, { "$value": `#${h}`, "$type": "color" }]))
+                base: { 
+                    "$value": `#${state.hex}`, 
+                    "$type": "color",
+                    "$description": `${colorName} - OKLCH(${Math.round(oklch.l)}% ${oklch.c.toFixed(2)} ${Math.round(oklch.h)})`,
+                    "$extensions": {
+                        "com.limorina.color": {
+                            "name": colorName,
+                            "oklch": `oklch(${Math.round(oklch.l)}% ${oklch.c.toFixed(3)} ${Math.round(oklch.h)})`,
+                            "contrast": {
+                                "onWhite": `${whiteRatio.toFixed(1)}:1`,
+                                "onBlack": `${blackRatio.toFixed(1)}:1`
+                            }
+                        }
+                    }
+                },
+                tints: Object.fromEntries(tints.map((h, i) => {
+                    const r = ColorUtils.hexToRgb(h);
+                    const ok = ColorUtils.rgbToOklch(r.r, r.g, r.b);
+                    return [`tint-${(i+1)*10}`, { 
+                        "$value": `#${h}`, 
+                        "$type": "color",
+                        "$description": `Tint ${(i+1)*10}% - OKLCH(${Math.round(ok.l)}% ${ok.c.toFixed(2)} ${Math.round(ok.h)})`
+                    }];
+                })),
+                shades: Object.fromEntries(shades.map((h, i) => {
+                    const r = ColorUtils.hexToRgb(h);
+                    const ok = ColorUtils.rgbToOklch(r.r, r.g, r.b);
+                    return [`shade-${(i+1)*10}`, { 
+                        "$value": `#${h}`, 
+                        "$type": "color",
+                        "$description": `Shade ${(i+1)*10}% - OKLCH(${Math.round(ok.l)}% ${ok.c.toFixed(2)} ${Math.round(ok.h)})`
+                    }];
+                }))
             }
         }
     };
@@ -348,12 +388,18 @@ function updateExportContent() {
     const swiftCodeEl = document.getElementById('code-swiftui');
     if (swiftCodeEl) swiftCodeEl.textContent = swift;
 
-    // JSON
+    // Enriched JSON Export
     const data = {
-        hex: state.hex,
-        rgb: state.rgb,
-        hsl: state.hsl,
-        name: ColorUtils.getColorName(state.hex),
+        name: colorName,
+        hex: `#${state.hex}`,
+        rgb: `rgb(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b})`,
+        hsl: `hsl(${Math.round(state.hsl.h)}deg ${Math.round(state.hsl.s)}% ${Math.round(state.hsl.l)}%)`,
+        oklch: `oklch(${Math.round(oklch.l)}% ${oklch.c.toFixed(3)} ${Math.round(oklch.h)})`,
+        contrast: {
+            onWhite: `${whiteRatio.toFixed(1)}:1`,
+            onBlack: `${blackRatio.toFixed(1)}:1`,
+            suggestedText: whiteRatio > blackRatio ? '#FFFFFF' : '#000000'
+        },
         tints: tints.map(h => `#${h}`),
         shades: shades.map(h => `#${h}`)
     };

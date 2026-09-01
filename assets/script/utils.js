@@ -148,6 +148,90 @@ export const ColorUtils = {
         return ColorUtils.oklabToRgb(L, a, b);
     },
 
+    oklchToRgbRawFloat(L, C, h) {
+        L /= 100;
+        const hRad = h * Math.PI / 180;
+        const a = C * Math.cos(hRad);
+        const b_ = C * Math.sin(hRad);
+
+        const l_ = L + 0.3963377774 * a + 0.2158037573 * b_;
+        const m_ = L - 0.1055613458 * a - 0.0638541728 * b_;
+        const s_ = L - 0.0894841775 * a - 1.2914855480 * b_;
+
+        const l = l_ * l_ * l_;
+        const m = m_ * m_ * m_;
+        const s = s_ * s_ * s_;
+
+        let linR = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+        let linG = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+        let linB = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+
+        const gamma = (x) => {
+            return x >= 0.0031308 ? 1.055 * Math.pow(x, 1.0/2.4) - 0.055 : 12.92 * x;
+        };
+
+        return {
+            r: gamma(linR) * 255,
+            g: gamma(linG) * 255,
+            b: gamma(linB) * 255
+        };
+    },
+
+    isOklchInSRGB(L, C, h) {
+        const raw = ColorUtils.oklchToRgbRawFloat(L, C, h);
+        const eps = 0.5;
+        return raw.r >= -eps && raw.r <= 255 + eps &&
+               raw.g >= -eps && raw.g <= 255 + eps &&
+               raw.b >= -eps && raw.b <= 255 + eps;
+    },
+
+    getDeltaEOK(rgb1, rgb2) {
+        const lab1 = ColorUtils.rgbToOklabRaw(rgb1.r, rgb1.g, rgb1.b);
+        const lab2 = ColorUtils.rgbToOklabRaw(rgb2.r, rgb2.g, rgb2.b);
+        const dL = lab1.L - lab2.L;
+        const da = lab1.a - lab2.a;
+        const db = lab1.b - lab2.b;
+        return Math.sqrt(dL * dL + da * da + db * db) * 100;
+    },
+
+    formatDTCGTokens(projectName, colorHexes) {
+        const colorsObj = {};
+        colorHexes.forEach((hex, i) => {
+            const rgb = ColorUtils.hexToRgb(hex);
+            const oklch = ColorUtils.rgbToOklch(rgb.r, rgb.g, rgb.b);
+            const hsl = ColorUtils.rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const name = ColorUtils.getColorName(hex);
+            const whiteRatio = ColorUtils.getContrastRatio(rgb, {r:255, g:255, b:255});
+            const blackRatio = ColorUtils.getContrastRatio(rgb, {r:0, g:0, b:0});
+            const bestText = whiteRatio > blackRatio ? '#FFFFFF' : '#000000';
+
+            colorsObj[`color-${i + 1}`] = {
+                "$value": `#${hex}`,
+                "$type": "color",
+                "$description": `${name} - OKLCH(${Math.round(oklch.l)}% ${oklch.c.toFixed(2)} ${Math.round(oklch.h)})`,
+                "$extensions": {
+                    "com.limorina.color": {
+                        "name": name,
+                        "hex": `#${hex}`,
+                        "rgb": `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+                        "hsl": `hsl(${Math.round(hsl.h)}deg ${Math.round(hsl.s)}% ${Math.round(hsl.l)}%)`,
+                        "oklch": `oklch(${Math.round(oklch.l)}% ${oklch.c.toFixed(3)} ${Math.round(oklch.h)})`,
+                        "contrast": {
+                            "onWhite": `${whiteRatio.toFixed(1)}:1`,
+                            "onBlack": `${blackRatio.toFixed(1)}:1`,
+                            "suggestedText": bestText
+                        }
+                    }
+                }
+            };
+        });
+        return {
+            "$schema": "https://design-tokens.github.io/community-group/format/",
+            "name": projectName || "Color Palette Tokens",
+            "color": colorsObj
+        };
+    },
+
     getColorName(hex) {
         return getNearestColor(hex).name;
     },

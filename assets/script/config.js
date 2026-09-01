@@ -148,7 +148,13 @@ export const translations = {
         export_format: "Export Format",
         download_file: "Download File",
         download_success: "File downloaded!",
-        copy_code: "Copy Code"
+        copy_code: "Copy Code",
+        oklch_picker: "Interactive OKLCH Picker",
+        srgb_in_gamut: "sRGB In-Gamut",
+        srgb_out_gamut: "Out of sRGB Gamut (Clamped)",
+        delta_e_label: "ΔE (OKLab):",
+        export_tokens: "Export Design Tokens",
+        tokens_modal_title: "Export Project Tokens"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -299,7 +305,13 @@ export const translations = {
         export_format: "Định dạng xuất",
         download_file: "Tải tệp xuống",
         download_success: "Đã tải tệp xuống!",
-        copy_code: "Sao chép mã"
+        copy_code: "Sao chép mã",
+        oklch_picker: "Bộ chọn OKLCH trực quan",
+        srgb_in_gamut: "Trong sRGB Gamut",
+        srgb_out_gamut: "Ngoài sRGB Gamut (Đã ép lề)",
+        delta_e_label: "Độ lệch màu ΔE:",
+        export_tokens: "Xuất Design Tokens",
+        tokens_modal_title: "Xuất Design Tokens cho Dự án"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -437,7 +449,13 @@ export const translations = {
         export_format: "エクスポート形式",
         download_file: "ファイルをダウンロード",
         download_success: "ファイルをダウンロードしました！",
-        copy_code: "コードをコピー"
+        copy_code: "コードをコピー",
+        oklch_picker: "インタラクティブOKLCHピッカー",
+        srgb_in_gamut: "sRGBガムット内",
+        srgb_out_gamut: "sRGBガムット外（補正済）",
+        delta_e_label: "ΔE 色差:",
+        export_tokens: "デザイントークン書き出し",
+        tokens_modal_title: "プロジェクトトークンの書き出し"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -575,6 +593,12 @@ export const translations = {
         export_format: "导出格式",
         download_file: "下载文件",
         download_success: "文件已下载！",
-        copy_code: "复制代码"
+        copy_code: "复制代码",
+        oklch_picker: "交互式 OKLCH 选择器",
+        srgb_in_gamut: "sRGB 色域内",
+        srgb_out_gamut: "超出 sRGB 色域（已截断）",
+        delta_e_label: "ΔE 色差:",
+        export_tokens: "导出 Design Tokens",
+        tokens_modal_title: "导出项目 Design Tokens"
     }
 };

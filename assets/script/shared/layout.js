@@ -440,6 +440,9 @@ function applyTheme(theme) {
     const isLanding = layoutState.activePageKey === 'landing';
     const activeHex = isLanding ? BRAND_HEX : (localStorage.getItem('active_hex') || BRAND_HEX);
     applyColorTheme(activeHex);
+
+    // Dispatch a custom event so page scripts can react immediately to theme mode changes
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
 }
 
 export function setLanguage(lang) {

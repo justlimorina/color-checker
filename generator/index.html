@@ -145,19 +145,56 @@
                                 </div>
                             </div>
                             
-                            <!-- OKLCH Mixer -->
-                            <div class="mixer-row mt-s">
-                                <div class="mixer-item">
-                                    <label class="label-tiny" title="Lightness">OK-L</label>
-                                    <input type="number" id="oklch-l" min="0" max="100" value="48" step="1">
+                            <!-- Interactive OKLCH Picker Card -->
+                            <div class="oklch-picker-card mt-m p-s" style="background: var(--md-sys-color-surface-container-low); border: 1px solid var(--md-sys-color-outline-variant); border-radius: 16px; padding: 14px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span class="material-symbols-rounded" style="font-size: 18px; color: var(--md-sys-color-primary);">tune</span>
+                                        <span class="label-large" style="font-weight: 700;" data-i18n="oklch_picker">Interactive OKLCH Picker</span>
+                                    </div>
+                                    <span id="oklch-gamut-badge" class="badge badge-pass" style="font-size: 0.7rem; padding: 2px 8px;" data-i18n="srgb_in_gamut">sRGB In-Gamut</span>
                                 </div>
-                                <div class="mixer-item">
-                                    <label class="label-tiny" title="Chroma">OK-C</label>
-                                    <input type="number" id="oklch-c" min="0" max="0.4" value="0.15" step="0.01">
+
+                                <!-- Delta E Readout -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--md-sys-color-surface); padding: 6px 10px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(128,128,128,0.15);">
+                                    <span class="label-small" style="opacity: 0.8;" data-i18n="delta_e_label">ΔE (OKLab):</span>
+                                    <span id="oklch-delta-e-val" class="label-small font-mono" style="font-weight: 700; color: var(--md-sys-color-primary);">0.00 (Identical)</span>
                                 </div>
-                                <div class="mixer-item">
-                                    <label class="label-tiny" title="Hue">OK-H</label>
-                                    <input type="number" id="oklch-h" min="0" max="360" value="256" step="1">
+
+                                <!-- Lightness Slider -->
+                                <div class="oklch-slider-group mb-s">
+                                    <div class="oklch-slider-label">
+                                        <span class="label-tiny">Lightness (L)</span>
+                                        <span id="oklch-l-val" class="label-tiny font-mono">48%</span>
+                                    </div>
+                                    <div class="oklch-slider-wrapper">
+                                        <input type="range" id="oklch-l-slider" min="0" max="100" value="48" step="0.5" aria-label="OKLCH Lightness">
+                                        <input type="number" id="oklch-l" min="0" max="100" value="48" step="1" class="oklch-num-input">
+                                    </div>
+                                </div>
+
+                                <!-- Chroma Slider -->
+                                <div class="oklch-slider-group mb-s">
+                                    <div class="oklch-slider-label">
+                                        <span class="label-tiny">Chroma (C)</span>
+                                        <span id="oklch-c-val" class="label-tiny font-mono">0.15</span>
+                                    </div>
+                                    <div class="oklch-slider-wrapper">
+                                        <input type="range" id="oklch-c-slider" min="0" max="0.37" value="0.15" step="0.005" aria-label="OKLCH Chroma">
+                                        <input type="number" id="oklch-c" min="0" max="0.4" value="0.15" step="0.01" class="oklch-num-input">
+                                    </div>
+                                </div>
+
+                                <!-- Hue Slider -->
+                                <div class="oklch-slider-group">
+                                    <div class="oklch-slider-label">
+                                        <span class="label-tiny">Hue (H)</span>
+                                        <span id="oklch-h-val" class="label-tiny font-mono">256°</span>
+                                    </div>
+                                    <div class="oklch-slider-wrapper">
+                                        <input type="range" id="oklch-h-slider" min="0" max="360" value="256" step="1" aria-label="OKLCH Hue">
+                                        <input type="number" id="oklch-h" min="0" max="360" value="256" step="1" class="oklch-num-input">
+                                    </div>
                                 </div>
                             </div>
                             
@@ -396,8 +433,10 @@
                     </div>
                 </div>
 
-                <!-- Actions Bar -->
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <md-outlined-button id="export-tokens-btn" style="flex: 1; min-width: 160px;">
+                        <md-icon slot="icon">token</md-icon>
+                        <span data-i18n="export_tokens">Export Design Tokens</span>
+                    </md-outlined-button>
                     <md-outlined-button id="share-palette-btn" style="flex: 1; min-width: 160px;">
                         <md-icon slot="icon">share</md-icon>
                         <span data-i18n="share_palette_link">Share Palette Link</span>
@@ -487,6 +526,43 @@
         </div>
 
     </main>
+
+    <!-- Export Tokens Modal -->
+    <div id="project-tokens-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="card card-elevated" style="width: 90%; max-width: 650px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; border-radius: 24px; padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="material-symbols-rounded" style="color: var(--md-sys-color-primary);">token</span>
+                    <h3 class="title-large mb-0" data-i18n="tokens_modal_title">Export Project Tokens</h3>
+                </div>
+                <md-icon-button id="close-tokens-modal-btn">
+                    <md-icon>close</md-icon>
+                </md-icon-button>
+            </div>
+
+            <!-- Format Selector Tabs -->
+            <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--md-sys-color-outline-variant); padding-bottom: 10px; overflow-x: auto;">
+                <button class="token-tab-btn active" data-format="dtcg" style="padding: 6px 14px; border-radius: 999px; border: 1px solid var(--md-sys-color-primary); background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); font-weight: 700; cursor: pointer; white-space: nowrap;">DTCG JSON</button>
+                <button class="token-tab-btn" data-format="css" style="padding: 6px 14px; border-radius: 999px; border: 1px solid var(--md-sys-color-outline); background: transparent; color: var(--md-sys-color-on-surface); font-weight: 500; cursor: pointer; white-space: nowrap;">CSS :root</button>
+                <button class="token-tab-btn" data-format="scss" style="padding: 6px 14px; border-radius: 999px; border: 1px solid var(--md-sys-color-outline); background: transparent; color: var(--md-sys-color-on-surface); font-weight: 500; cursor: pointer; white-space: nowrap;">SCSS Map</button>
+                <button class="token-tab-btn" data-format="tailwind" style="padding: 6px 14px; border-radius: 999px; border: 1px solid var(--md-sys-color-outline); background: transparent; color: var(--md-sys-color-on-surface); font-weight: 500; cursor: pointer; white-space: nowrap;">Tailwind v4</button>
+            </div>
+
+            <!-- Code Preview -->
+            <pre id="tokens-code-preview" style="flex: 1; background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface); padding: 16px; border-radius: 12px; font-family: var(--font-mono, monospace); font-size: 0.85rem; overflow: auto; border: 1px solid var(--md-sys-color-outline-variant); margin: 0 0 16px 0;"></pre>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <md-filled-tonal-button id="copy-tokens-code-btn">
+                    <md-icon slot="icon">content_copy</md-icon>
+                    <span data-i18n="copy_code">Copy Code</span>
+                </md-filled-tonal-button>
+                <md-filled-button id="download-tokens-code-btn">
+                    <md-icon slot="icon">download</md-icon>
+                    <span data-i18n="download_file">Download File</span>
+                </md-filled-button>
+            </div>
+        </div>
+    </div>
 
     <div id="toast" class="toast">Copied to clipboard!</div>
 

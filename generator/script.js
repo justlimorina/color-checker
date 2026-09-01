@@ -11,6 +11,7 @@ const state = {
     cmyk: { c: 0, m: 0, y: 0, k: 0 },
     oklch: { l: 0, c: 0, h: 0 },
     oklab: { l: 0, a: 0, b: 0 },
+    originalRgb: null,
     palette: JSON.parse(localStorage.getItem('saved_palette') || '[]'),
     history: JSON.parse(localStorage.getItem('color_history') || '[]'),
     activeHex: (() => {
@@ -103,6 +104,20 @@ function bindDOM() {
             lab_a: document.getElementById('lab-a'),
             lab_b: document.getElementById('lab-b')
         },
+
+        // OKLCH Interactive Sliders
+        oklchSliders: {
+            l: document.getElementById('oklch-l-slider'),
+            c: document.getElementById('oklch-c-slider'),
+            h: document.getElementById('oklch-h-slider')
+        },
+        oklchValLabels: {
+            l: document.getElementById('oklch-l-val'),
+            c: document.getElementById('oklch-c-val'),
+            h: document.getElementById('oklch-h-val')
+        },
+        oklchGamutBadge: document.getElementById('oklch-gamut-badge'),
+        oklchDeltaEVal: document.getElementById('oklch-delta-e-val'),
 
         // Smart Palette
         generatorRuleSelect: document.getElementById('generator-rule-select'),
@@ -228,16 +243,32 @@ function attachEvents() {
 
     attachMixer(['oklch_l', 'oklch_c', 'oklch_h'], ([l, c, h]) => {
         const rgb = ColorUtils.oklchToRgb(
-            Math.max(0, Math.min(100, l)) / 100,
+            Math.max(0, Math.min(100, l)),
             Math.max(0, Math.min(0.4, c)),
             Math.max(0, Math.min(360, h))
         );
-        updateColorState(ColorUtils.rgbToHex(rgb.r, rgb.g, rgb.b));
+        updateColorState(ColorUtils.rgbToHex(rgb.r, rgb.g, rgb.b), true);
     });
+
+    // OKLCH Range Sliders Event Listeners
+    if (dom.oklchSliders) {
+        ['l', 'c', 'h'].forEach(key => {
+            const slider = dom.oklchSliders[key];
+            if (slider) {
+                slider.addEventListener('input', () => {
+                    const l = parseFloat(dom.oklchSliders.l.value || 0);
+                    const c = parseFloat(dom.oklchSliders.c.value || 0);
+                    const h = parseFloat(dom.oklchSliders.h.value || 0);
+                    const rgb = ColorUtils.oklchToRgb(l, c, h);
+                    updateColorState(ColorUtils.rgbToHex(rgb.r, rgb.g, rgb.b), true);
+                });
+            }
+        });
+    }
 
     attachMixer(['lab_l', 'lab_a', 'lab_b'], ([l, a, b]) => {
         const rgb = ColorUtils.oklabToRgb(
-            Math.max(0, Math.min(100, l)) / 100,
+            Math.max(0, Math.min(100, l)),
             Math.max(-0.4, Math.min(0.4, a)),
             Math.max(-0.4, Math.min(0.4, b))
         );
@@ -323,6 +354,83 @@ function attachEvents() {
         });
     }
 
+    // Export Tokens Modal Logic
+    const exportTokensBtn = document.getElementById('export-tokens-btn');
+    const tokensModal = document.getElementById('project-tokens-modal');
+    const closeTokensBtn = document.getElementById('close-tokens-modal-btn');
+    const tokensCodePreview = document.getElementById('tokens-code-preview');
+    const copyTokensBtn = document.getElementById('copy-tokens-code-btn');
+    const downloadTokensBtn = document.getElementById('download-tokens-code-btn');
+    const tokenTabBtns = document.querySelectorAll('.token-tab-btn');
+
+    let currentTokenFormat = 'dtcg';
+
+    const renderTokensCode = () => {
+        const active = ProjectManager.getActiveProject();
+        if (!active || active.colors.length === 0) {
+            if (tokensCodePreview) tokensCodePreview.textContent = '// No colors saved in active project.';
+            return;
+        }
+        const code = ProjectManager.exportProjectTokens(active.id, currentTokenFormat);
+        if (tokensCodePreview) tokensCodePreview.textContent = code;
+    };
+
+    if (exportTokensBtn && tokensModal) {
+        exportTokensBtn.addEventListener('click', () => {
+            tokensModal.style.display = 'flex';
+            renderTokensCode();
+        });
+    }
+
+    if (closeTokensBtn && tokensModal) {
+        closeTokensBtn.addEventListener('click', () => tokensModal.style.display = 'none');
+        tokensModal.addEventListener('click', (e) => {
+            if (e.target === tokensModal) tokensModal.style.display = 'none';
+        });
+    }
+
+    tokenTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tokenTabBtns.forEach(b => {
+                b.classList.remove('active');
+                b.style.border = '1px solid var(--md-sys-color-outline)';
+                b.style.background = 'transparent';
+                b.style.color = 'var(--md-sys-color-on-surface)';
+                b.style.fontWeight = '500';
+            });
+            btn.classList.add('active');
+            btn.style.border = '1px solid var(--md-sys-color-primary)';
+            btn.style.background = 'var(--md-sys-color-primary-container)';
+            btn.style.color = 'var(--md-sys-color-on-primary-container)';
+            btn.style.fontWeight = '700';
+
+            currentTokenFormat = btn.dataset.format;
+            renderTokensCode();
+        });
+    });
+
+    if (copyTokensBtn && tokensCodePreview) {
+        copyTokensBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(tokensCodePreview.textContent).then(showToast);
+        });
+    }
+
+    if (downloadTokensBtn && tokensCodePreview) {
+        downloadTokensBtn.addEventListener('click', () => {
+            const active = ProjectManager.getActiveProject();
+            const projName = (active ? active.name : 'tokens').toLowerCase().replace(/\s+/g, '-');
+            const extMap = { dtcg: 'json', css: 'css', scss: 'scss', tailwind: 'css' };
+            const ext = extMap[currentTokenFormat] || 'txt';
+            const blob = new Blob([tokensCodePreview.textContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${projName}-tokens.${ext}`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    }
+
     if (dom.importJsonTrigger && dom.importJsonFile) {
         dom.importJsonTrigger.addEventListener('click', () => dom.importJsonFile.click());
         dom.importJsonFile.addEventListener('change', (e) => {
@@ -404,6 +512,10 @@ export function updateColorState(hex, skipHistory = false) {
     state.oklch = ColorUtils.rgbToOklch(state.rgb.r, state.rgb.g, state.rgb.b);
     state.oklab = ColorUtils.rgbToOklab(state.rgb.r, state.rgb.g, state.rgb.b);
     
+    if (!skipHistory || !state.originalRgb) {
+        state.originalRgb = { ...state.rgb };
+    }
+
     localStorage.setItem('active_hex', state.hex);
     window.history.replaceState(null, '', `?color=${state.hex}`);
     
@@ -453,6 +565,76 @@ function updateMixerInputs() {
     dom.mixerInputs.lab_l.value = Math.round(state.oklab.l);
     dom.mixerInputs.lab_a.value = state.oklab.a.toFixed(2);
     dom.mixerInputs.lab_b.value = state.oklab.b.toFixed(2);
+
+    updateOklchCardStatus();
+}
+
+function updateOklchCardStatus() {
+    if (!dom.oklchSliders || !dom.oklchSliders.l) return;
+    
+    // Sync slider values
+    dom.oklchSliders.l.value = state.oklch.l;
+    dom.oklchSliders.c.value = state.oklch.c;
+    dom.oklchSliders.h.value = state.oklch.h;
+
+    // Sync labels
+    if (dom.oklchValLabels.l) dom.oklchValLabels.l.textContent = `${Math.round(state.oklch.l)}%`;
+    if (dom.oklchValLabels.c) dom.oklchValLabels.c.textContent = state.oklch.c.toFixed(2);
+    if (dom.oklchValLabels.h) dom.oklchValLabels.h.textContent = `${Math.round(state.oklch.h)}°`;
+
+    // sRGB Gamut check
+    const inGamut = ColorUtils.isOklchInSRGB(state.oklch.l, state.oklch.c, state.oklch.h);
+    if (dom.oklchGamutBadge) {
+        dom.oklchGamutBadge.className = `badge ${inGamut ? 'badge-pass' : 'badge-fail'}`;
+        const key = inGamut ? 'srgb_in_gamut' : 'srgb_out_gamut';
+        const currentLang = (typeof layoutState !== 'undefined' && layoutState.currentLang) || 'en';
+        dom.oklchGamutBadge.textContent = (translations[currentLang] && translations[currentLang][key]) || (inGamut ? 'sRGB In-Gamut' : 'Out of sRGB Gamut (Clamped)');
+    }
+
+    // Delta E Readout
+    if (dom.oklchDeltaEVal) {
+        if (!state.originalRgb) {
+            state.originalRgb = { ...state.rgb };
+        }
+        const deltaE = ColorUtils.getDeltaEOK(state.originalRgb, state.rgb);
+        let qual = 'Identical';
+        if (deltaE > 5) qual = 'Distinct';
+        else if (deltaE > 2) qual = 'Noticeable';
+        else if (deltaE > 0.5) qual = 'Slight';
+
+        dom.oklchDeltaEVal.textContent = `${deltaE.toFixed(2)} (${qual})`;
+    }
+
+    // Update Track Gradients
+    updateOklchSliderTracks();
+}
+
+function updateOklchSliderTracks() {
+    const l = state.oklch.l;
+    const c = state.oklch.c;
+    const h = state.oklch.h;
+
+    // Lightness slider track gradient: L=0 to L=100
+    const rgbL0 = ColorUtils.oklchToRgb(0, c, h);
+    const rgbL50 = ColorUtils.oklchToRgb(50, c, h);
+    const rgbL100 = ColorUtils.oklchToRgb(100, c, h);
+    const lTrack = `linear-gradient(to right, rgb(${rgbL0.r},${rgbL0.g},${rgbL0.b}), rgb(${rgbL50.r},${rgbL50.g},${rgbL50.b}), rgb(${rgbL100.r},${rgbL100.g},${rgbL100.b}))`;
+    if (dom.oklchSliders.l) dom.oklchSliders.l.style.setProperty('--l-track-bg', lTrack);
+
+    // Chroma slider track gradient: C=0 to C=0.35
+    const rgbC0 = ColorUtils.oklchToRgb(l, 0, h);
+    const rgbC15 = ColorUtils.oklchToRgb(l, 0.15, h);
+    const rgbC35 = ColorUtils.oklchToRgb(l, 0.35, h);
+    const cTrack = `linear-gradient(to right, rgb(${rgbC0.r},${rgbC0.g},${rgbC0.b}), rgb(${rgbC15.r},${rgbC15.g},${rgbC15.b}), rgb(${rgbC35.r},${rgbC35.g},${rgbC35.b}))`;
+    if (dom.oklchSliders.c) dom.oklchSliders.c.style.setProperty('--c-track-bg', cTrack);
+
+    // Hue slider track rainbow gradient: H=0 to 360
+    const rainbowStops = [0, 60, 120, 180, 240, 300, 360].map(hue => {
+        const rgb = ColorUtils.oklchToRgb(l, Math.min(c, 0.2), hue);
+        return `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+    }).join(', ');
+    const hTrack = `linear-gradient(to right, ${rainbowStops})`;
+    if (dom.oklchSliders.h) dom.oklchSliders.h.style.setProperty('--h-track-bg', hTrack);
 }
 
 function updateDynamicTheme() {

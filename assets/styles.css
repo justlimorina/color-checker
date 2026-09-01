@@ -3344,3 +3344,103 @@ body.dark-theme .md-logo--dark {
     white-space: nowrap;
 }
 
+/* OKLCH Interactive Picker Custom Range Sliders & Badges */
+.oklch-picker-card {
+    box-shadow: var(--md-sys-elevation-1, 0 1px 3px rgba(0,0,0,0.08));
+}
+
+.oklch-slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.oklch-slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.oklch-slider-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.oklch-slider-wrapper input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    border-radius: 999px;
+    outline: none;
+    cursor: pointer;
+    border: 1px solid rgba(128,128,128,0.25);
+    transition: box-shadow 0.2s ease;
+}
+
+.oklch-slider-wrapper input[type="range"]:focus-visible {
+    box-shadow: 0 0 0 3px var(--md-sys-color-primary-container);
+}
+
+/* Range Track background variables */
+#oklch-l-slider {
+    background: var(--l-track-bg, linear-gradient(to right, #000, #fff));
+}
+
+#oklch-c-slider {
+    background: var(--c-track-bg, linear-gradient(to right, #808080, #f00));
+}
+
+#oklch-h-slider {
+    background: var(--h-track-bg, linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00));
+}
+
+/* Custom Slider Thumbs */
+.oklch-slider-wrapper input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--md-sys-color-surface);
+    border: 2px solid var(--md-sys-color-primary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.oklch-slider-wrapper input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--md-sys-color-surface);
+    border: 2px solid var(--md-sys-color-primary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.oklch-slider-wrapper input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.oklch-num-input {
+    width: 58px;
+    padding: 4px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--md-sys-color-outline);
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.82rem;
+    text-align: center;
+    outline: none;
+}
+
+.oklch-num-input:focus {
+    border-color: var(--md-sys-color-primary);
+}
+
+

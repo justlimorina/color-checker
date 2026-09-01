@@ -171,6 +171,40 @@ export const ProjectManager = {
         URL.revokeObjectURL(url);
     },
 
+    exportProjectTokens(projectId, format = 'dtcg') {
+        const projects = this.getProjects();
+        const proj = projects.find(p => p.id === projectId) || this.getActiveProject();
+        if (!proj || !proj.colors || proj.colors.length === 0) return null;
+
+        if (format === 'dtcg') {
+            return JSON.stringify(ColorUtils.formatDTCGTokens(proj.name, proj.colors), null, 2);
+        } else if (format === 'css') {
+            let css = `/* ${proj.name} - Generated Design Tokens */\n:root {\n`;
+            proj.colors.forEach((hex, i) => {
+                const rgb = ColorUtils.hexToRgb(hex);
+                const oklch = ColorUtils.rgbToOklch(rgb.r, rgb.g, rgb.b);
+                css += `  --color-${i + 1}: #${hex}; /* OKLCH(${Math.round(oklch.l)}% ${oklch.c.toFixed(2)} ${Math.round(oklch.h)}) */\n`;
+            });
+            css += `}`;
+            return css;
+        } else if (format === 'scss') {
+            let scss = `// ${proj.name} - SCSS Token Map\n$${proj.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-palette: (\n`;
+            proj.colors.forEach((hex, i) => {
+                scss += `  "color-${i + 1}": #${hex},\n`;
+            });
+            scss += `);`;
+            return scss;
+        } else if (format === 'tailwind') {
+            let tw = `/* ${proj.name} - Tailwind v4 Theme Tokens */\n@theme {\n`;
+            proj.colors.forEach((hex, i) => {
+                tw += `  --color-${i + 1}: #${hex};\n`;
+            });
+            tw += `}`;
+            return tw;
+        }
+        return null;
+    },
+
     importProjectsJSON(jsonString) {
         try {
             const data = JSON.parse(jsonString);
