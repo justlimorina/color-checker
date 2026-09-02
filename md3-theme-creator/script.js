@@ -263,13 +263,10 @@ function updateExportContent() {
     const tints = weights.map(w => ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(state.rgb, {r:255,g:255,b:255}, w))));
     const shades = weights.map(w => ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(state.rgb, {r:0,g:0,b:0}, w))));
 
-    // CSS
-    let css = `:root {\n  --primary: #${state.hex};\n`;
-    tints.forEach((h, i) => css += `  --primary-tint-${(i+1)*10}: #${h};\n`);
-    shades.forEach((h, i) => css += `  --primary-shade-${(i+1)*10}: #${h};\n`);
-    css += `\n  /* Material Design 3 Theme Colors */\n`;
-    
+    const isDark = document.body.classList.contains('dark-mode') || document.body.classList.contains('dark-theme') || document.documentElement.classList.contains('dark-mode') || document.documentElement.classList.contains('dark-theme');
+    const modeName = isDark ? 'Dark' : 'Light';
     const computed = window.getComputedStyle(document.documentElement);
+
     const tokenPairs = [
         '--md-sys-color-primary', '--md-sys-color-on-primary',
         '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
@@ -286,6 +283,12 @@ function updateExportContent() {
         '--md-sys-color-inverse-surface', '--md-sys-color-inverse-on-surface',
         '--md-sys-color-inverse-primary'
     ];
+
+    // CSS
+    let css = `:root {\n  /* Active Mode: ${modeName} */\n  --primary: #${state.hex};\n`;
+    tints.forEach((h, i) => css += `  --primary-tint-${(i+1)*10}: #${h};\n`);
+    shades.forEach((h, i) => css += `  --primary-shade-${(i+1)*10}: #${h};\n`);
+    css += `\n  /* Material Design 3 Theme Colors (${modeName} Mode) */\n`;
     tokenPairs.forEach(t => {
         css += `  ${t}: ${computed.getPropertyValue(t).trim()};\n`;
     });
@@ -293,10 +296,15 @@ function updateExportContent() {
     const cssCodeEl = document.getElementById('code-css');
     if (cssCodeEl) cssCodeEl.textContent = css;
 
-    // Tailwind
-    let tailwind = `@theme {\n  --color-brand: #${state.hex};\n`;
+    // Tailwind v4
+    let tailwind = `@theme {\n  /* Active Mode: ${modeName} */\n  --color-brand: #${state.hex};\n`;
     tints.forEach((h, i) => tailwind += `  --color-brand-tint-${(i+1)*10}: #${h};\n`);
     shades.forEach((h, i) => tailwind += `  --color-brand-shade-${(i+1)*10}: #${h};\n`);
+    tailwind += `\n  /* Material Design 3 System Colors (${modeName} Mode) */\n`;
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        tailwind += `  --color-sys-${cleanKey}: ${computed.getPropertyValue(t).trim()};\n`;
+    });
     tailwind += `}`;
     const twCodeEl = document.getElementById('code-tailwind');
     if (twCodeEl) twCodeEl.textContent = tailwind;
@@ -307,8 +315,20 @@ function updateExportContent() {
     const whiteRatio = ColorUtils.getContrastRatio(state.rgb, {r:255,g:255,b:255});
     const blackRatio = ColorUtils.getContrastRatio(state.rgb, {r:0,g:0,b:0});
 
+    const sysTokens = {};
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        const val = computed.getPropertyValue(t).trim();
+        sysTokens[cleanKey] = {
+            "$value": val,
+            "$type": "color",
+            "$description": `MD3 System ${cleanKey} (${modeName} Mode)`
+        };
+    });
+
     const figmaTokens = {
         "$schema": "https://design-tokens.github.io/community-group/format/",
+        mode: modeName.toLowerCase(),
         color: {
             brand: {
                 base: { 
@@ -344,7 +364,8 @@ function updateExportContent() {
                         "$description": `Shade ${(i+1)*10}% - OKLCH(${Math.round(ok.l)}% ${ok.c.toFixed(2)} ${Math.round(ok.h)})`
                     }];
                 }))
-            }
+            },
+            sys: sysTokens
         }
     };
     const figmaCodeEl = document.getElementById('code-figma');
@@ -356,19 +377,24 @@ function updateExportContent() {
     if (flutterCodeEl) flutterCodeEl.textContent = flutter;
 
     // SCSS Map
-    let scss = `$brand-color: (\n  base: #${state.hex},\n  tints: (\n`;
+    let scss = `// Material Design 3 SCSS Tokens (${modeName} Mode)\n$brand-color: (\n  base: #${state.hex},\n  tints: (\n`;
     tints.forEach((h, i) => scss += `    ${(i+1)*10}: #${h},\n`);
     scss += `  ),\n  shades: (\n`;
     shades.forEach((h, i) => scss += `    ${(i+1)*10}: #${h},\n`);
-    scss += `  )\n);`;
+    scss += `  )\n);\n\n$md-sys-color: (\n  mode: "${modeName.toLowerCase()}",\n`;
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        scss += `  "${cleanKey}": ${computed.getPropertyValue(t).trim()},\n`;
+    });
+    scss += `);`;
     const scssCodeEl = document.getElementById('code-scss');
     if (scssCodeEl) scssCodeEl.textContent = scss;
 
     // Android XML
-    let android = `<!-- res/values/colors.xml -->\n<resources>\n  <color name="brand_color">#FF${state.hex}</color>\n`;
+    let android = `<!-- res/values/colors.xml (${modeName} Mode) -->\n<resources>\n  <color name="brand_color">#FF${state.hex}</color>\n`;
     tints.forEach((h, i) => android += `  <color name="brand_color_tint_${(i+1)*10}">#FF${h}</color>\n`);
     shades.forEach((h, i) => android += `  <color name="brand_color_shade_${(i+1)*10}">#FF${h}</color>\n`);
-    android += `</resources>\n\n// Jetpack Compose Kotlin Colors\nimport androidx.compose.ui.graphics.Color\n\nobject BrandColors {\n  val Base = Color(0xFF${state.hex})\n`;
+    android += `</resources>\n\n// Jetpack Compose Kotlin Colors (${modeName} Mode)\nimport androidx.compose.ui.graphics.Color\n\nobject BrandColors {\n  val Base = Color(0xFF${state.hex})\n`;
     tints.forEach((h, i) => android += `  val Tint${(i+1)*10} = Color(0xFF${h})\n`);
     shades.forEach((h, i) => android += `  val Shade${(i+1)*10} = Color(0xFF${h})\n`);
     android += `}`;
@@ -380,7 +406,7 @@ function updateExportContent() {
         const rgb = ColorUtils.hexToRgb(hexStr);
         return `Color(red: ${(rgb.r / 255).toFixed(3)}, green: ${(rgb.g / 255).toFixed(3)}, blue: ${(rgb.b / 255).toFixed(3)})`;
     };
-    let swift = `// SwiftUI Color Extension\nimport SwiftUI\n\nextension Color {\n  static let brandColor = ${hexToSwiftColor(state.hex)} // #${state.hex}\n\n  struct BrandTints {\n`;
+    let swift = `// SwiftUI Color Extension (${modeName} Mode)\nimport SwiftUI\n\nextension Color {\n  static let brandColor = ${hexToSwiftColor(state.hex)} // #${state.hex}\n\n  struct BrandTints {\n`;
     tints.forEach((h, i) => swift += `    static let tint${(i+1)*10} = ${hexToSwiftColor(h)} // #${h}\n`);
     swift += `  }\n\n  struct BrandShades {\n`;
     shades.forEach((h, i) => swift += `    static let shade${(i+1)*10} = ${hexToSwiftColor(h)} // #${h}\n`);
@@ -389,7 +415,14 @@ function updateExportContent() {
     if (swiftCodeEl) swiftCodeEl.textContent = swift;
 
     // Enriched JSON Export
+    const sysTokensMap = {};
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        sysTokensMap[cleanKey] = computed.getPropertyValue(t).trim();
+    });
+
     const data = {
+        mode: modeName.toLowerCase(),
         name: colorName,
         hex: `#${state.hex}`,
         rgb: `rgb(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b})`,
@@ -400,6 +433,7 @@ function updateExportContent() {
             onBlack: `${blackRatio.toFixed(1)}:1`,
             suggestedText: whiteRatio > blackRatio ? '#FFFFFF' : '#000000'
         },
+        systemColors: sysTokensMap,
         tints: tints.map(h => `#${h}`),
         shades: shades.map(h => `#${h}`)
     };

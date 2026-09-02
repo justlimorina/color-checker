@@ -375,6 +375,12 @@ function attachEvents() {
         if (tokensCodePreview) tokensCodePreview.textContent = code;
     };
 
+    window.addEventListener('themechange', () => {
+        if (tokensModal && tokensModal.style.display !== 'none') {
+            renderTokensCode();
+        }
+    });
+
     if (exportTokensBtn && tokensModal) {
         exportTokensBtn.addEventListener('click', () => {
             tokensModal.style.display = 'flex';
