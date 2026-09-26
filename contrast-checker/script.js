@@ -1,10 +1,15 @@
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
-import { initLayout } from '../assets/script/shared/layout.js';
+import { initLayout, layoutState } from '../assets/script/shared/layout.js';
+import { ProjectManager } from '../assets/script/projects.js';
+
+const urlParams = new URLSearchParams(window.location.search);
+const urlBg = urlParams.get('bg');
+const urlFg = urlParams.get('fg');
 
 const state = {
-    bg: "FFFFFF",
-    fg: localStorage.getItem('active_hex') || "624E9A"
+    bg: (urlBg && /^[0-9A-F]{6}$/i.test(urlBg)) ? urlBg.toUpperCase() : "FFFFFF",
+    fg: (urlFg && /^[0-9A-F]{6}$/i.test(urlFg)) ? urlFg.toUpperCase() : (localStorage.getItem('active_hex') || "624E9A")
 };
 
 const dom = {};
@@ -37,7 +42,13 @@ function bindDOM() {
         apcaRatio: document.getElementById('custom-apca-ratio'),
         apcaBadge: document.getElementById('custom-apca-badge'),
         bgEyeDropper: document.getElementById('bg-eyedropper-btn'),
-        fgEyeDropper: document.getElementById('fg-eyedropper-btn')
+        fgEyeDropper: document.getElementById('fg-eyedropper-btn'),
+        autofixContainer: document.getElementById('autofix-container'),
+        autofixAaBtn: document.getElementById('autofix-aa-btn'),
+        autofixAaaBtn: document.getElementById('autofix-aaa-btn'),
+        saveProjectBtn: document.getElementById('save-pair-to-project-btn'),
+        shareBtn: document.getElementById('share-contrast-btn'),
+        toast: document.getElementById('toast')
     });
 
     if (dom.bgHex) dom.bgHex.value = state.bg;
@@ -119,6 +130,49 @@ function attachEvents() {
         
         updateCustomContrast();
     });
+
+    if (dom.autofixAaBtn) {
+        dom.autofixAaBtn.addEventListener('click', () => {
+            const newFg = calculateAutoFixColor(4.5);
+            if (newFg) {
+                state.fg = newFg;
+                dom.fgHex.value = state.fg;
+                dom.fgPicker.value = `#${state.fg}`;
+                updateCustomContrast();
+                showToast(translations[layoutState.currentLang]?.auto_fix_applied || 'Adjusted color for accessibility!');
+            }
+        });
+    }
+
+    if (dom.autofixAaaBtn) {
+        dom.autofixAaaBtn.addEventListener('click', () => {
+            const newFg = calculateAutoFixColor(7.0);
+            if (newFg) {
+                state.fg = newFg;
+                dom.fgHex.value = state.fg;
+                dom.fgPicker.value = `#${state.fg}`;
+                updateCustomContrast();
+                showToast(translations[layoutState.currentLang]?.auto_fix_applied || 'Adjusted color for accessibility!');
+            }
+        });
+    }
+
+    if (dom.saveProjectBtn) {
+        dom.saveProjectBtn.addEventListener('click', () => {
+            ProjectManager.addColorToActiveProject(state.bg);
+            ProjectManager.addColorToActiveProject(state.fg);
+            showToast(translations[layoutState.currentLang]?.saved_to_project_success || 'Saved colors to project!');
+        });
+    }
+
+    if (dom.shareBtn) {
+        dom.shareBtn.addEventListener('click', () => {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?bg=${state.bg}&fg=${state.fg}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showToast(translations[layoutState.currentLang]?.contrast_shared_copied || 'Share link copied to clipboard!');
+            });
+        });
+    }
 }
 
 function updateCustomContrast() {
@@ -134,6 +188,25 @@ function updateCustomContrast() {
     dom.preview.style.color = `#${state.fg}`;
     
     renderCustomWCAGBadges(dom.badges, ratio);
+
+    // Auto-Fix Box Visibility
+    if (dom.autofixContainer) {
+        if (ratio < 4.5) {
+            dom.autofixContainer.style.display = 'block';
+            if (dom.autofixAaBtn) dom.autofixAaBtn.style.display = 'inline-flex';
+            if (dom.autofixAaaBtn) dom.autofixAaaBtn.style.display = 'inline-flex';
+        } else if (ratio < 7.0) {
+            dom.autofixContainer.style.display = 'block';
+            if (dom.autofixAaBtn) dom.autofixAaBtn.style.display = 'none';
+            if (dom.autofixAaaBtn) dom.autofixAaaBtn.style.display = 'inline-flex';
+        } else {
+            dom.autofixContainer.style.display = 'none';
+        }
+    }
+
+    // Keep URL parameter in sync
+    const newUrl = `${window.location.pathname}?bg=${state.bg}&fg=${state.fg}`;
+    window.history.replaceState(null, '', newUrl);
 
     // APCA
     const apcaVal = ColorUtils.getAPCAContrast(fgRgb, bgRgb);
@@ -163,6 +236,55 @@ function updateCustomContrast() {
         dom.apcaBadge.style.backgroundColor = '';
         dom.apcaBadge.style.color = '';
     }
+}
+
+function calculateAutoFixColor(targetRatio) {
+    const bgRgb = ColorUtils.hexToRgb(state.bg);
+    const fgRgb = ColorUtils.hexToRgb(state.fg);
+    const currentRatio = ColorUtils.getContrastRatio(bgRgb, fgRgb);
+    if (currentRatio >= targetRatio) return null;
+
+    const bgLum = ColorUtils.getLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
+    const fgOklch = ColorUtils.rgbToOklch(fgRgb.r, fgRgb.g, fgRgb.b);
+
+    const shouldDarken = bgLum > 0.4;
+    let bestHex = null;
+
+    const startL = Math.round(fgOklch.l * 2) / 2;
+    if (shouldDarken) {
+        for (let testL = startL; testL >= 0; testL -= 0.5) {
+            const chromaFactor = Math.min(1, testL / 25);
+            const testRgb = ColorUtils.oklchToRgb(testL, fgOklch.c * chromaFactor, fgOklch.h);
+            const ratio = ColorUtils.getContrastRatio(bgRgb, testRgb);
+            if (ratio >= targetRatio) {
+                bestHex = ColorUtils.rgbToHex(testRgb.r, testRgb.g, testRgb.b);
+                break;
+            }
+        }
+    } else {
+        for (let testL = startL; testL <= 100; testL += 0.5) {
+            const chromaFactor = Math.min(1, (100 - testL) / 25);
+            const testRgb = ColorUtils.oklchToRgb(testL, fgOklch.c * chromaFactor, fgOklch.h);
+            const ratio = ColorUtils.getContrastRatio(bgRgb, testRgb);
+            if (ratio >= targetRatio) {
+                bestHex = ColorUtils.rgbToHex(testRgb.r, testRgb.g, testRgb.b);
+                break;
+            }
+        }
+    }
+
+    if (!bestHex) {
+        bestHex = shouldDarken ? "000000" : "FFFFFF";
+    }
+
+    return bestHex;
+}
+
+function showToast(msg) {
+    if (!dom.toast) return;
+    dom.toast.textContent = msg;
+    dom.toast.classList.add('show');
+    setTimeout(() => dom.toast.classList.remove('show'), 2500);
 }
 
 function renderCustomWCAGBadges(container, ratio) {

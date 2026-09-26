@@ -1,6 +1,7 @@
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
 import { initLayout, layoutState } from '../assets/script/shared/layout.js';
+import { ProjectManager } from '../assets/script/projects.js';
 
 // Global references
 let currentImage = null;
@@ -12,7 +13,7 @@ const presetKeys = ['palette_vibrant', 'palette_muted', 'palette_light', 'palett
 const presetNames = ['Vibrant', 'Muted', 'Light', 'Dark', 'Balanced'];
 
 // DOM references
-let dropZone, fileInput, canvas, ctx, workspace, pinsOverlay, paletteContainer, slider, sliderLabelName, btnAddColor, btnRemoveColor, resetBtn, exportBtn;
+let dropZone, fileInput, canvas, ctx, workspace, pinsOverlay, paletteContainer, slider, sliderLabelName, btnAddColor, btnRemoveColor, resetBtn, exportBtn, saveProjectBtn, toast, sampleGallery;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Layout
@@ -31,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnRemoveColor = document.getElementById('palette-remove-color');
     resetBtn = document.getElementById('reset-image-btn');
     exportBtn = document.getElementById('export-extracted-palette-btn');
+    saveProjectBtn = document.getElementById('save-palette-to-project-btn');
+    toast = document.getElementById('toast');
+    sampleGallery = document.getElementById('sample-gallery');
 
     if (canvas) {
         ctx = canvas.getContext('2d');
@@ -74,6 +78,7 @@ function attachEvents() {
     if (resetBtn) {
         resetBtn.onclick = () => {
             dropZone.style.display = 'flex';
+            if (sampleGallery) sampleGallery.style.display = 'block';
             if (workspace) workspace.style.display = 'none';
             fileInput.value = '';
             currentImage = null;
@@ -81,6 +86,43 @@ function attachEvents() {
             presets = [];
         };
     }
+
+    if (saveProjectBtn) {
+        saveProjectBtn.onclick = () => {
+            if (!activePins || activePins.length === 0) return;
+            let count = 0;
+            activePins.forEach(pin => {
+                if (ProjectManager.addColorToActiveProject(pin.hex)) {
+                    count++;
+                }
+            });
+            showToast(translations[layoutState.currentLang]?.saved_to_project_success || 'Saved colors to project!');
+        };
+    }
+
+    // Clipboard Paste support
+    window.addEventListener('paste', (e) => {
+        const items = (e.clipboardData || window.clipboardData)?.items;
+        if (!items) return;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                const file = items[i].getAsFile();
+                if (file) {
+                    processImage(file);
+                    showToast(translations[layoutState.currentLang]?.paste_from_clipboard || 'Image pasted!');
+                    break;
+                }
+            }
+        }
+    });
+
+    // Sample Images Gallery clicks
+    document.querySelectorAll('.sample-img-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const sampleType = btn.getAttribute('data-sample');
+            loadSampleImage(sampleType);
+        });
+    });
 
     if (slider) {
         slider.oninput = (e) => {
@@ -199,6 +241,7 @@ function processImage(file) {
         img.onload = () => {
             currentImage = img;
             dropZone.style.display = 'none';
+            if (sampleGallery) sampleGallery.style.display = 'none';
             if (workspace) workspace.style.display = 'flex';
             
             const MAX_WIDTH = 500;
@@ -223,6 +266,115 @@ function processImage(file) {
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
+}
+
+function loadSampleImage(type) {
+    const sCanvas = document.createElement('canvas');
+    sCanvas.width = 600;
+    sCanvas.height = 420;
+    const sCtx = sCanvas.getContext('2d');
+
+    if (type === 'sunset') {
+        const grad = sCtx.createLinearGradient(0, 0, 0, 420);
+        grad.addColorStop(0, '#2D114D');
+        grad.addColorStop(0.3, '#7B1E7A');
+        grad.addColorStop(0.55, '#D83A56');
+        grad.addColorStop(0.75, '#FF8A5C');
+        grad.addColorStop(1, '#FFCC70');
+        sCtx.fillStyle = grad;
+        sCtx.fillRect(0, 0, 600, 420);
+
+        // Sun
+        sCtx.fillStyle = '#FFF5B7';
+        sCtx.beginPath();
+        sCtx.arc(300, 240, 65, 0, Math.PI * 2);
+        sCtx.fill();
+
+        // Mountains
+        sCtx.fillStyle = '#1A0826';
+        sCtx.beginPath();
+        sCtx.moveTo(0, 420);
+        sCtx.lineTo(140, 280);
+        sCtx.lineTo(260, 360);
+        sCtx.lineTo(420, 240);
+        sCtx.lineTo(600, 420);
+        sCtx.closePath();
+        sCtx.fill();
+    } else if (type === 'ocean') {
+        const grad = sCtx.createLinearGradient(0, 0, 600, 420);
+        grad.addColorStop(0, '#001F3F');
+        grad.addColorStop(0.3, '#0074D9');
+        grad.addColorStop(0.6, '#39CCCC');
+        grad.addColorStop(0.85, '#7FDBFF');
+        grad.addColorStop(1, '#F6E58D');
+        sCtx.fillStyle = grad;
+        sCtx.fillRect(0, 0, 600, 420);
+
+        // Coral & Islands
+        sCtx.fillStyle = '#FF7675';
+        sCtx.beginPath();
+        sCtx.arc(160, 310, 45, 0, Math.PI * 2);
+        sCtx.fill();
+
+        sCtx.fillStyle = '#55E6C1';
+        sCtx.beginPath();
+        sCtx.arc(420, 180, 70, 0, Math.PI * 2);
+        sCtx.fill();
+    } else if (type === 'cyberpunk') {
+        sCtx.fillStyle = '#0F051D';
+        sCtx.fillRect(0, 0, 600, 420);
+
+        const neonGrad = sCtx.createLinearGradient(0, 0, 600, 420);
+        neonGrad.addColorStop(0, '#F72585');
+        neonGrad.addColorStop(0.4, '#7209B7');
+        neonGrad.addColorStop(0.7, '#3A0CA3');
+        neonGrad.addColorStop(1, '#4CC9F0');
+
+        sCtx.fillStyle = neonGrad;
+        sCtx.beginPath();
+        sCtx.arc(300, 210, 130, 0, Math.PI * 2);
+        sCtx.fill();
+
+        // Geometric neon accents
+        sCtx.strokeStyle = '#4CC9F0';
+        sCtx.lineWidth = 6;
+        sCtx.strokeRect(100, 80, 400, 260);
+
+        sCtx.fillStyle = '#FFE600';
+        sCtx.fillRect(250, 340, 100, 12);
+    } else if (type === 'forest') {
+        const fGrad = sCtx.createLinearGradient(0, 0, 0, 420);
+        fGrad.addColorStop(0, '#CBE3DB');
+        fGrad.addColorStop(0.35, '#8CB99F');
+        fGrad.addColorStop(0.7, '#4B7B5D');
+        fGrad.addColorStop(1, '#1B3B2B');
+        sCtx.fillStyle = fGrad;
+        sCtx.fillRect(0, 0, 600, 420);
+
+        // Stylized trees
+        sCtx.fillStyle = '#102A1E';
+        for (let i = 40; i < 600; i += 70) {
+            sCtx.beginPath();
+            sCtx.moveTo(i, 420);
+            sCtx.lineTo(i + 35, 200 + (i % 60));
+            sCtx.lineTo(i + 70, 420);
+            sCtx.fill();
+        }
+    }
+
+    sCanvas.toBlob(blob => {
+        if (blob) {
+            blob.name = `${type}-sample.png`;
+            processImage(blob);
+        }
+    }, 'image/png');
+}
+
+function showToast(msg) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
 function updateSliderLabel(value) {

@@ -73,9 +73,44 @@
                         <div class="mt-m"><span id="custom-apca-badge" class="badge large-badge">Pass</span></div>
                     </div>
                 </div>
+
+                <!-- Smart Contrast Auto-Fix Suggestion Box -->
+                <div id="autofix-container" class="mt-l" style="display: none; padding: 16px; border-radius: 16px; background: var(--md-sys-color-surface-container-high); border: 1px dashed var(--md-sys-color-outline-variant);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <span class="label-large" style="display: flex; align-items: center; gap: 6px; font-weight: bold; color: var(--md-sys-color-primary);">
+                                <span class="material-symbols-rounded" style="font-size: 20px;">auto_fix_high</span>
+                                Smart Contrast Auto-Fix
+                            </span>
+                            <span class="body-small" style="opacity: 0.8; display: block; margin-top: 2px;">Adjust foreground lightness with minimal perceptual shift to pass WCAG standards.</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <md-filled-tonal-button id="autofix-aa-btn">
+                                <span data-i18n="auto_fix_aa">Auto-Fix AA (4.5:1)</span>
+                            </md-filled-tonal-button>
+                            <md-filled-button id="autofix-aaa-btn">
+                                <span data-i18n="auto_fix_aaa">Auto-Fix AAA (7:1)</span>
+                            </md-filled-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Save & Share -->
+            <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
+                <md-filled-button id="save-pair-to-project-btn" style="flex: 1;">
+                    <md-icon slot="icon">bookmark_add</md-icon>
+                    <span data-i18n="save_to_project">Save to Project</span>
+                </md-filled-button>
+                <md-outlined-button id="share-contrast-btn" style="flex: 1;">
+                    <md-icon slot="icon">share</md-icon>
+                    <span data-i18n="share_link">Share Link</span>
+                </md-outlined-button>
             </div>
         </div>
     </main>
+
+    <div id="toast" class="toast"></div>
 
     <script type="module" src="https://esm.sh/@material/web/all.js"></script>
     <script type="module" src="./script.js"></script>

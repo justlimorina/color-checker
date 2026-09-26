@@ -1641,6 +1641,31 @@ body {
     color: var(--md-sys-color-primary);
 }
 
+.sample-img-btn:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-color: var(--md-sys-color-primary) !important;
+}
+
+.grad-preset-chip {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+}
+
+.grad-preset-chip:hover {
+    transform: translateY(-2px) scale(1.12);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25) !important;
+}
+
+.variant-box {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.variant-box:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
 /* ==========================================================================
    CONTRAST MATRIX & GRADIENT GENERATOR
    ========================================================================== */

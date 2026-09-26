@@ -6,7 +6,8 @@ const state = {
     hex1: localStorage.getItem('active_hex') || "624E9A",
     hex2: "EADDFF",
     type: "linear",
-    angle: 90
+    angle: 90,
+    interpolation: "srgb"
 };
 
 const dom = {};
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Watch language changes from shared layout
 window.addEventListener('langchange', () => {
-    // No language-specific dynamic renders inside the gradient container, but handled by translation engine
+    // Handled by translation engine
 });
 
 function bindDOM() {
@@ -40,10 +41,13 @@ function bindDOM() {
         angleSlider: document.getElementById('grad-angle'),
         angleVal: document.getElementById('grad-angle-val'),
         angleGroup: document.getElementById('grad-angle-group'),
+        interpToggle: document.getElementById('grad-interp-toggle'),
         color1: document.getElementById('grad-color-1'),
         color2: document.getElementById('grad-color-2'),
         hex1: document.getElementById('grad-hex-1'),
         hex2: document.getElementById('grad-hex-2'),
+        swapBtn: document.getElementById('swap-grad-btn'),
+        presetsBar: document.getElementById('gradient-presets-bar'),
         preview: document.getElementById('gradient-preview'),
         code: document.getElementById('gradient-code'),
         copyBtn: document.getElementById('copy-gradient-btn'),
@@ -140,6 +144,48 @@ function attachEvents() {
     setupEyeDropper(dom.eyedropperBtn1, dom.hex1, dom.color1, 'hex1');
     setupEyeDropper(dom.eyedropperBtn2, dom.hex2, dom.color2, 'hex2');
 
+    if (dom.swapBtn) {
+        dom.swapBtn.addEventListener('click', () => {
+            const temp = state.hex1;
+            state.hex1 = state.hex2;
+            state.hex2 = temp;
+            if (dom.hex1) dom.hex1.value = state.hex1;
+            if (dom.hex2) dom.hex2.value = state.hex2;
+            if (dom.color1) dom.color1.value = `#${state.hex1}`;
+            if (dom.color2) dom.color2.value = `#${state.hex2}`;
+            updateGradient();
+        });
+    }
+
+    if (dom.interpToggle) {
+        dom.interpToggle.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                dom.interpToggle.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.interpolation = btn.getAttribute('data-interp') || 'srgb';
+                updateGradient();
+            });
+        });
+    }
+
+    if (dom.presetsBar) {
+        dom.presetsBar.querySelectorAll('.grad-preset-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const c1 = chip.getAttribute('data-c1');
+                const c2 = chip.getAttribute('data-c2');
+                if (c1 && c2) {
+                    state.hex1 = c1.toUpperCase();
+                    state.hex2 = c2.toUpperCase();
+                    if (dom.hex1) dom.hex1.value = state.hex1;
+                    if (dom.hex2) dom.hex2.value = state.hex2;
+                    if (dom.color1) dom.color1.value = `#${state.hex1}`;
+                    if (dom.color2) dom.color2.value = `#${state.hex2}`;
+                    updateGradient();
+                }
+            });
+        });
+    }
+
     if (dom.copyBtn) {
         dom.copyBtn.addEventListener('click', () => {
             if (dom.code) {
@@ -155,15 +201,31 @@ function updateGradient() {
     const c1 = `#${state.hex1}`;
     const c2 = `#${state.hex2}`;
     
-    let css = '';
+    let cssRule = '';
+    let displayCode = '';
+
     if (state.type === 'linear') {
-        css = `background: linear-gradient(${state.angle}deg, ${c1}, ${c2});`;
+        const fallback = `background: linear-gradient(${state.angle}deg, ${c1}, ${c2});`;
+        if (state.interpolation === 'oklch') {
+            cssRule = `background: linear-gradient(in oklch ${state.angle}deg, ${c1}, ${c2});`;
+            displayCode = `${fallback}\n${cssRule}`;
+        } else {
+            cssRule = fallback;
+            displayCode = cssRule;
+        }
     } else {
-        css = `background: radial-gradient(circle, ${c1}, ${c2});`;
+        const fallback = `background: radial-gradient(circle, ${c1}, ${c2});`;
+        if (state.interpolation === 'oklch') {
+            cssRule = `background: radial-gradient(in oklch circle, ${c1}, ${c2});`;
+            displayCode = `${fallback}\n${cssRule}`;
+        } else {
+            cssRule = fallback;
+            displayCode = cssRule;
+        }
     }
     
-    dom.preview.style.cssText = `${css} width: 100%; height: 300px; border-radius: 24px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);`;
-    dom.code.textContent = css;
+    dom.preview.style.cssText = `${cssRule} width: 100%; height: 300px; border-radius: 24px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);`;
+    dom.code.textContent = displayCode;
 }
 
 function showToast() {

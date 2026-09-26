@@ -33,7 +33,23 @@
             <div id="image-drop-zone" class="image-drop-zone">
                 <span class="material-symbols-rounded" style="font-size: 48px;">add_photo_alternate</span>
                 <p class="title-medium mt-s" data-i18n="browse_image">Browse image</p>
+                <p class="body-small mt-xs" style="opacity: 0.7;">(Drag & drop, click to browse, or paste with Ctrl+V)</p>
                 <input type="file" id="image-upload" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Preset Samples Gallery -->
+            <div id="sample-gallery" class="mt-l">
+                <p class="label-large mb-s" data-i18n="or_try_sample" style="text-align: center; opacity: 0.8;">Or try sample images</p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button class="sample-img-btn" data-sample="sunset" title="Sunset Horizon" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #FF512F, #DD2476, #4A00E0);">
+                    </button>
+                    <button class="sample-img-btn" data-sample="ocean" title="Tropical Ocean" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #00c6ff, #0072ff, #003366);">
+                    </button>
+                    <button class="sample-img-btn" data-sample="cyberpunk" title="Cyberpunk Neon" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #f72585, #7209b7, #3a0ca3, #4cc9f0);">
+                    </button>
+                    <button class="sample-img-btn" data-sample="forest" title="Forest Sage" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #134e5e, #71b280, #cbf3d2);">
+                    </button>
+                </div>
             </div>
 
             <div id="image-extractor-workspace" style="display: none;">
@@ -66,14 +82,18 @@
 
                     <!-- Action buttons -->
                     <div style="display: flex; flex-direction: column; gap: 8px; margin-top: var(--spacing-s);">
-                        <md-filled-tonal-button id="reset-image-btn" style="width: 100%;">
-                            <md-icon slot="icon">restart_alt</md-icon>
-                            <span data-i18n="upload_another">Upload Another</span>
-                        </md-filled-tonal-button>
-                        <md-filled-button id="export-extracted-palette-btn" style="width: 100%;">
+                        <md-filled-button id="save-palette-to-project-btn" style="width: 100%;">
+                            <md-icon slot="icon">bookmark_add</md-icon>
+                            <span data-i18n="save_to_project">Save to Project</span>
+                        </md-filled-button>
+                        <md-filled-tonal-button id="export-extracted-palette-btn" style="width: 100%;">
                             <md-icon slot="icon">download</md-icon>
                             <span data-i18n="export_palette">Export Palette</span>
-                        </md-filled-button>
+                        </md-filled-tonal-button>
+                        <md-outlined-button id="reset-image-btn" style="width: 100%;">
+                            <md-icon slot="icon">restart_alt</md-icon>
+                            <span data-i18n="upload_another">Upload Another</span>
+                        </md-outlined-button>
                     </div>
                 </div>
 
@@ -87,6 +107,8 @@
             </div>
         </div>
     </main>
+
+    <div id="toast" class="toast"></div>
 
     <script type="module" src="https://esm.sh/@material/web/all.js"></script>
     <script type="module" src="./script.js"></script>

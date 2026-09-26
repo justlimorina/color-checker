@@ -45,8 +45,16 @@
                      </div>
 
                     <div class="input-group mb-m">
+                        <label class="label-large" style="display:block; margin-bottom: 8px;" data-i18n="interpolation">Interpolation</label>
+                        <div class="segmented-control" id="grad-interp-toggle">
+                            <button class="segment-btn active" data-interp="srgb">sRGB</button>
+                            <button class="segment-btn" data-interp="oklch">in oklch</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-m">
                         <label class="label-large mb-s" data-i18n="gradient_colors">Colors</label>
-                        <div class="mixer-row" style="gap: 12px;">
+                        <div class="mixer-row" style="gap: 8px; align-items: center;">
                             <div class="hex-wrapper" style="flex:1; margin-top:0; position: relative;">
                                 <span>#</span>
                                 <input type="text" id="grad-hex-1" value="624E9A" maxlength="6" style="width: calc(100% - 76px);">
@@ -55,6 +63,9 @@
                                 </button>
                                 <input type="color" id="grad-color-1" value="#624E9A">
                             </div>
+                            <button id="swap-grad-btn" class="icon-button" title="Swap Colors" style="background: var(--md-sys-color-surface-container-high); border: 1px solid var(--md-sys-color-outline-variant); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--md-sys-color-on-surface); flex-shrink: 0;">
+                                <span class="material-symbols-rounded" style="font-size: 22px;">swap_horiz</span>
+                            </button>
                             <div class="hex-wrapper" style="flex:1; margin-top:0; position: relative;">
                                 <span>#</span>
                                 <input type="text" id="grad-hex-2" value="EADDFF" maxlength="6" style="width: calc(100% - 76px);">
@@ -63,6 +74,18 @@
                                 </button>
                                 <input type="color" id="grad-color-2" value="#EADDFF">
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-m">
+                        <label class="label-large mb-s" data-i18n="gradient_presets" style="display:block;">Presets</label>
+                        <div id="gradient-presets-bar" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="grad-preset-chip" data-c1="FF512F" data-c2="DD2476" title="Sunset Glow" style="background: linear-gradient(135deg, #FF512F, #DD2476); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-c1="2E3192" data-c2="1BFFFF" title="Ocean Wave" style="background: linear-gradient(135deg, #2E3192, #1BFFFF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-c1="624E9A" data-c2="EADDFF" title="Cosmic Violet" style="background: linear-gradient(135deg, #624E9A, #EADDFF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-c1="00B09B" data-c2="96C93D" title="Emerald Aurora" style="background: linear-gradient(135deg, #00B09B, #96C93D); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-c1="FF007F" data-c2="00F0FF" title="Cyberpunk" style="background: linear-gradient(135deg, #FF007F, #00F0FF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-c1="F2994A" data-c2="F2C94C" title="Warm Amber" style="background: linear-gradient(135deg, #F2994A, #F2C94C); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
                         </div>
                     </div>
                     

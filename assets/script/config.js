@@ -154,7 +154,20 @@ export const translations = {
         srgb_out_gamut: "Out of sRGB Gamut (Clamped)",
         delta_e_label: "ΔE (OKLab):",
         export_tokens: "Export Design Tokens",
-        tokens_modal_title: "Export Project Tokens"
+        tokens_modal_title: "Export Project Tokens",
+        paste_from_clipboard: "Paste from Clipboard",
+        or_try_sample: "Or try sample images",
+        save_to_project: "Save to Project",
+        saved_to_project_success: "Saved colors to project!",
+        swap_colors: "Swap Colors",
+        gradient_presets: "Presets",
+        interpolation: "Interpolation",
+        auto_fix_aa: "Auto-Fix AA (4.5:1)",
+        auto_fix_aaa: "Auto-Fix AAA (7:1)",
+        auto_fix_applied: "Adjusted color for accessibility!",
+        contrast_shared_copied: "Share link copied to clipboard!",
+        space_to_generate: "Press Spacebar to generate new palette",
+        click_to_select: "Click to select"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -311,7 +324,20 @@ export const translations = {
         srgb_out_gamut: "Ngoài sRGB Gamut (Đã ép lề)",
         delta_e_label: "Độ lệch màu ΔE:",
         export_tokens: "Xuất Design Tokens",
-        tokens_modal_title: "Xuất Design Tokens cho Dự án"
+        tokens_modal_title: "Xuất Design Tokens cho Dự án",
+        paste_from_clipboard: "Dán từ bộ nhớ tạm",
+        or_try_sample: "Hoặc thử ảnh mẫu",
+        save_to_project: "Lưu vào Dự án",
+        saved_to_project_success: "Đã lưu màu vào dự án!",
+        swap_colors: "Đảo màu",
+        gradient_presets: "Dải màu mẫu",
+        interpolation: "Hòa sắc",
+        auto_fix_aa: "Tự động sửa AA (4.5:1)",
+        auto_fix_aaa: "Tự động sửa AAA (7:1)",
+        auto_fix_applied: "Đã điều chỉnh màu đạt chuẩn!",
+        contrast_shared_copied: "Đã sao chép liên kết chia sẻ!",
+        space_to_generate: "Bấm phím Space để tạo bảng màu mới",
+        click_to_select: "Nhấp để chọn màu"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -455,7 +481,20 @@ export const translations = {
         srgb_out_gamut: "sRGBガムット外（補正済）",
         delta_e_label: "ΔE 色差:",
         export_tokens: "デザイントークン書き出し",
-        tokens_modal_title: "プロジェクトトークンの書き出し"
+        tokens_modal_title: "プロジェクトトークンの書き出し",
+        paste_from_clipboard: "クリップボードから貼り付け",
+        or_try_sample: "またはサンプル画像をお試しください",
+        save_to_project: "プロジェクトに保存",
+        saved_to_project_success: "プロジェクトに色を保存しました！",
+        swap_colors: "色を入れ替え",
+        gradient_presets: "プリセット",
+        interpolation: "補間",
+        auto_fix_aa: "AA (4.5:1) 自動修正",
+        auto_fix_aaa: "AAA (7:1) 自動修正",
+        auto_fix_applied: "アクセシビリティに合わせて調整しました！",
+        contrast_shared_copied: "共有リンクをコピーしました！",
+        space_to_generate: "Spaceキーで新しいパレットを生成",
+        click_to_select: "クリックして選択"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -599,6 +638,19 @@ export const translations = {
         srgb_out_gamut: "超出 sRGB 色域（已截断）",
         delta_e_label: "ΔE 色差:",
         export_tokens: "导出 Design Tokens",
-        tokens_modal_title: "导出项目 Design Tokens"
+        tokens_modal_title: "导出项目 Design Tokens",
+        paste_from_clipboard: "从剪贴板粘贴",
+        or_try_sample: "或尝试示例图片",
+        save_to_project: "保存到项目",
+        saved_to_project_success: "已保存颜色到项目！",
+        swap_colors: "交换颜色",
+        gradient_presets: "预设",
+        interpolation: "插值",
+        auto_fix_aa: "自动修复 AA (4.5:1)",
+        auto_fix_aaa: "自动修复 AAA (7:1)",
+        auto_fix_applied: "已调整颜色以符合无障碍标准！",
+        contrast_shared_copied: "分享链接已复制到剪贴板！",
+        space_to_generate: "按空格键生成新调色板",
+        click_to_select: "点击选择颜色"
     }
 };

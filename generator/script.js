@@ -505,6 +505,21 @@ function attachEvents() {
         localStorage.setItem('color_history', JSON.stringify(state.history));
         renderHistory();
     });
+
+    // Spacebar shortcut for Smart Palette generator
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable) {
+                return;
+            }
+            const smartTab = document.getElementById('tab-smart');
+            if (smartTab && smartTab.classList.contains('active')) {
+                e.preventDefault();
+                runPaletteGeneration();
+            }
+        }
+    });
 }
 
 // --- State and UI Updates ---
@@ -910,6 +925,7 @@ function renderVariations() {
     const white = { r: 255, g: 255, b: 255 };
     const black = { r: 0, g: 0, b: 0 };
     const grey = { r: 128, g: 128, b: 128 };
+    const selectHint = translations[layoutState.currentLang]?.click_to_select || 'Click to select';
 
     const genRow = (row, targetColor) => {
         if (!row) return;
@@ -920,8 +936,9 @@ function renderVariations() {
             const box = document.createElement('div');
             box.className = 'variant-box';
             box.style.backgroundColor = `#${mixedHex}`;
+            box.style.cursor = 'pointer';
             box.innerHTML = `<span class="label-tiny" style="color: ${ColorUtils.getLuminance(mixed.r, mixed.g, mixed.b) > 0.5 ? 'black' : 'white'}">${w}%</span>`;
-            box.title = `#${mixedHex}`;
+            box.title = `#${mixedHex} (${selectHint})`;
             box.onclick = () => updateColorState(mixedHex);
             row.appendChild(box);
         });
@@ -983,7 +1000,9 @@ function createHarmonyBox(r, g, b) {
     const box = document.createElement('div');
     box.className = 'harmony-box';
     box.style.backgroundColor = `#${hex}`;
-    box.title = `#${hex}`;
+    box.style.cursor = 'pointer';
+    const selectHint = translations[layoutState.currentLang]?.click_to_select || 'Click to select';
+    box.title = `#${hex} (${selectHint})`;
     box.onclick = () => updateColorState(hex);
     return box;
 }
