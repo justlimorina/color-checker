@@ -14,6 +14,7 @@ const presetNames = ['Vibrant', 'Muted', 'Light', 'Dark', 'Balanced'];
 
 // DOM references
 let dropZone, fileInput, canvas, ctx, workspace, pinsOverlay, paletteContainer, slider, sliderLabelName, btnAddColor, btnRemoveColor, resetBtn, exportBtn, saveProjectBtn, toast, sampleGallery;
+let loupeEl, loupeCanvas, loupeCtx, loupeLabel, proportionBar, flowGradBtn, flowThemeBtn;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Layout
@@ -35,6 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
     saveProjectBtn = document.getElementById('save-palette-to-project-btn');
     toast = document.getElementById('toast');
     sampleGallery = document.getElementById('sample-gallery');
+    
+    loupeEl = document.getElementById('magnifier-loupe');
+    loupeCanvas = document.getElementById('loupe-canvas');
+    if (loupeCanvas) loupeCtx = loupeCanvas.getContext('2d');
+    loupeLabel = document.getElementById('loupe-label');
+    proportionBar = document.getElementById('color-proportion-bar');
+    flowGradBtn = document.getElementById('flow-gradient-btn');
+    flowThemeBtn = document.getElementById('flow-theme-btn');
 
     if (canvas) {
         ctx = canvas.getContext('2d');
@@ -129,6 +138,21 @@ function attachEvents() {
             const value = parseInt(e.target.value);
             updateSliderLabel(value);
             loadPreset(value);
+        };
+    }
+
+    if (flowGradBtn) {
+        flowGradBtn.onclick = () => {
+            if (!activePins || activePins.length === 0) return;
+            const hexes = activePins.map(p => p.hex).join(',');
+            window.location.href = `../css-gradient-generator/?colors=${hexes}`;
+        };
+    }
+
+    if (flowThemeBtn) {
+        flowThemeBtn.onclick = () => {
+            const hex = activePins[activePinIndex]?.hex || (activePins[0]?.hex || '624E9A');
+            window.location.href = `../md3-theme-creator/?seed=${hex}`;
         };
     }
 
@@ -598,6 +622,7 @@ function renderWorkspace() {
                 swatches[i].style.backgroundColor = `#${hex}`;
                 swatches[i].title = `#${hex}`;
                 
+                updateLoupe(pixelX, pixelY, hex);
                 updateColorState(hex, true);
             } catch (err) {
                 console.error("Error reading pixel on drag:", err);
@@ -607,11 +632,13 @@ function renderWorkspace() {
         const stopDrag = () => {
             if (isDragging) {
                 isDragging = false;
+                hideLoupe();
                 document.removeEventListener('mousemove', onDrag);
                 document.removeEventListener('mouseup', stopDrag);
                 document.removeEventListener('touchmove', onDrag);
                 document.removeEventListener('touchend', stopDrag);
                 updateColorState(pin.hex, false);
+                updateProportionBar();
             }
         };
 
@@ -631,6 +658,92 @@ function renderWorkspace() {
     if (activePins[activePinIndex]) {
         updateColorState(activePins[activePinIndex].hex, true);
     }
+
+    updateProportionBar();
+}
+
+function updateLoupe(pixelX, pixelY, hex) {
+    if (!loupeEl || !loupeCanvas || !loupeCtx || !canvas) return;
+    loupeEl.style.display = 'block';
+    loupeEl.style.left = `${(pixelX / canvas.width) * 100}%`;
+    loupeEl.style.top = `${(pixelY / canvas.height) * 100}%`;
+
+    const cropSize = 20; // 20x20 pixel area for 5x zoom into 100x100 canvas
+    const sx = Math.max(0, Math.min(canvas.width - cropSize, pixelX - cropSize / 2));
+    const sy = Math.max(0, Math.min(canvas.height - cropSize, pixelY - cropSize / 2));
+
+    loupeCtx.imageSmoothingEnabled = false;
+    loupeCtx.clearRect(0, 0, 100, 100);
+    loupeCtx.drawImage(canvas, sx, sy, cropSize, cropSize, 0, 0, 100, 100);
+
+    if (loupeLabel) {
+        loupeLabel.textContent = `#${hex}`;
+    }
+}
+
+function hideLoupe() {
+    if (loupeEl) loupeEl.style.display = 'none';
+}
+
+function updateProportionBar() {
+    if (!proportionBar || !activePins || activePins.length === 0 || !canvas || !ctx) return;
+    
+    // Sample pixels across image to determine dominant color proportions
+    const counts = new Array(activePins.length).fill(0);
+    let totalSamples = 0;
+    
+    try {
+        const step = Math.max(4, Math.floor(canvas.width / 40));
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const pinRgbs = activePins.map(p => ColorUtils.hexToRgb(p.hex));
+        
+        for (let y = 0; y < canvas.height; y += step) {
+            for (let x = 0; x < canvas.width; x += step) {
+                const idx = (y * canvas.width + x) * 4;
+                if (imgData[idx + 3] < 128) continue;
+                const r = imgData[idx];
+                const g = imgData[idx + 1];
+                const b = imgData[idx + 2];
+                
+                let minD = Infinity;
+                let bestPin = 0;
+                for (let i = 0; i < pinRgbs.length; i++) {
+                    const d = Math.pow(r - pinRgbs[i].r, 2) + Math.pow(g - pinRgbs[i].g, 2) + Math.pow(b - pinRgbs[i].b, 2);
+                    if (d < minD) {
+                        minD = d;
+                        bestPin = i;
+                    }
+                }
+                counts[bestPin]++;
+                totalSamples++;
+            }
+        }
+    } catch (err) {
+        console.warn('Error calculating proportions:', err);
+    }
+    
+    if (totalSamples === 0) {
+        counts.fill(1);
+        totalSamples = counts.length;
+    }
+    
+    proportionBar.innerHTML = '';
+    activePins.forEach((pin, i) => {
+        const pct = Math.max(5, Math.round((counts[i] / totalSamples) * 100));
+        const seg = document.createElement('div');
+        seg.className = 'color-proportion-seg';
+        seg.style.flex = `${pct}`;
+        seg.style.backgroundColor = `#${pin.hex}`;
+        seg.title = `#${pin.hex} (${pct}%)`;
+        
+        seg.addEventListener('click', () => {
+            activePinIndex = i;
+            renderWorkspace();
+            updateColorState(pin.hex, true);
+        });
+        
+        proportionBar.appendChild(seg);
+    });
 }
 
 // Keep active color and history in sync with localStorage

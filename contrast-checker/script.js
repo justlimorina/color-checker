@@ -9,7 +9,10 @@ const urlFg = urlParams.get('fg');
 
 const state = {
     bg: (urlBg && /^[0-9A-F]{6}$/i.test(urlBg)) ? urlBg.toUpperCase() : "FFFFFF",
-    fg: (urlFg && /^[0-9A-F]{6}$/i.test(urlFg)) ? urlFg.toUpperCase() : (localStorage.getItem('active_hex') || "624E9A")
+    fg: (urlFg && /^[0-9A-F]{6}$/i.test(urlFg)) ? urlFg.toUpperCase() : (localStorage.getItem('active_hex') || "624E9A"),
+    fontSize: 24,
+    fontWeight: 700,
+    colorBlindness: 'none'
 };
 
 const dom = {};
@@ -37,6 +40,7 @@ function bindDOM() {
         fgPicker: document.getElementById('custom-fg-picker'),
         swapBtn: document.getElementById('swap-contrast-btn'),
         preview: document.getElementById('custom-contrast-preview'),
+        previewWrapper: document.getElementById('preview-filter-wrapper'),
         ratio: document.getElementById('custom-contrast-ratio'),
         badges: document.getElementById('custom-contrast-badges'),
         apcaRatio: document.getElementById('custom-apca-ratio'),
@@ -48,6 +52,17 @@ function bindDOM() {
         autofixAaaBtn: document.getElementById('autofix-aaa-btn'),
         saveProjectBtn: document.getElementById('save-pair-to-project-btn'),
         shareBtn: document.getElementById('share-contrast-btn'),
+        openMatrixBtn: document.getElementById('open-matrix-btn'),
+        fontSizeSlider: document.getElementById('font-size-slider'),
+        fontSizeVal: document.getElementById('font-size-val'),
+        fontWeightToggle: document.getElementById('font-weight-toggle'),
+        textSizeBadge: document.getElementById('text-size-wcag-badge'),
+        cbToggle: document.getElementById('contrast-cb-toggle'),
+        uiCard: document.getElementById('ui-component-preview-card'),
+        uiBtnFilled: document.getElementById('ui-btn-filled'),
+        uiBtnOutline: document.getElementById('ui-btn-outline'),
+        uiInputBox: document.getElementById('ui-input-box'),
+        nonTextBadge: document.getElementById('non-text-badge'),
         toast: document.getElementById('toast')
     });
 
@@ -131,6 +146,38 @@ function attachEvents() {
         updateCustomContrast();
     });
 
+    // Typography Controls
+    if (dom.fontSizeSlider) {
+        dom.fontSizeSlider.addEventListener('input', (e) => {
+            state.fontSize = parseInt(e.target.value);
+            if (dom.fontSizeVal) dom.fontSizeVal.textContent = `${state.fontSize}px`;
+            updateTypography();
+        });
+    }
+
+    if (dom.fontWeightToggle) {
+        dom.fontWeightToggle.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                dom.fontWeightToggle.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.fontWeight = parseInt(btn.getAttribute('data-weight'));
+                updateTypography();
+            });
+        });
+    }
+
+    // Color Blindness Simulator
+    if (dom.cbToggle) {
+        dom.cbToggle.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                dom.cbToggle.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.colorBlindness = btn.getAttribute('data-cb') || 'none';
+                applyColorBlindness();
+            });
+        });
+    }
+
     if (dom.autofixAaBtn) {
         dom.autofixAaBtn.addEventListener('click', () => {
             const newFg = calculateAutoFixColor(4.5);
@@ -173,6 +220,47 @@ function attachEvents() {
             });
         });
     }
+
+    if (dom.openMatrixBtn) {
+        dom.openMatrixBtn.addEventListener('click', () => {
+            window.location.href = '../matrix/';
+        });
+    }
+}
+
+function updateTypography() {
+    if (!dom.preview) return;
+    dom.preview.style.fontSize = `${state.fontSize}px`;
+    dom.preview.style.fontWeight = state.fontWeight;
+
+    const isLarge = isLargeText(state.fontSize, state.fontWeight);
+    if (dom.textSizeBadge) {
+        if (isLarge) {
+            dom.textSizeBadge.className = 'badge badge-pass';
+            dom.textSizeBadge.textContent = translations[layoutState.currentLang]?.large_text_badge || 'Large Text (WCAG 3:1)';
+        } else {
+            dom.textSizeBadge.className = 'badge';
+            dom.textSizeBadge.textContent = translations[layoutState.currentLang]?.normal_text_badge || 'Normal Text (WCAG 4.5:1)';
+        }
+    }
+}
+
+function isLargeText(fontSize, fontWeight) {
+    // WCAG: 18pt is ~24px, 14pt bold is ~18.5px bold
+    return fontSize >= 24 || (fontSize >= 18 && fontWeight >= 700);
+}
+
+function applyColorBlindness() {
+    const filterClass = state.colorBlindness !== 'none' ? `cb-filter-${state.colorBlindness}` : '';
+    const targets = [dom.previewWrapper, dom.uiCard];
+    
+    targets.forEach(target => {
+        if (!target) return;
+        target.classList.remove('cb-filter-protanopia', 'cb-filter-deuteranopia', 'cb-filter-tritanopia', 'cb-filter-achromatopsia');
+        if (filterClass) {
+            target.classList.add(filterClass);
+        }
+    });
 }
 
 function updateCustomContrast() {
@@ -187,7 +275,34 @@ function updateCustomContrast() {
     dom.preview.style.backgroundColor = `#${state.bg}`;
     dom.preview.style.color = `#${state.fg}`;
     
+    updateTypography();
     renderCustomWCAGBadges(dom.badges, ratio);
+
+    // Update UI Component Preview Card
+    if (dom.uiCard) {
+        dom.uiCard.style.backgroundColor = `#${state.bg}`;
+        dom.uiCard.style.color = `#${state.fg}`;
+
+        if (dom.uiBtnFilled) {
+            dom.uiBtnFilled.style.backgroundColor = `#${state.fg}`;
+            dom.uiBtnFilled.style.color = `#${state.bg}`;
+        }
+        if (dom.uiBtnOutline) {
+            dom.uiBtnOutline.style.borderColor = `#${state.fg}`;
+            dom.uiBtnOutline.style.color = `#${state.fg}`;
+        }
+        if (dom.uiInputBox) {
+            dom.uiInputBox.style.borderColor = `#${state.fg}`;
+            dom.uiInputBox.style.color = `#${state.fg}`;
+        }
+
+        // Non-text Contrast SC 1.4.11 (3:1 threshold)
+        if (dom.nonTextBadge) {
+            const nonTextPass = ratio >= 3.0;
+            dom.nonTextBadge.className = `badge ${nonTextPass ? 'badge-pass' : 'badge-fail'}`;
+            dom.nonTextBadge.textContent = `UI Contrast (3:1): ${nonTextPass ? 'Pass ✓' : 'Fail ×'}`;
+        }
+    }
 
     // Auto-Fix Box Visibility
     if (dom.autofixContainer) {

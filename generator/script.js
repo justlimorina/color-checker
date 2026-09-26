@@ -457,6 +457,44 @@ function attachEvents() {
         });
     }
 
+    // Bulk Import Logic
+    const bulkTrigger = document.getElementById('bulk-import-trigger');
+    const bulkModal = document.getElementById('bulk-import-modal');
+    const closeBulkBtn = document.getElementById('close-bulk-modal-btn');
+    const confirmBulkBtn = document.getElementById('confirm-bulk-import-btn');
+    const bulkTextarea = document.getElementById('bulk-import-textarea');
+
+    if (bulkTrigger && bulkModal) {
+        bulkTrigger.addEventListener('click', () => {
+            bulkModal.style.display = 'flex';
+            if (bulkTextarea) bulkTextarea.focus();
+        });
+    }
+
+    if (closeBulkBtn && bulkModal) {
+        closeBulkBtn.addEventListener('click', () => {
+            bulkModal.style.display = 'none';
+        });
+        bulkModal.addEventListener('click', (e) => {
+            if (e.target === bulkModal) bulkModal.style.display = 'none';
+        });
+    }
+
+    if (confirmBulkBtn && bulkTextarea) {
+        confirmBulkBtn.addEventListener('click', () => {
+            const text = bulkTextarea.value;
+            const count = ProjectManager.importBulkColors(text);
+            if (count > 0) {
+                showToast(`Imported ${count} color${count === 1 ? '' : 's'}!`);
+                renderSavedPalette();
+                bulkTextarea.value = '';
+                if (bulkModal) bulkModal.style.display = 'none';
+            } else {
+                showToast('No valid HEX colors found');
+            }
+        });
+    }
+
     if (dom.goToProjectsBtn) {
         dom.goToProjectsBtn.addEventListener('click', () => {
             const trigger = document.querySelector('.tab-trigger[data-tab="tab-projects"]');

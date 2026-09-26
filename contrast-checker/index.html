@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/styles.css">
-    <meta name="description" content="Check the contrast ratio between foreground and background colors in real-time. Compliant with WCAG 2.1 guidelines and W3C APCA scoring.">
+    <meta name="description" content="Check the contrast ratio between foreground and background colors in real-time. Compliant with WCAG 2.1 guidelines, typography sizing, and UI component previews.">
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#624E9A">
     <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
@@ -26,7 +26,7 @@
 </head>
 <body>
     <main class="md-main">
-        <div class="card card-outlined" style="max-width: 800px; margin: 0 auto;">
+        <div class="card card-outlined" style="max-width: 850px; margin: 0 auto;">
             <h2 class="headline-medium mb-m" data-i18n="custom_contrast">Custom Contrast Checker</h2>
             
             <div class="custom-contrast-box large">
@@ -56,8 +56,48 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Color Blindness Simulator Filter Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; flex-wrap: wrap; gap: 8px;">
+                <span class="label-medium" style="display: flex; align-items: center; gap: 6px; opacity: 0.85;">
+                    <span class="material-symbols-rounded" style="font-size: 18px;">visibility</span>
+                    <span data-i18n="cb_simulator">Color Blindness Simulator</span>:
+                </span>
+                <div class="segmented-control" id="contrast-cb-toggle">
+                    <button class="segment-btn active" data-cb="none">Normal</button>
+                    <button class="segment-btn" data-cb="protanopia">Protanopia</button>
+                    <button class="segment-btn" data-cb="deuteranopia">Deuteranopia</button>
+                    <button class="segment-btn" data-cb="tritanopia">Tritanopia</button>
+                    <button class="segment-btn" data-cb="achromatopsia">Achromatopsia</button>
+                </div>
+            </div>
             
-            <div id="custom-contrast-preview" class="custom-contrast-preview large">The quick brown fox jumps over the lazy dog.</div>
+            <!-- Live Text Preview Container -->
+            <div id="preview-filter-wrapper" style="margin-top: 16px;">
+                <div id="custom-contrast-preview" class="custom-contrast-preview large" style="min-height: 120px; transition: font-size 0.15s ease, font-weight 0.15s ease;">The quick brown fox jumps over the lazy dog.</div>
+            </div>
+
+            <!-- Typography Sizing & Weight Controls -->
+            <div class="typography-controls-bar">
+                <div style="flex: 1; min-width: 180px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span class="label-small" data-i18n="font_size">Font Size</span>
+                        <span id="font-size-val" class="label-small font-mono" style="font-weight: bold;">24px</span>
+                    </div>
+                    <input type="range" id="font-size-slider" min="12" max="48" value="24" style="width: 100%; height: 6px; cursor: pointer;">
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span class="label-small" data-i18n="font_weight">Font Weight</span>
+                    <div class="segmented-control" id="font-weight-toggle">
+                        <button class="segment-btn" data-weight="400" data-i18n="weight_regular">Regular (400)</button>
+                        <button class="segment-btn" data-weight="500" data-i18n="weight_medium">Medium (500)</button>
+                        <button class="segment-btn active" data-weight="700" data-i18n="weight_bold">Bold (700)</button>
+                    </div>
+                </div>
+
+                <span id="text-size-wcag-badge" class="badge badge-pass" style="padding: 4px 10px; font-size: 0.8rem;">Large Text (WCAG 3:1)</span>
+            </div>
             
             <div class="wcag-result-card mt-l">
                 <div class="custom-contrast-results">
@@ -96,16 +136,54 @@
                 </div>
             </div>
 
-            <!-- Action Buttons: Save & Share -->
+            <!-- UI Component Preview Section -->
+            <div class="mt-l">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3 class="title-large mb-0" data-i18n="ui_preview_title">UI Component Preview</h3>
+                    <span id="non-text-badge" class="badge badge-pass" data-i18n="non_text_contrast">Non-text UI Contrast (3:1)</span>
+                </div>
+                
+                <div id="ui-component-preview-card" class="ui-component-card" style="background-color: #FFFFFF; color: #000000; transition: background-color 0.2s, color 0.2s;">
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                        <button id="ui-btn-filled" style="padding: 10px 20px; border-radius: 100px; border: none; font-weight: 500; font-family: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                            <span class="material-symbols-rounded" style="font-size: 18px;">check</span>
+                            <span data-i18n="btn_solid">Solid Button</span>
+                        </button>
+
+                        <button id="ui-btn-outline" style="padding: 9px 19px; border-radius: 100px; font-weight: 500; font-family: inherit; cursor: pointer; background: transparent; display: inline-flex; align-items: center; gap: 6px;">
+                            <span class="material-symbols-rounded" style="font-size: 18px;">star</span>
+                            <span data-i18n="btn_outline">Outline Button</span>
+                        </button>
+
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="ui-icon-sample" class="material-symbols-rounded" style="font-size: 28px;">verified_user</span>
+                            <span id="ui-icon-sample2" class="material-symbols-rounded" style="font-size: 28px;">palette</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 8px;">
+                        <div id="ui-input-box" style="display: flex; align-items: center; padding: 8px 14px; border-radius: 8px; border: 1.5px solid currentColor; max-width: 320px; gap: 8px;">
+                            <span class="material-symbols-rounded" style="font-size: 20px; opacity: 0.8;">search</span>
+                            <span style="font-size: 0.9rem; opacity: 0.8;">Search or input field...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Save, Share, Open in Matrix -->
             <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
-                <md-filled-button id="save-pair-to-project-btn" style="flex: 1;">
+                <md-filled-button id="save-pair-to-project-btn" style="flex: 1; min-width: 160px;">
                     <md-icon slot="icon">bookmark_add</md-icon>
                     <span data-i18n="save_to_project">Save to Project</span>
                 </md-filled-button>
-                <md-outlined-button id="share-contrast-btn" style="flex: 1;">
+                <md-outlined-button id="share-contrast-btn" style="flex: 1; min-width: 140px;">
                     <md-icon slot="icon">share</md-icon>
                     <span data-i18n="share_link">Share Link</span>
                 </md-outlined-button>
+                <md-text-button id="open-matrix-btn" style="flex: 1; min-width: 160px;">
+                    <md-icon slot="icon">grid_on</md-icon>
+                    <span data-i18n="contrast_matrix">Contrast Matrix</span>
+                </md-text-button>
             </div>
         </div>
     </main>

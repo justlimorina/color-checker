@@ -1,6 +1,7 @@
 import { translations } from '../config.js';
 import { themeFromSourceColor, argbFromHex, hexFromArgb } from 'https://esm.sh/@material/material-color-utilities';
 import { ColorUtils } from '../utils.js';
+import { ProjectManager } from '../projects.js';
 
 const BRAND_HEX = '624E9A';
 
@@ -319,6 +320,15 @@ export function initLayout(activePageKey) {
                             <li><strong>AAA:</strong> <span data-i18n="desc_aaa">Enhanced readability.</span></li>
                         </ul>
                     </section>
+                    <section class="guide-section mt-m">
+                        <h3 class="title-small" data-i18n="shortcuts_title">4. Keyboard Shortcuts</h3>
+                        <ul class="guide-list">
+                            <li><kbd style="padding: 2px 6px; border-radius: 4px; border: 1px solid var(--md-sys-color-outline); font-family: monospace;">?</kbd> : <span>Toggle User Guide & Shortcuts</span></li>
+                            <li><kbd style="padding: 2px 6px; border-radius: 4px; border: 1px solid var(--md-sys-color-outline); font-family: monospace;">D</kbd> : <span>Toggle Dark / Light Mode</span></li>
+                            <li><kbd style="padding: 2px 6px; border-radius: 4px; border: 1px solid var(--md-sys-color-outline); font-family: monospace;">C</kbd> : <span>Copy Active HEX Color</span></li>
+                            <li><kbd style="padding: 2px 6px; border-radius: 4px; border: 1px solid var(--md-sys-color-outline); font-family: monospace;">Space</kbd> : <span>Generate Palette (in Generator)</span></li>
+                        </ul>
+                    </section>
                 </div>
                  <div class="modal-footer">
                      <md-filled-button id="close-help-confirm">
@@ -330,14 +340,17 @@ export function initLayout(activePageKey) {
         document.body.appendChild(modal);
     }
 
-    // 8. Setup Layout Event Listeners
+    // 8. Setup Quick Palette Dock
+    setupQuickPaletteDock(prefix);
+
+    // 9. Setup Layout Event Listeners
     setupLayoutEvents();
 
-    // 9. Initial translations and themes
+    // 10. Initial translations and themes
     applyTheme(layoutState.theme);
     setLanguage(layoutState.currentLang);
 
-    // 10. Initial Color Theme (landing uses brand color, sub-pages use local storage)
+    // 11. Initial Color Theme (landing uses brand color, sub-pages use local storage)
     const isLanding = activePageKey === 'landing';
     const activeHex = isLanding ? BRAND_HEX : (localStorage.getItem('active_hex') || BRAND_HEX);
     applyColorTheme(activeHex);
@@ -593,4 +606,112 @@ function setupLayoutEvents() {
             hideSidebar();
         });
     });
+
+    // Global Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+        const activeEl = document.activeElement;
+        if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) {
+            return;
+        }
+
+        if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+            e.preventDefault();
+            const helpModal = document.getElementById('help-modal');
+            if (helpModal) {
+                helpModal.classList.toggle('show');
+            }
+        } else if (e.key === 'd' || e.key === 'D') {
+            e.preventDefault();
+            const nextTheme = layoutState.theme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme);
+        } else if (e.key === 'c' || e.key === 'C') {
+            e.preventDefault();
+            const activeHex = localStorage.getItem('active_hex') || BRAND_HEX;
+            navigator.clipboard.writeText(`#${activeHex}`).then(() => {
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.textContent = `Copied #${activeHex}!`;
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2000);
+                }
+            });
+        }
+    });
 }
+
+function setupQuickPaletteDock(prefix) {
+    let dock = document.getElementById('quickPaletteDock');
+    if (!dock) {
+        dock = document.createElement('div');
+        dock.id = 'quickPaletteDock';
+        dock.className = 'quick-palette-dock';
+        dock.innerHTML = `
+            <div class="dock-panel" id="dockPanel">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                    <span class="label-medium" style="font-weight: bold;" data-i18n="quick_dock">Quick Palette</span>
+                    <a href="${prefix}generator/" class="body-small" style="text-decoration: underline; color: var(--md-sys-color-primary);" data-i18n="project_manager">Projects</a>
+                </div>
+                <div class="dock-swatches-row" id="dockSwatchesRow"></div>
+            </div>
+            <button class="dock-toggle-btn" id="dockToggleBtn" title="Quick Palette Dock">
+                <span class="material-symbols-rounded">palette</span>
+            </button>
+        `;
+        document.body.appendChild(dock);
+    }
+
+    const toggleBtn = document.getElementById('dockToggleBtn');
+    const panel = document.getElementById('dockPanel');
+    const swatchesRow = document.getElementById('dockSwatchesRow');
+
+    if (toggleBtn && panel) {
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            panel.classList.toggle('is-open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!dock.contains(e.target)) {
+                panel.classList.remove('is-open');
+            }
+        });
+    }
+
+    const renderSwatches = () => {
+        if (!swatchesRow) return;
+        const activeProj = ProjectManager.getActiveProject();
+        const colors = activeProj && activeProj.colors && activeProj.colors.length > 0 ? activeProj.colors : [BRAND_HEX, 'FFFFFF', '000000'];
+        
+        swatchesRow.innerHTML = '';
+        colors.forEach(hex => {
+            const chip = document.createElement('button');
+            chip.className = 'dock-swatch-chip';
+            chip.style.backgroundColor = `#${hex}`;
+            chip.title = `#${hex} (Click to paste or copy)`;
+            
+            chip.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const activeEl = document.activeElement;
+                if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+                    activeEl.value = activeEl.type === 'color' ? `#${hex}` : hex;
+                    activeEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    activeEl.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    navigator.clipboard.writeText(`#${hex}`).then(() => {
+                        let toast = document.getElementById('toast');
+                        if (toast) {
+                            toast.textContent = `Copied #${hex}!`;
+                            toast.classList.add('show');
+                            setTimeout(() => toast.classList.remove('show'), 2000);
+                        }
+                    });
+                }
+            });
+            swatchesRow.appendChild(chip);
+        });
+    };
+
+    renderSwatches();
+    window.addEventListener('projectschange', renderSwatches);
+}
+

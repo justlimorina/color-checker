@@ -453,6 +453,10 @@
                         <md-icon slot="icon">file_open</md-icon>
                         <span data-i18n="import_json">Import JSON</span>
                     </md-outlined-button>
+                    <md-outlined-button id="bulk-import-trigger" style="flex: 1; min-width: 160px;">
+                        <md-icon slot="icon">playlist_add</md-icon>
+                        <span data-i18n="bulk_import">Bulk Import</span>
+                    </md-outlined-button>
                     <input type="file" id="import-json-file" accept=".json" style="display: none;">
                 </div>
             </div>
@@ -560,6 +564,29 @@
                 <md-filled-button id="download-tokens-code-btn">
                     <md-icon slot="icon">download</md-icon>
                     <span data-i18n="download_file">Download File</span>
+                </md-filled-button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Import Modal -->
+    <div id="bulk-import-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="card card-elevated" style="width: 90%; max-width: 550px; border-radius: 24px; padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="material-symbols-rounded" style="color: var(--md-sys-color-primary);">playlist_add</span>
+                    <h3 class="title-large mb-0" data-i18n="bulk_import">Bulk Import Colors</h3>
+                </div>
+                <md-icon-button id="close-bulk-modal-btn">
+                    <md-icon>close</md-icon>
+                </md-icon-button>
+            </div>
+            <p class="body-medium mb-m" style="opacity: 0.8;" data-i18n="bulk_import_desc">Paste HEX codes (e.g. #624E9A, #EADDFF) or CSS :root variables.</p>
+            <textarea id="bulk-import-textarea" rows="6" style="width: 100%; border-radius: 12px; border: 1px solid var(--md-sys-color-outline); padding: 12px; font-family: var(--font-mono, monospace); font-size: 0.85rem; background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface); outline: none; margin-bottom: 16px; box-sizing: border-box;" placeholder="#624E9A, #EADDFF, #49454F or CSS variables..."></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <md-filled-button id="confirm-bulk-import-btn">
+                    <md-icon slot="icon">add</md-icon>
+                    <span data-i18n="btn_import">Import Colors</span>
                 </md-filled-button>
             </div>
         </div>

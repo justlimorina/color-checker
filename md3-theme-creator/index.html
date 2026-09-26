@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/styles.css">
-    <meta name="description" content="Generate a complete Material Design 3 theme system from your primary source color. View system tokens and export production-ready code.">
+    <meta name="description" content="Generate a complete Material Design 3 theme system from your primary source color. Custom seeds, live component playground, and production code export.">
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#624E9A">
     <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
@@ -27,11 +27,133 @@
 <body>
     <main class="md-main">
         <div class="card card-elevated">
-            <h2 class="headline-medium mb-m" data-i18n="theme_builder">MD3 Theme Builder</h2>
+            <h2 class="headline-medium mb-s" data-i18n="theme_builder">MD3 Theme Builder</h2>
             <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="theme_desc">Your complete Material Design 3 theme generated from the primary color.</p>
             
+            <!-- Seed Controls Toolbar -->
+            <div style="background: var(--md-sys-color-surface-container-low); padding: 16px; border-radius: 16px; border: 1px solid var(--md-sys-color-outline-variant); margin-bottom: 24px;">
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                    <!-- Primary Seed -->
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="label-large" style="font-weight: bold; min-width: 90px;">Primary Seed:</span>
+                        <div class="hex-wrapper" style="width: 140px; margin-top: 0; position: relative;">
+                            <span>#</span>
+                            <input type="text" id="theme-primary-hex" value="624E9A" maxlength="6" style="width: calc(100% - 40px);">
+                            <input type="color" id="theme-primary-picker" value="#624E9A">
+                        </div>
+                    </div>
+
+                    <!-- Contrast Level Selector -->
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="label-medium" style="opacity: 0.8;">Contrast:</span>
+                        <div class="segmented-control" id="theme-contrast-toggle">
+                            <button class="segment-btn active" data-contrast="standard">Standard</button>
+                            <button class="segment-btn" data-contrast="medium">Medium</button>
+                            <button class="segment-btn" data-contrast="high">High</button>
+                        </div>
+                    </div>
+
+                    <!-- Unlock Independent Seeds Toggle -->
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="theme-independent-seeds-toggle" style="width: 18px; height: 18px; accent-color: var(--md-sys-color-primary); cursor: pointer;">
+                        <span class="label-large" data-i18n="unlock_seeds" style="font-weight: 500;">Independent Seeds</span>
+                    </label>
+                </div>
+
+                <!-- Secondary & Tertiary Independent Seeds (Expandable) -->
+                <div id="independent-seeds-row" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--md-sys-color-outline-variant); display: none; gap: 20px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="label-large" style="font-weight: bold; min-width: 90px;" data-i18n="secondary_color">Secondary:</span>
+                        <div class="hex-wrapper" style="width: 140px; margin-top: 0; position: relative;">
+                            <span>#</span>
+                            <input type="text" id="theme-secondary-hex" value="605B71" maxlength="6" style="width: calc(100% - 40px);">
+                            <input type="color" id="theme-secondary-picker" value="#605B71">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="label-large" style="font-weight: bold; min-width: 90px;" data-i18n="tertiary_color">Tertiary:</span>
+                        <div class="hex-wrapper" style="width: 140px; margin-top: 0; position: relative;">
+                            <span>#</span>
+                            <input type="text" id="theme-tertiary-hex" value="7D5260" maxlength="6" style="width: calc(100% - 40px);">
+                            <input type="color" id="theme-tertiary-picker" value="#7D5260">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Material 3 System Color Tokens Grid -->
             <div id="theme-colors-grid" class="palette-grid mt-m" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
                 <!-- JS generated -->
+            </div>
+        </div>
+
+        <!-- Material 3 Component Playground Section -->
+        <div class="card card-elevated mt-l">
+            <h2 class="headline-medium mb-s" data-i18n="component_playground">Material 3 Component Playground</h2>
+            <p class="body-medium mb-l" style="opacity: 0.8;">Live interactive UI elements reacting dynamically to your system color theme.</p>
+            
+            <div class="md3-playground-card">
+                <!-- Buttons Row -->
+                <div class="playground-row">
+                    <md-filled-button>
+                        <md-icon slot="icon">check</md-icon>
+                        Filled Button
+                    </md-filled-button>
+
+                    <md-filled-tonal-button>
+                        <md-icon slot="icon">favorite</md-icon>
+                        Tonal Button
+                    </md-filled-tonal-button>
+
+                    <md-elevated-button>
+                        <md-icon slot="icon">lightbulb</md-icon>
+                        Elevated Button
+                    </md-elevated-button>
+
+                    <md-outlined-button>
+                        <md-icon slot="icon">star</md-icon>
+                        Outlined Button
+                    </md-outlined-button>
+
+                    <md-text-button>
+                        <md-icon slot="icon">send</md-icon>
+                        Text Button
+                    </md-text-button>
+
+                    <md-fab variant="primary" label="FAB">
+                        <md-icon slot="icon">add</md-icon>
+                    </md-fab>
+                </div>
+
+                <!-- Chips, Switch & Controls Row -->
+                <div class="playground-row" style="margin-top: 16px;">
+                    <md-filter-chip label="Design Tokens" selected></md-filter-chip>
+                    <md-filter-chip label="Accessibility"></md-filter-chip>
+                    <md-input-chip label="Material You" avatar>
+                        <span slot="avatar" class="material-symbols-rounded" style="font-size: 18px; margin-left: 6px;">palette</span>
+                    </md-input-chip>
+
+                    <div style="display: flex; align-items: center; gap: 8px; margin-left: 12px;">
+                        <md-switch selected id="demo-switch"></md-switch>
+                        <span class="label-large">Active Switch</span>
+                    </div>
+
+                    <div style="flex: 1; min-width: 150px; max-width: 250px; margin-left: 12px;">
+                        <md-slider min="0" max="100" value="65" labeled></md-slider>
+                    </div>
+                </div>
+
+                <!-- Surface Card & Text Demo -->
+                <div style="margin-top: 20px; padding: 20px; border-radius: 16px; background: var(--md-sys-color-surface-container-high); border: 1px solid var(--md-sys-color-outline-variant); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                    <div>
+                        <h4 class="title-large mb-xs" style="color: var(--md-sys-color-on-surface);">Surface Container Card</h4>
+                        <p class="body-medium mb-0" style="color: var(--md-sys-color-on-surface-variant);">Interactive card responding to neutral, primary, and surface system tokens.</p>
+                    </div>
+                    <md-filled-button>
+                        Explore More
+                    </md-filled-button>
+                </div>
             </div>
         </div>
 

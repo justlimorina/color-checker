@@ -80,6 +80,12 @@
                         </div>
                     </div>
 
+                    <!-- Color Proportion Bar -->
+                    <div class="input-group">
+                        <label class="label-large" data-i18n="color_distribution" style="display: block; margin-bottom: 4px;">Color Proportion</label>
+                        <div id="color-proportion-bar" class="color-proportion-bar"></div>
+                    </div>
+
                     <!-- Action buttons -->
                     <div style="display: flex; flex-direction: column; gap: 8px; margin-top: var(--spacing-s);">
                         <md-filled-button id="save-palette-to-project-btn" style="width: 100%;">
@@ -94,14 +100,32 @@
                             <md-icon slot="icon">restart_alt</md-icon>
                             <span data-i18n="upload_another">Upload Another</span>
                         </md-outlined-button>
+
+                        <!-- Connected Flows (Deep Linking) -->
+                        <div style="display: flex; gap: 8px; margin-top: 4px;">
+                            <md-text-button id="flow-gradient-btn" style="flex: 1;" title="Create Gradient from Palette">
+                                <md-icon slot="icon">gradient</md-icon>
+                                <span data-i18n="flow_to_gradient">Gradient</span>
+                            </md-text-button>
+                            <md-text-button id="flow-theme-btn" style="flex: 1;" title="Generate MD3 Theme">
+                                <md-icon slot="icon">palette</md-icon>
+                                <span data-i18n="flow_to_theme">MD3 Theme</span>
+                            </md-text-button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Right Column: Interactive Image canvas & overlay -->
                 <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: flex-start;">
-                    <div id="image-workspace">
+                    <div id="image-workspace" style="position: relative;">
                         <canvas id="image-canvas"></canvas>
                         <div id="image-pins-overlay"></div>
+                        <!-- 5x Magnifier Loupe -->
+                        <div id="magnifier-loupe" class="magnifier-loupe">
+                            <canvas id="loupe-canvas" width="100" height="100"></canvas>
+                            <div class="magnifier-loupe-crosshair"></div>
+                            <div id="loupe-label" class="magnifier-loupe-label">#FFFFFF</div>
+                        </div>
                     </div>
                 </div>
             </div>

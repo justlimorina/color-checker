@@ -1,9 +1,17 @@
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
-import { initLayout, layoutState, applyColorTheme } from '../assets/script/shared/layout.js';
+import { initLayout, layoutState } from '../assets/script/shared/layout.js';
+import { themeFromSourceColor, argbFromHex, hexFromArgb, TonalPalette } from 'https://esm.sh/@material/material-color-utilities';
+
+const urlParams = new URLSearchParams(window.location.search);
+const urlSeed = urlParams.get('seed') || urlParams.get('primary') || urlParams.get('color');
 
 const state = {
-    hex: localStorage.getItem('active_hex') || "624E9A",
+    hex: (urlSeed && /^[0-9A-F]{6}$/i.test(urlSeed)) ? urlSeed.toUpperCase() : (localStorage.getItem('active_hex') || "624E9A"),
+    customSeeds: false,
+    secondary: "605B71",
+    tertiary: "7D5260",
+    contrast: "standard",
     rgb: {},
     hsl: {},
     palette: JSON.parse(localStorage.getItem('saved_palette') || '[]'),
@@ -92,6 +100,15 @@ const FORMAT_META = {
 
 function bindDOM() {
     Object.assign(dom, {
+        primaryHex: document.getElementById('theme-primary-hex'),
+        primaryPicker: document.getElementById('theme-primary-picker'),
+        independentToggle: document.getElementById('theme-independent-seeds-toggle'),
+        independentSeedsRow: document.getElementById('independent-seeds-row'),
+        secondaryHex: document.getElementById('theme-secondary-hex'),
+        secondaryPicker: document.getElementById('theme-secondary-picker'),
+        tertiaryHex: document.getElementById('theme-tertiary-hex'),
+        tertiaryPicker: document.getElementById('theme-tertiary-picker'),
+        contrastToggle: document.getElementById('theme-contrast-toggle'),
         grid: document.getElementById('theme-colors-grid'),
         exportSelect: document.getElementById('export-format-select'),
         downloadExportBtn: document.getElementById('download-export-btn'),
@@ -102,9 +119,113 @@ function bindDOM() {
         exportLineCount: document.getElementById('export-line-count'),
         toast: document.getElementById('toast')
     });
+
+    if (dom.primaryHex) dom.primaryHex.value = state.hex;
+    if (dom.primaryPicker) dom.primaryPicker.value = `#${state.hex}`;
+    if (dom.secondaryHex) dom.secondaryHex.value = state.secondary;
+    if (dom.secondaryPicker) dom.secondaryPicker.value = `#${state.secondary}`;
+    if (dom.tertiaryHex) dom.tertiaryHex.value = state.tertiary;
+    if (dom.tertiaryPicker) dom.tertiaryPicker.value = `#${state.tertiary}`;
 }
 
 function attachEvents() {
+    // Primary Seed
+    const onPrimaryChange = (val) => {
+        state.hex = val.toUpperCase();
+        state.rgb = ColorUtils.hexToRgb(state.hex);
+        state.hsl = ColorUtils.rgbToHsl(state.rgb.r, state.rgb.g, state.rgb.b);
+        localStorage.setItem('active_hex', state.hex);
+        renderAll();
+    };
+
+    if (dom.primaryPicker) {
+        dom.primaryPicker.addEventListener('input', (e) => {
+            const h = e.target.value.replace('#', '');
+            if (dom.primaryHex) dom.primaryHex.value = h.toUpperCase();
+            onPrimaryChange(h);
+        });
+    }
+
+    if (dom.primaryHex) {
+        dom.primaryHex.addEventListener('input', (e) => {
+            let val = e.target.value.replace('#', '');
+            if (val.length === 3) val = val.split('').map(c => c + c).join('');
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                if (dom.primaryPicker) dom.primaryPicker.value = `#${val}`;
+                onPrimaryChange(val);
+            }
+        });
+    }
+
+    // Independent Seeds Toggle
+    if (dom.independentToggle) {
+        dom.independentToggle.addEventListener('change', (e) => {
+            state.customSeeds = e.target.checked;
+            if (dom.independentSeedsRow) {
+                dom.independentSeedsRow.style.display = state.customSeeds ? 'flex' : 'none';
+            }
+            renderAll();
+        });
+    }
+
+    // Secondary Seed
+    const onSecondaryChange = (val) => {
+        state.secondary = val.toUpperCase();
+        renderAll();
+    };
+    if (dom.secondaryPicker) {
+        dom.secondaryPicker.addEventListener('input', (e) => {
+            const h = e.target.value.replace('#', '');
+            if (dom.secondaryHex) dom.secondaryHex.value = h.toUpperCase();
+            onSecondaryChange(h);
+        });
+    }
+    if (dom.secondaryHex) {
+        dom.secondaryHex.addEventListener('input', (e) => {
+            let val = e.target.value.replace('#', '');
+            if (val.length === 3) val = val.split('').map(c => c + c).join('');
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                if (dom.secondaryPicker) dom.secondaryPicker.value = `#${val}`;
+                onSecondaryChange(val);
+            }
+        });
+    }
+
+    // Tertiary Seed
+    const onTertiaryChange = (val) => {
+        state.tertiary = val.toUpperCase();
+        renderAll();
+    };
+    if (dom.tertiaryPicker) {
+        dom.tertiaryPicker.addEventListener('input', (e) => {
+            const h = e.target.value.replace('#', '');
+            if (dom.tertiaryHex) dom.tertiaryHex.value = h.toUpperCase();
+            onTertiaryChange(h);
+        });
+    }
+    if (dom.tertiaryHex) {
+        dom.tertiaryHex.addEventListener('input', (e) => {
+            let val = e.target.value.replace('#', '');
+            if (val.length === 3) val = val.split('').map(c => c + c).join('');
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                if (dom.tertiaryPicker) dom.tertiaryPicker.value = `#${val}`;
+                onTertiaryChange(val);
+            }
+        });
+    }
+
+    // Contrast Toggle
+    if (dom.contrastToggle) {
+        dom.contrastToggle.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                dom.contrastToggle.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.contrast = btn.getAttribute('data-contrast') || 'standard';
+                renderAll();
+            });
+        });
+    }
+
     // Export Hub Floating Select
     if (dom.exportSelect) {
         dom.exportSelect.addEventListener('change', () => {
@@ -180,7 +301,109 @@ function renderAll() {
 }
 
 function updateDynamicTheme() {
-    applyColorTheme(state.hex);
+    const primaryArgb = argbFromHex('#' + state.hex);
+    const theme = themeFromSourceColor(primaryArgb);
+    const isDark = layoutState.theme === 'dark';
+
+    // Check independent seeds
+    let secPalette = theme.palettes.secondary;
+    let terPalette = theme.palettes.tertiary;
+
+    if (state.customSeeds) {
+        try {
+            secPalette = TonalPalette.fromInt(argbFromHex('#' + state.secondary));
+            terPalette = TonalPalette.fromInt(argbFromHex('#' + state.tertiary));
+        } catch (e) {
+            console.warn('Could not parse independent seeds:', e);
+        }
+    }
+
+    const priPalette = theme.palettes.primary;
+    const neutralPalette = theme.palettes.neutral;
+    const neutralVariant = theme.palettes.neutralVariant;
+    const errorPalette = theme.palettes.error;
+
+    // Contrast adjustments
+    let toneOffset = 0;
+    if (state.contrast === 'medium') toneOffset = isDark ? 8 : -8;
+    if (state.contrast === 'high') toneOffset = isDark ? 16 : -16;
+
+    const setProp = (name, val) => {
+        document.documentElement.style.setProperty(name, val);
+        document.body.style.setProperty(name, val);
+    };
+
+    if (!isDark) {
+        setProp('--md-sys-color-primary', hexFromArgb(priPalette.tone(Math.max(10, Math.min(90, 40 + toneOffset)))));
+        setProp('--md-sys-color-on-primary', hexFromArgb(priPalette.tone(100)));
+        setProp('--md-sys-color-primary-container', hexFromArgb(priPalette.tone(90)));
+        setProp('--md-sys-color-on-primary-container', hexFromArgb(priPalette.tone(10)));
+
+        setProp('--md-sys-color-secondary', hexFromArgb(secPalette.tone(Math.max(10, Math.min(90, 40 + toneOffset)))));
+        setProp('--md-sys-color-on-secondary', hexFromArgb(secPalette.tone(100)));
+        setProp('--md-sys-color-secondary-container', hexFromArgb(secPalette.tone(90)));
+        setProp('--md-sys-color-on-secondary-container', hexFromArgb(secPalette.tone(10)));
+
+        setProp('--md-sys-color-tertiary', hexFromArgb(terPalette.tone(Math.max(10, Math.min(90, 40 + toneOffset)))));
+        setProp('--md-sys-color-on-tertiary', hexFromArgb(terPalette.tone(100)));
+        setProp('--md-sys-color-tertiary-container', hexFromArgb(terPalette.tone(90)));
+        setProp('--md-sys-color-on-tertiary-container', hexFromArgb(terPalette.tone(10)));
+
+        setProp('--md-sys-color-error', hexFromArgb(errorPalette.tone(40)));
+        setProp('--md-sys-color-on-error', hexFromArgb(errorPalette.tone(100)));
+        setProp('--md-sys-color-error-container', hexFromArgb(errorPalette.tone(90)));
+        setProp('--md-sys-color-on-error-container', hexFromArgb(errorPalette.tone(10)));
+
+        setProp('--md-sys-color-background', hexFromArgb(neutralPalette.tone(98)));
+        setProp('--md-sys-color-on-background', hexFromArgb(neutralPalette.tone(10)));
+        setProp('--md-sys-color-surface', hexFromArgb(neutralPalette.tone(98)));
+        setProp('--md-sys-color-on-surface', hexFromArgb(neutralPalette.tone(10)));
+        setProp('--md-sys-color-surface-variant', hexFromArgb(neutralVariant.tone(90)));
+        setProp('--md-sys-color-on-surface-variant', hexFromArgb(neutralVariant.tone(30)));
+        setProp('--md-sys-color-outline', hexFromArgb(neutralVariant.tone(50)));
+        setProp('--md-sys-color-outline-variant', hexFromArgb(neutralVariant.tone(80)));
+
+        setProp('--md-sys-color-surface-container-lowest', hexFromArgb(neutralPalette.tone(100)));
+        setProp('--md-sys-color-surface-container-low', hexFromArgb(neutralPalette.tone(96)));
+        setProp('--md-sys-color-surface-container', hexFromArgb(neutralPalette.tone(94)));
+        setProp('--md-sys-color-surface-container-high', hexFromArgb(neutralPalette.tone(92)));
+        setProp('--md-sys-color-surface-container-highest', hexFromArgb(neutralPalette.tone(90)));
+    } else {
+        setProp('--md-sys-color-primary', hexFromArgb(priPalette.tone(Math.max(10, Math.min(90, 80 + toneOffset)))));
+        setProp('--md-sys-color-on-primary', hexFromArgb(priPalette.tone(20)));
+        setProp('--md-sys-color-primary-container', hexFromArgb(priPalette.tone(30)));
+        setProp('--md-sys-color-on-primary-container', hexFromArgb(priPalette.tone(90)));
+
+        setProp('--md-sys-color-secondary', hexFromArgb(secPalette.tone(Math.max(10, Math.min(90, 80 + toneOffset)))));
+        setProp('--md-sys-color-on-secondary', hexFromArgb(secPalette.tone(20)));
+        setProp('--md-sys-color-secondary-container', hexFromArgb(secPalette.tone(30)));
+        setProp('--md-sys-color-on-secondary-container', hexFromArgb(secPalette.tone(90)));
+
+        setProp('--md-sys-color-tertiary', hexFromArgb(terPalette.tone(Math.max(10, Math.min(90, 80 + toneOffset)))));
+        setProp('--md-sys-color-on-tertiary', hexFromArgb(terPalette.tone(20)));
+        setProp('--md-sys-color-tertiary-container', hexFromArgb(terPalette.tone(30)));
+        setProp('--md-sys-color-on-tertiary-container', hexFromArgb(terPalette.tone(90)));
+
+        setProp('--md-sys-color-error', hexFromArgb(errorPalette.tone(80)));
+        setProp('--md-sys-color-on-error', hexFromArgb(errorPalette.tone(20)));
+        setProp('--md-sys-color-error-container', hexFromArgb(errorPalette.tone(30)));
+        setProp('--md-sys-color-on-error-container', hexFromArgb(errorPalette.tone(90)));
+
+        setProp('--md-sys-color-background', hexFromArgb(neutralPalette.tone(6)));
+        setProp('--md-sys-color-on-background', hexFromArgb(neutralPalette.tone(90)));
+        setProp('--md-sys-color-surface', hexFromArgb(neutralPalette.tone(6)));
+        setProp('--md-sys-color-on-surface', hexFromArgb(neutralPalette.tone(90)));
+        setProp('--md-sys-color-surface-variant', hexFromArgb(neutralVariant.tone(30)));
+        setProp('--md-sys-color-on-surface-variant', hexFromArgb(neutralVariant.tone(80)));
+        setProp('--md-sys-color-outline', hexFromArgb(neutralVariant.tone(60)));
+        setProp('--md-sys-color-outline-variant', hexFromArgb(neutralVariant.tone(30)));
+
+        setProp('--md-sys-color-surface-container-lowest', hexFromArgb(neutralPalette.tone(4)));
+        setProp('--md-sys-color-surface-container-low', hexFromArgb(neutralPalette.tone(10)));
+        setProp('--md-sys-color-surface-container', hexFromArgb(neutralPalette.tone(12)));
+        setProp('--md-sys-color-surface-container-high', hexFromArgb(neutralPalette.tone(17)));
+        setProp('--md-sys-color-surface-container-highest', hexFromArgb(neutralPalette.tone(22)));
+    }
 }
 
 function renderThemeBuilder() {
@@ -211,9 +434,6 @@ function renderThemeBuilder() {
         { bg: '--md-sys-color-on-surface-variant', fg: '--md-sys-color-surface-variant' },
         { bg: '--md-sys-color-outline', fg: '--md-sys-color-surface' },
         { bg: '--md-sys-color-outline-variant', fg: '--md-sys-color-on-surface' },
-        { bg: '--md-sys-color-inverse-surface', fg: '--md-sys-color-inverse-on-surface' },
-        { bg: '--md-sys-color-inverse-on-surface', fg: '--md-sys-color-inverse-surface' },
-        { bg: '--md-sys-color-inverse-primary', fg: '--md-sys-color-primary' },
         { bg: '--md-sys-color-surface-container-lowest', fg: '--md-sys-color-on-surface' },
         { bg: '--md-sys-color-surface-container-low', fg: '--md-sys-color-on-surface' },
         { bg: '--md-sys-color-surface-container', fg: '--md-sys-color-on-surface' },
@@ -226,7 +446,7 @@ function renderThemeBuilder() {
     tokenPairs.forEach(pair => {
         const computed = window.getComputedStyle(document.documentElement);
         let val = computed.getPropertyValue(pair.bg).trim();
-        if(!val) return;
+        if (!val) return;
         
         const item = document.createElement('div');
         item.style.backgroundColor = `var(${pair.bg})`;
@@ -248,47 +468,58 @@ function renderThemeBuilder() {
         
         const valSpan = document.createElement('span');
         valSpan.style.fontSize = '11px';
-        valSpan.style.opacity = '0.8';
+        valSpan.style.fontFamily = 'monospace';
+        valSpan.style.opacity = '0.9';
         valSpan.textContent = val;
         
         item.appendChild(nameSpan);
         item.appendChild(valSpan);
-        
         dom.grid.appendChild(item);
     });
 }
 
 function updateExportContent() {
-    const weights = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-    const tints = weights.map(w => ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(state.rgb, {r:255,g:255,b:255}, w))));
-    const shades = weights.map(w => ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(state.rgb, {r:0,g:0,b:0}, w))));
-
-    const isDark = document.body.classList.contains('dark-mode') || document.body.classList.contains('dark-theme') || document.documentElement.classList.contains('dark-mode') || document.documentElement.classList.contains('dark-theme');
+    const isDark = layoutState.theme === 'dark';
     const modeName = isDark ? 'Dark' : 'Light';
     const computed = window.getComputedStyle(document.documentElement);
-
+    
     const tokenPairs = [
-        '--md-sys-color-primary', '--md-sys-color-on-primary',
-        '--md-sys-color-primary-container', '--md-sys-color-on-primary-container',
-        '--md-sys-color-secondary', '--md-sys-color-on-secondary',
-        '--md-sys-color-secondary-container', '--md-sys-color-on-secondary-container',
-        '--md-sys-color-tertiary', '--md-sys-color-on-tertiary',
-        '--md-sys-color-tertiary-container', '--md-sys-color-on-tertiary-container',
-        '--md-sys-color-error', '--md-sys-color-on-error',
-        '--md-sys-color-error-container', '--md-sys-color-on-error-container',
-        '--md-sys-color-background', '--md-sys-color-on-background',
-        '--md-sys-color-surface', '--md-sys-color-on-surface',
-        '--md-sys-color-surface-variant', '--md-sys-color-on-surface-variant',
-        '--md-sys-color-outline', '--md-sys-color-outline-variant',
-        '--md-sys-color-inverse-surface', '--md-sys-color-inverse-on-surface',
-        '--md-sys-color-inverse-primary'
+        '--md-sys-color-primary',
+        '--md-sys-color-on-primary',
+        '--md-sys-color-primary-container',
+        '--md-sys-color-on-primary-container',
+        '--md-sys-color-secondary',
+        '--md-sys-color-on-secondary',
+        '--md-sys-color-secondary-container',
+        '--md-sys-color-on-secondary-container',
+        '--md-sys-color-tertiary',
+        '--md-sys-color-on-tertiary',
+        '--md-sys-color-tertiary-container',
+        '--md-sys-color-on-tertiary-container',
+        '--md-sys-color-error',
+        '--md-sys-color-on-error',
+        '--md-sys-color-error-container',
+        '--md-sys-color-on-error-container',
+        '--md-sys-color-background',
+        '--md-sys-color-on-background',
+        '--md-sys-color-surface',
+        '--md-sys-color-on-surface',
+        '--md-sys-color-surface-variant',
+        '--md-sys-color-on-surface-variant',
+        '--md-sys-color-outline',
+        '--md-sys-color-outline-variant',
+        '--md-sys-color-surface-container-lowest',
+        '--md-sys-color-surface-container-low',
+        '--md-sys-color-surface-container',
+        '--md-sys-color-surface-container-high',
+        '--md-sys-color-surface-container-highest'
     ];
 
-    // CSS
-    let css = `:root {\n  /* Active Mode: ${modeName} */\n  --primary: #${state.hex};\n`;
-    tints.forEach((h, i) => css += `  --primary-tint-${(i+1)*10}: #${h};\n`);
-    shades.forEach((h, i) => css += `  --primary-shade-${(i+1)*10}: #${h};\n`);
-    css += `\n  /* Material Design 3 Theme Colors (${modeName} Mode) */\n`;
+    // CSS Variables (:root)
+    let css = `/* Material Design 3 Generated Theme (${modeName} Mode) */\n:root {\n  --brand-primary: #${state.hex};\n`;
+    if (state.customSeeds) {
+        css += `  --brand-secondary: #${state.secondary};\n  --brand-tertiary: #${state.tertiary};\n`;
+    }
     tokenPairs.forEach(t => {
         css += `  ${t}: ${computed.getPropertyValue(t).trim()};\n`;
     });
@@ -296,11 +527,8 @@ function updateExportContent() {
     const cssCodeEl = document.getElementById('code-css');
     if (cssCodeEl) cssCodeEl.textContent = css;
 
-    // Tailwind v4
-    let tailwind = `@theme {\n  /* Active Mode: ${modeName} */\n  --color-brand: #${state.hex};\n`;
-    tints.forEach((h, i) => tailwind += `  --color-brand-tint-${(i+1)*10}: #${h};\n`);
-    shades.forEach((h, i) => tailwind += `  --color-brand-shade-${(i+1)*10}: #${h};\n`);
-    tailwind += `\n  /* Material Design 3 System Colors (${modeName} Mode) */\n`;
+    // Tailwind CSS v4 (@theme)
+    let tailwind = `@theme {\n  /* Active Mode: ${modeName} */\n  --color-brand-primary: #${state.hex};\n`;
     tokenPairs.forEach(t => {
         const cleanKey = t.replace('--md-sys-color-', '');
         tailwind += `  --color-sys-${cleanKey}: ${computed.getPropertyValue(t).trim()};\n`;
@@ -309,143 +537,40 @@ function updateExportContent() {
     const twCodeEl = document.getElementById('code-tailwind');
     if (twCodeEl) twCodeEl.textContent = tailwind;
 
-    // Figma Tokens (W3C DTCG Standard)
-    const oklch = ColorUtils.rgbToOklch(state.rgb.r, state.rgb.g, state.rgb.b);
-    const colorName = ColorUtils.getColorName(state.hex);
-    const whiteRatio = ColorUtils.getContrastRatio(state.rgb, {r:255,g:255,b:255});
-    const blackRatio = ColorUtils.getContrastRatio(state.rgb, {r:0,g:0,b:0});
+    // Flutter / Dart
+    let flutter = `import 'package:flutter/material.dart';\n\nclass AppTheme {\n  static const Color primarySeed = Color(0xFF${state.hex});\n`;
+    if (state.customSeeds) {
+        flutter += `  static const Color secondarySeed = Color(0xFF${state.secondary});\n  static const Color tertiarySeed = Color(0xFF${state.tertiary});\n`;
+    }
+    flutter += `\n  static final ColorScheme lightColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.light,\n  );\n\n  static final ColorScheme darkColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.dark,\n  );\n}\n`;
+    const flutterCodeEl = document.getElementById('code-flutter');
+    if (flutterCodeEl) flutterCodeEl.textContent = flutter;
 
-    const sysTokens = {};
+    // Figma Tokens
+    const figmaSys = {};
     tokenPairs.forEach(t => {
         const cleanKey = t.replace('--md-sys-color-', '');
-        const val = computed.getPropertyValue(t).trim();
-        sysTokens[cleanKey] = {
-            "$value": val,
-            "$type": "color",
-            "$description": `MD3 System ${cleanKey} (${modeName} Mode)`
+        figmaSys[cleanKey] = {
+            "$value": computed.getPropertyValue(t).trim(),
+            "$type": "color"
         };
     });
-
     const figmaTokens = {
         "$schema": "https://design-tokens.github.io/community-group/format/",
         mode: modeName.toLowerCase(),
+        seeds: {
+            primary: `#${state.hex}`,
+            secondary: state.customSeeds ? `#${state.secondary}` : 'auto',
+            tertiary: state.customSeeds ? `#${state.tertiary}` : 'auto'
+        },
         color: {
-            brand: {
-                base: { 
-                    "$value": `#${state.hex}`, 
-                    "$type": "color",
-                    "$description": `${colorName} - OKLCH(${Math.round(oklch.l)}% ${oklch.c.toFixed(2)} ${Math.round(oklch.h)})`,
-                    "$extensions": {
-                        "com.limorina.color": {
-                            "name": colorName,
-                            "oklch": `oklch(${Math.round(oklch.l)}% ${oklch.c.toFixed(3)} ${Math.round(oklch.h)})`,
-                            "contrast": {
-                                "onWhite": `${whiteRatio.toFixed(1)}:1`,
-                                "onBlack": `${blackRatio.toFixed(1)}:1`
-                            }
-                        }
-                    }
-                },
-                tints: Object.fromEntries(tints.map((h, i) => {
-                    const r = ColorUtils.hexToRgb(h);
-                    const ok = ColorUtils.rgbToOklch(r.r, r.g, r.b);
-                    return [`tint-${(i+1)*10}`, { 
-                        "$value": `#${h}`, 
-                        "$type": "color",
-                        "$description": `Tint ${(i+1)*10}% - OKLCH(${Math.round(ok.l)}% ${ok.c.toFixed(2)} ${Math.round(ok.h)})`
-                    }];
-                })),
-                shades: Object.fromEntries(shades.map((h, i) => {
-                    const r = ColorUtils.hexToRgb(h);
-                    const ok = ColorUtils.rgbToOklch(r.r, r.g, r.b);
-                    return [`shade-${(i+1)*10}`, { 
-                        "$value": `#${h}`, 
-                        "$type": "color",
-                        "$description": `Shade ${(i+1)*10}% - OKLCH(${Math.round(ok.l)}% ${ok.c.toFixed(2)} ${Math.round(ok.h)})`
-                    }];
-                }))
-            },
-            sys: sysTokens
+            sys: figmaSys
         }
     };
     const figmaCodeEl = document.getElementById('code-figma');
     if (figmaCodeEl) figmaCodeEl.textContent = JSON.stringify(figmaTokens, null, 2);
 
-    // Flutter / Dart
-    let flutter = `import 'package:flutter/material.dart';\n\nclass AppTheme {\n  static const Color primarySeed = Color(0xFF${state.hex});\n\n  static final ColorScheme lightColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.light,\n  );\n\n  static final ColorScheme darkColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.dark,\n  );\n}\n`;
-    const flutterCodeEl = document.getElementById('code-flutter');
-    if (flutterCodeEl) flutterCodeEl.textContent = flutter;
-
-    // SCSS Map
-    let scss = `// Material Design 3 SCSS Tokens (${modeName} Mode)\n$brand-color: (\n  base: #${state.hex},\n  tints: (\n`;
-    tints.forEach((h, i) => scss += `    ${(i+1)*10}: #${h},\n`);
-    scss += `  ),\n  shades: (\n`;
-    shades.forEach((h, i) => scss += `    ${(i+1)*10}: #${h},\n`);
-    scss += `  )\n);\n\n$md-sys-color: (\n  mode: "${modeName.toLowerCase()}",\n`;
-    tokenPairs.forEach(t => {
-        const cleanKey = t.replace('--md-sys-color-', '');
-        scss += `  "${cleanKey}": ${computed.getPropertyValue(t).trim()},\n`;
-    });
-    scss += `);`;
-    const scssCodeEl = document.getElementById('code-scss');
-    if (scssCodeEl) scssCodeEl.textContent = scss;
-
-    // Android XML
-    let android = `<!-- res/values/colors.xml (${modeName} Mode) -->\n<resources>\n  <color name="brand_color">#FF${state.hex}</color>\n`;
-    tints.forEach((h, i) => android += `  <color name="brand_color_tint_${(i+1)*10}">#FF${h}</color>\n`);
-    shades.forEach((h, i) => android += `  <color name="brand_color_shade_${(i+1)*10}">#FF${h}</color>\n`);
-    android += `</resources>\n\n// Jetpack Compose Kotlin Colors (${modeName} Mode)\nimport androidx.compose.ui.graphics.Color\n\nobject BrandColors {\n  val Base = Color(0xFF${state.hex})\n`;
-    tints.forEach((h, i) => android += `  val Tint${(i+1)*10} = Color(0xFF${h})\n`);
-    shades.forEach((h, i) => android += `  val Shade${(i+1)*10} = Color(0xFF${h})\n`);
-    android += `}`;
-    const androidCodeEl = document.getElementById('code-android');
-    if (androidCodeEl) androidCodeEl.textContent = android;
-
-    // SwiftUI
-    const hexToSwiftColor = (hexStr) => {
-        const rgb = ColorUtils.hexToRgb(hexStr);
-        return `Color(red: ${(rgb.r / 255).toFixed(3)}, green: ${(rgb.g / 255).toFixed(3)}, blue: ${(rgb.b / 255).toFixed(3)})`;
-    };
-    let swift = `// SwiftUI Color Extension (${modeName} Mode)\nimport SwiftUI\n\nextension Color {\n  static let brandColor = ${hexToSwiftColor(state.hex)} // #${state.hex}\n\n  struct BrandTints {\n`;
-    tints.forEach((h, i) => swift += `    static let tint${(i+1)*10} = ${hexToSwiftColor(h)} // #${h}\n`);
-    swift += `  }\n\n  struct BrandShades {\n`;
-    shades.forEach((h, i) => swift += `    static let shade${(i+1)*10} = ${hexToSwiftColor(h)} // #${h}\n`);
-    swift += `  }\n}`;
-    const swiftCodeEl = document.getElementById('code-swiftui');
-    if (swiftCodeEl) swiftCodeEl.textContent = swift;
-
-    // Enriched JSON Export
-    const sysTokensMap = {};
-    tokenPairs.forEach(t => {
-        const cleanKey = t.replace('--md-sys-color-', '');
-        sysTokensMap[cleanKey] = computed.getPropertyValue(t).trim();
-    });
-
-    const data = {
-        mode: modeName.toLowerCase(),
-        name: colorName,
-        hex: `#${state.hex}`,
-        rgb: `rgb(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b})`,
-        hsl: `hsl(${Math.round(state.hsl.h)}deg ${Math.round(state.hsl.s)}% ${Math.round(state.hsl.l)}%)`,
-        oklch: `oklch(${Math.round(oklch.l)}% ${oklch.c.toFixed(3)} ${Math.round(oklch.h)})`,
-        contrast: {
-            onWhite: `${whiteRatio.toFixed(1)}:1`,
-            onBlack: `${blackRatio.toFixed(1)}:1`,
-            suggestedText: whiteRatio > blackRatio ? '#FFFFFF' : '#000000'
-        },
-        systemColors: sysTokensMap,
-        tints: tints.map(h => `#${h}`),
-        shades: shades.map(h => `#${h}`)
-    };
-    const jsonCodeEl = document.getElementById('code-json');
-    if (jsonCodeEl) jsonCodeEl.textContent = JSON.stringify(data, null, 2);
-
-    // Python
-    const pythonCode = `# Code template for materialyoucolor-python\n# Install: pip install materialyoucolor\n\nfrom materialyoucolor.theme import Theme\nfrom materialyoucolor.rgba import RGBA\n\n# Initialize dynamic theme using active color: #${state.hex}\ntheme = Theme(RGBA(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b}, 255))\n\n# Retrieve dynamic colors for Light & Dark schemes\nlight = theme.schemes.light\ndark = theme.schemes.dark\n\nprint("=== LIGHT SYSTEM COLORS ===")\nprint(f"Primary:           {light.primary}")\nprint(f"On Primary:        {light.onPrimary}")\nprint(f"Primary Container: {light.primaryContainer}")\nprint(f"Surface:           {light.surface}")\n\nprint("\\n=== DARK SYSTEM COLORS ===")\nprint(f"Primary:           {dark.primary}")\nprint(f"On Primary:        {dark.onPrimary}")\nprint(f"Primary Container: {dark.primaryContainer}")\nprint(f"Surface:           {dark.surface}")\n`;
-    const pythonCodeEl = document.getElementById('code-python');
-    if (pythonCodeEl) pythonCodeEl.textContent = pythonCode;
-
-    // Refresh active format header and line count
+    // Refresh active format display
     const activeFormat = dom.exportSelect ? (dom.exportSelect.value || 'css') : 'css';
     switchExportFormat(activeFormat);
 }

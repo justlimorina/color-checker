@@ -238,6 +238,24 @@ export const ProjectManager = {
         }
     },
 
+    importBulkColors(rawText) {
+        if (!rawText || typeof rawText !== 'string') return 0;
+        const matches = rawText.match(/#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g);
+        if (!matches || matches.length === 0) return 0;
+        
+        let count = 0;
+        matches.forEach(m => {
+            let hex = m.replace('#', '').toUpperCase();
+            if (hex.length === 3) {
+                hex = hex.split('').map(c => c + c).join('');
+            }
+            if (this.addColorToActiveProject(hex)) {
+                count++;
+            }
+        });
+        return count;
+    },
+
     getSharedURL(hexOrPalette) {
         const origin = window.location.origin + window.location.pathname;
         if (Array.isArray(hexOrPalette)) {

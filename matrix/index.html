@@ -27,23 +27,104 @@
 <body>
     <main class="md-main">
         <div class="card card-elevated">
-            <h2 class="headline-medium mb-m" data-i18n="contrast_matrix">Contrast Matrix</h2>
-            
-            <div class="matrix-header-row mb-l">
-                <p class="body-medium mb-0" style="opacity: 0.8;" data-i18n="matrix_desc">Compare all saved colors against each other.</p>
-                <div class="segmented-control" id="matrix-mode-toggle">
-                    <button class="segment-btn active" data-mode="wcag" data-i18n="matrix_wcag">WCAG 2.1</button>
-                    <button class="segment-btn" data-mode="apca" data-i18n="matrix_apca">APCA (Lc)</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+                <div>
+                    <h2 class="headline-medium mb-0" data-i18n="contrast_matrix">Contrast Matrix</h2>
+                    <p class="body-medium mb-0 mt-xs" style="opacity: 0.8;" data-i18n="matrix_desc">Compare all saved colors against each other.</p>
+                </div>
+
+                <!-- Export & Action Buttons -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                    <md-outlined-button id="copy-matrix-md">
+                        <md-icon slot="icon">content_copy</md-icon>
+                        <span data-i18n="copy_markdown">Copy Markdown</span>
+                    </md-outlined-button>
+                    <md-filled-tonal-button id="export-matrix-csv">
+                        <md-icon slot="icon">download</md-icon>
+                        <span data-i18n="export_csv">Export CSV</span>
+                    </md-filled-tonal-button>
                 </div>
             </div>
             
-            <div style="overflow-x: auto;">
+            <div class="matrix-header-row mb-m" style="padding-top: 8px; border-top: 1px solid var(--md-sys-color-outline-variant);">
+                <!-- Controls: Passing Only & Mode -->
+                <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                    <div class="segmented-control" id="matrix-mode-toggle">
+                        <button class="segment-btn active" data-mode="wcag" data-i18n="matrix_wcag">WCAG 2.1</button>
+                        <button class="segment-btn" data-mode="apca" data-i18n="matrix_apca">APCA (Lc)</button>
+                    </div>
+
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="matrix-pass-filter" style="width: 18px; height: 18px; accent-color: var(--md-sys-color-primary); cursor: pointer;">
+                        <span class="label-large" data-i18n="filter_pass_only" style="font-weight: 500;">Show Passing Only</span>
+                    </label>
+                </div>
+
+                <div class="body-small" style="opacity: 0.7;">
+                    Click any cell to inspect or open in Contrast Checker
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto; max-height: 70vh;">
                 <table id="matrix-table" class="matrix-table">
                     <!-- JS Generated -->
                 </table>
             </div>
         </div>
     </main>
+
+    <!-- Click-to-Inspect Modal Dialog -->
+    <div id="matrix-inspect-scrim" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+    <div id="matrix-inspect-modal" class="matrix-popover-card" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 class="title-large mb-0" data-i18n="view_details">Inspect Details</h3>
+            <button id="close-inspect-modal" class="icon-button" style="border: none; background: transparent; cursor: pointer; color: var(--md-sys-color-on-surface);">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <div style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--md-sys-color-outline-variant);">
+                <span class="label-small" data-i18n="background_color">Background</span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                    <div id="inspect-bg-swatch" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2);"></div>
+                    <span id="inspect-bg-hex" class="font-mono" style="font-weight: bold;">#FFFFFF</span>
+                </div>
+            </div>
+            <div style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--md-sys-color-outline-variant);">
+                <span class="label-small" data-i18n="foreground_color">Foreground</span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                    <div id="inspect-fg-swatch" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2);"></div>
+                    <span id="inspect-fg-hex" class="font-mono" style="font-weight: bold;">#000000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Sample Preview -->
+        <div id="inspect-sample-box" style="padding: 16px; border-radius: 12px; text-align: center; font-size: 1.1rem; margin-bottom: 16px; border: 1px solid var(--md-sys-color-outline-variant);">
+            The quick brown fox jumps over the lazy dog.
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 4px;">
+            <div>
+                <span class="label-small" style="opacity: 0.8;">WCAG Ratio</span>
+                <div id="inspect-wcag-val" class="headline-small" style="font-weight: bold; color: var(--md-sys-color-primary);">21.0:1</div>
+            </div>
+            <div style="text-align: right;">
+                <span class="label-small" style="opacity: 0.8;">APCA Score</span>
+                <div id="inspect-apca-val" class="headline-small" style="font-weight: bold; color: var(--md-sys-color-primary);">Lc 106</div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+            <md-filled-button id="inspect-open-btn" style="flex: 1;">
+                <md-icon slot="icon">open_in_new</md-icon>
+                <span data-i18n="open_in_contrast">Open in Contrast Checker</span>
+            </md-filled-button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
 
     <script type="module" src="https://esm.sh/@material/web/all.js"></script>
     <script type="module" src="./script.js"></script>

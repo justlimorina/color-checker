@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/styles.css">
-    <meta name="description" content="Design custom linear and radial gradients. Slide angles, pick color stops, preview results, and grab clean CSS properties instantly.">
+    <meta name="description" content="Design custom linear, radial, and conic gradients with multi-stops. Grab clean CSS, Tailwind v4, SVG, or download PNG images.">
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#624E9A">
     <link rel="apple-touch-icon" href="../assets/images/amelia_logo.svg">
@@ -26,7 +26,7 @@
 </head>
 <body>
     <main class="md-main">
-        <div class="card card-elevated" style="max-width: 900px; margin: 0 auto;">
+        <div class="card card-elevated" style="max-width: 950px; margin: 0 auto;">
             <h2 class="headline-medium mb-m" data-i18n="gradient_generator">CSS Gradient Generator</h2>
             
             <div class="gradient-layout">
@@ -36,12 +36,24 @@
                          <md-tabs id="gradient-tabs">
                              <md-primary-tab id="grad-linear" active data-i18n="grad_linear">Linear</md-primary-tab>
                              <md-primary-tab id="grad-radial" data-i18n="grad_radial">Radial</md-primary-tab>
+                             <md-primary-tab id="grad-conic" data-i18n="grad_conic">Conic</md-primary-tab>
                          </md-tabs>
                      </div>
                      
                      <div class="input-group mb-m" id="grad-angle-group">
                          <label class="label-large" style="display:block; margin-bottom: 8px;"><span data-i18n="gradient_angle">Angle</span> (<span id="grad-angle-val">90</span>°)</label>
                          <md-slider id="grad-angle" min="0" max="360" value="90" labeled></md-slider>
+                     </div>
+
+                     <div class="input-group mb-m" id="grad-pos-group" style="display: none;">
+                         <label class="label-large" style="display:block; margin-bottom: 8px;" data-i18n="radial_position">Position</label>
+                         <select id="grad-position-select" class="custom-select" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid var(--md-sys-color-outline); background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); font-family: inherit; font-size: 0.95rem;">
+                             <option value="center" data-i18n="pos_center" selected>Center</option>
+                             <option value="top left" data-i18n="pos_top_left">Top Left</option>
+                             <option value="top right" data-i18n="pos_top_right">Top Right</option>
+                             <option value="bottom left" data-i18n="pos_bottom_left">Bottom Left</option>
+                             <option value="bottom right" data-i18n="pos_bottom_right">Bottom Right</option>
+                         </select>
                      </div>
 
                     <div class="input-group mb-m">
@@ -52,52 +64,65 @@
                         </div>
                     </div>
 
+                    <!-- Multi-Stops Track & Stops Management -->
                     <div class="input-group mb-m">
-                        <label class="label-large mb-s" data-i18n="gradient_colors">Colors</label>
-                        <div class="mixer-row" style="gap: 8px; align-items: center;">
-                            <div class="hex-wrapper" style="flex:1; margin-top:0; position: relative;">
-                                <span>#</span>
-                                <input type="text" id="grad-hex-1" value="624E9A" maxlength="6" style="width: calc(100% - 76px);">
-                                <button id="eyedropper-btn-1" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
-                                    <span class="material-symbols-rounded" style="font-size: 20px;">colorize</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <label class="label-large" data-i18n="gradient_colors">Colors</label>
+                            <div style="display: flex; gap: 8px;">
+                                <button id="swap-grad-btn" class="icon-button small-btn" title="Reverse Stops" style="border: 1px solid var(--md-sys-color-outline-variant); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container-high); cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                    <span class="material-symbols-rounded" style="font-size: 18px;">swap_horiz</span>
                                 </button>
-                                <input type="color" id="grad-color-1" value="#624E9A">
-                            </div>
-                            <button id="swap-grad-btn" class="icon-button" title="Swap Colors" style="background: var(--md-sys-color-surface-container-high); border: 1px solid var(--md-sys-color-outline-variant); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--md-sys-color-on-surface); flex-shrink: 0;">
-                                <span class="material-symbols-rounded" style="font-size: 22px;">swap_horiz</span>
-                            </button>
-                            <div class="hex-wrapper" style="flex:1; margin-top:0; position: relative;">
-                                <span>#</span>
-                                <input type="text" id="grad-hex-2" value="EADDFF" maxlength="6" style="width: calc(100% - 76px);">
-                                <button id="eyedropper-btn-2" class="icon-button small-btn" title="Pick Color from Screen" style="position: absolute; right: 44px; width: 32px; height: 32px; display: none; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--md-sys-color-on-surface);">
-                                    <span class="material-symbols-rounded" style="font-size: 20px;">colorize</span>
+                                <button id="add-stop-btn" class="icon-button small-btn" title="Add Stop" style="border: 1px solid var(--md-sys-color-outline-variant); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container-high); cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                    <span class="material-symbols-rounded" style="font-size: 18px;">add</span>
                                 </button>
-                                <input type="color" id="grad-color-2" value="#EADDFF">
                             </div>
                         </div>
+
+                        <!-- Interactive Track -->
+                        <div class="grad-track-wrapper" id="grad-track-wrapper">
+                            <div id="grad-track" class="grad-track" title="Click anywhere to add a color stop"></div>
+                            <div id="grad-track-pins"></div>
+                        </div>
+
+                        <!-- Stop List -->
+                        <div id="grad-stops-list"></div>
                     </div>
 
                     <div class="input-group mb-m">
                         <label class="label-large mb-s" data-i18n="gradient_presets" style="display:block;">Presets</label>
                         <div id="gradient-presets-bar" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="grad-preset-chip" data-c1="FF512F" data-c2="DD2476" title="Sunset Glow" style="background: linear-gradient(135deg, #FF512F, #DD2476); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
-                            <button class="grad-preset-chip" data-c1="2E3192" data-c2="1BFFFF" title="Ocean Wave" style="background: linear-gradient(135deg, #2E3192, #1BFFFF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
-                            <button class="grad-preset-chip" data-c1="624E9A" data-c2="EADDFF" title="Cosmic Violet" style="background: linear-gradient(135deg, #624E9A, #EADDFF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
-                            <button class="grad-preset-chip" data-c1="00B09B" data-c2="96C93D" title="Emerald Aurora" style="background: linear-gradient(135deg, #00B09B, #96C93D); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
-                            <button class="grad-preset-chip" data-c1="FF007F" data-c2="00F0FF" title="Cyberpunk" style="background: linear-gradient(135deg, #FF007F, #00F0FF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
-                            <button class="grad-preset-chip" data-c1="F2994A" data-c2="F2C94C" title="Warm Amber" style="background: linear-gradient(135deg, #F2994A, #F2C94C); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-preset="sunset" title="Sunset Glow" style="background: linear-gradient(135deg, #FF512F, #DD2476, #7B1E7A); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-preset="ocean" title="Ocean Wave" style="background: linear-gradient(135deg, #2E3192, #00C6FF, #1BFFFF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-preset="cosmic" title="Cosmic Violet" style="background: linear-gradient(135deg, #624E9A, #9C27B0, #EADDFF); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-preset="aurora" title="Emerald Aurora" style="background: linear-gradient(135deg, #00B09B, #96C93D, #CBF3D2); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-preset="cyberpunk" title="Cyberpunk Neon" style="background: linear-gradient(135deg, #F72585, #7209B7, #4CC9F0); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
+                            <button class="grad-preset-chip" data-preset="amber" title="Warm Amber" style="background: linear-gradient(135deg, #F2994A, #F2C94C, #FFE494); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--md-sys-color-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"></button>
                         </div>
                     </div>
-                    
-                     <md-filled-button id="copy-gradient-btn" class="full-width mt-l">
-                         <md-icon slot="icon">content_copy</md-icon>
-                         <span data-i18n="copy_css">Copy CSS</span>
-                     </md-filled-button>
                 </div>
                 
                 <div class="gradient-preview-area">
                     <div id="gradient-preview" style="width: 100%; height: 300px; border-radius: 24px; background: linear-gradient(90deg, #624E9A, #EADDFF); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);"></div>
-                    <pre class="mt-m" style="background: var(--md-sys-color-surface-variant); padding: 16px; border-radius: 12px;"><code id="gradient-code">background: linear-gradient(90deg, #624E9A, #EADDFF);</code></pre>
+                    
+                    <!-- Format Tabs -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                        <div class="segmented-control" id="grad-format-toggle">
+                            <button class="segment-btn active" data-fmt="css">CSS</button>
+                            <button class="segment-btn" data-fmt="tailwind">Tailwind v4</button>
+                            <button class="segment-btn" data-fmt="svg">SVG</button>
+                        </div>
+                        <md-text-button id="download-png-btn">
+                            <md-icon slot="icon">image</md-icon>
+                            <span data-i18n="download_png">Download PNG</span>
+                        </md-text-button>
+                    </div>
+
+                    <pre class="mt-s" style="background: var(--md-sys-color-surface-variant); padding: 16px; border-radius: 12px; overflow-x: auto; max-height: 160px;"><code id="gradient-code">background: linear-gradient(90deg, #624E9A 0%, #EADDFF 100%);</code></pre>
+                    
+                    <md-filled-button id="copy-gradient-btn" class="full-width mt-s">
+                        <md-icon slot="icon">content_copy</md-icon>
+                        <span id="copy-btn-label" data-i18n="copy_css">Copy CSS</span>
+                    </md-filled-button>
                 </div>
             </div>
         </div>
