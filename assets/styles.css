@@ -1,4 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
 :root {
+    /* Icon Font Configuration for @material/web components */
+    --md-icon-font: 'Material Symbols Rounded', 'Material Symbols Outlined';
+    --md-sys-typescale-icon-font: 'Material Symbols Rounded', 'Material Symbols Outlined';
+
     /* Brand Color: #624E9A */
     --primary: #624E9A;
     --primary-tint-10: #7260A4;
@@ -3013,7 +3019,7 @@ md-list-item.md-nav-item.active {
 .material-symbols-outlined,
 .material-symbols-rounded,
 md-icon {
-    font-family: 'Material Symbols Rounded' !important;
+    font-family: 'Material Symbols Rounded', 'Material Symbols Outlined' !important;
     font-weight: normal;
     font-style: normal;
     font-size: 24px;
@@ -3026,8 +3032,24 @@ md-icon {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+md-filled-button md-icon,
+md-filled-tonal-button md-icon,
+md-elevated-button md-icon,
+md-outlined-button md-icon,
+md-text-button md-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20 !important;
 }
 
 md-icon-button {

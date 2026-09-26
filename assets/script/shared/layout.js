@@ -28,11 +28,11 @@ export function initLayout(activePageKey) {
     layoutState.activePageKey = activePageKey;
     const prefix = getPathPrefix();
 
-    // 1. Inject CSS and Material Symbols Rounded if not already present
-    if (!document.querySelector('link[href*="material-symbols-rounded"]')) {
+    // 1. Inject CSS and Material Symbols (Outlined & Rounded) if not already present
+    if (!document.querySelector('link[href*="Material+Symbols"]') && !document.querySelector('link[href*="material-symbols"]')) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200';
+        link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200';
         document.head.appendChild(link);
     }
     
