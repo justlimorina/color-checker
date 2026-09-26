@@ -95,67 +95,36 @@
             <p class="body-medium mb-l" style="opacity: 0.8;">Live interactive UI elements reacting dynamically to your system color theme.</p>
             
             <div class="md3-playground-card">
-                <!-- Section 1: Buttons & Actions -->
-                <div style="margin-bottom: 24px;">
-                    <div class="label-large" style="opacity: 0.7; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem;">Buttons & Actions</div>
-                    <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
-                        <md-filled-button>
-                            <md-icon slot="icon">check</md-icon>
-                            Filled Button
-                        </md-filled-button>
+                <!-- Buttons Row — no icons to avoid Shadow DOM font issues -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px;">
+                    <md-filled-button>Filled</md-filled-button>
+                    <md-filled-tonal-button>Tonal</md-filled-tonal-button>
+                    <md-elevated-button>Elevated</md-elevated-button>
+                    <md-outlined-button>Outlined</md-outlined-button>
+                    <md-text-button>Text</md-text-button>
+                    <md-fab variant="primary" label="FAB"></md-fab>
+                </div>
 
-                        <md-filled-tonal-button>
-                            <md-icon slot="icon">favorite</md-icon>
-                            Tonal Button
-                        </md-filled-tonal-button>
+                <!-- Chips Row -->
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px;">
+                    <md-filter-chip label="Design Tokens" selected></md-filter-chip>
+                    <md-filter-chip label="Accessibility"></md-filter-chip>
+                    <md-input-chip label="Material You"></md-input-chip>
+                </div>
 
-                        <md-elevated-button>
-                            <md-icon slot="icon">lightbulb</md-icon>
-                            Elevated Button
-                        </md-elevated-button>
-
-                        <md-outlined-button>
-                            <md-icon slot="icon">star</md-icon>
-                            Outlined Button
-                        </md-outlined-button>
-
-                        <md-text-button>
-                            <md-icon slot="icon">send</md-icon>
-                            Text Button
-                        </md-text-button>
-
-                        <md-fab variant="primary" label="FAB" style="height: 40px;">
-                            <md-icon slot="icon">add</md-icon>
-                        </md-fab>
+                <!-- Controls: Switch + Slider in a card -->
+                <div style="display: flex; gap: 32px; flex-wrap: wrap; align-items: center; background: var(--md-sys-color-surface-container-low); padding: 16px 20px; border-radius: 14px; border: 1px solid var(--md-sys-color-outline-variant); margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <md-switch selected id="demo-switch"></md-switch>
+                        <span class="label-large">Active Switch</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px;">
+                        <span class="label-medium" style="opacity: 0.7; white-space: nowrap;">Slider:</span>
+                        <md-slider min="0" max="100" value="65" labeled style="flex: 1;"></md-slider>
                     </div>
                 </div>
 
-                <!-- Section 2: Chips, Selection & Controls -->
-                <div style="margin-bottom: 24px;">
-                    <div class="label-large" style="opacity: 0.7; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem;">Chips & Selection Tags</div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
-                        <md-filter-chip label="Design Tokens" selected></md-filter-chip>
-                        <md-filter-chip label="Accessibility"></md-filter-chip>
-                        <md-input-chip label="Material You" avatar>
-                            <span slot="avatar" class="material-symbols-rounded" style="font-size: 18px; margin-left: 6px;">palette</span>
-                        </md-input-chip>
-                    </div>
-
-                    <!-- Spacious dedicated container for Switch & Slider -->
-                    <div style="display: flex; gap: 28px; flex-wrap: wrap; align-items: center; background: var(--md-sys-color-surface-container-low); padding: 16px 20px; border-radius: 14px; border: 1px solid var(--md-sys-color-outline-variant);">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <md-switch selected id="demo-switch"></md-switch>
-                            <span class="label-large" style="font-weight: 500;">Active Switch</span>
-                        </div>
-
-                        <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 240px;">
-                            <span class="label-medium" style="opacity: 0.8; font-weight: 500; white-space: nowrap;">Tonal Slider:</span>
-                            <md-slider min="0" max="100" value="65" labeled style="width: 100%; min-width: 160px;"></md-slider>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 3: Surface Card & Text Demo -->
+                <!-- Surface Card -->
                 <div style="padding: 20px 24px; border-radius: 16px; background: var(--md-sys-color-surface-container-high); border: 1px solid var(--md-sys-color-outline-variant); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                     <div>
                         <h4 class="title-large mb-xs" style="color: var(--md-sys-color-on-surface); font-weight: 600;">Surface Container Card</h4>
