@@ -3763,4 +3763,81 @@ body.dark-theme .md-logo--dark {
     z-index: 2;
 }
 
+/* Theme Seed Hex Wrapper - Clean, unclipped styling */
+.theme-seed-hex {
+    width: 175px !important;
+    height: 44px !important;
+    padding: 0 12px !important;
+    margin-top: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    position: relative !important;
+    background: var(--md-sys-color-surface-container-highest) !important;
+    border: 1.5px solid var(--md-sys-color-outline-variant) !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    gap: 4px !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.theme-seed-hex:focus-within {
+    border-color: var(--md-sys-color-primary) !important;
+    box-shadow: 0 0 0 3px var(--md-sys-color-primary-container) !important;
+}
+
+.theme-seed-hex span {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--md-sys-color-on-surface);
+    opacity: 0.6;
+    user-select: none;
+}
+
+.theme-seed-hex input[type="text"] {
+    width: 82px !important;
+    height: 100% !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    font-family: 'Roboto Mono', monospace !important;
+    letter-spacing: 0.05em !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: var(--md-sys-color-on-surface) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-transform: uppercase !important;
+}
+
+.theme-seed-hex input[type="color"] {
+    position: absolute !important;
+    right: 8px !important;
+    width: 28px !important;
+    height: 28px !important;
+    border: 1px solid var(--md-sys-color-outline-variant) !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Gradient Stop Item Hex Wrapper */
+.grad-stop-item .hex-wrapper {
+    width: 105px !important;
+    height: 34px !important;
+    padding: 0 8px !important;
+    margin-top: 0 !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.grad-stop-item .hex-wrapper input[type="text"] {
+    font-size: 0.9rem !important;
+    width: 72px !important;
+    padding: 0 !important;
+}
+
+
 

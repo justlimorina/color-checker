@@ -35,21 +35,21 @@
                 <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
                     <!-- Primary Seed -->
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <span class="label-large" style="font-weight: bold; min-width: 90px;">Primary Seed:</span>
-                        <div class="hex-wrapper" style="width: 140px; margin-top: 0; position: relative;">
+                        <span class="label-large" style="font-weight: bold; min-width: 90px;" data-i18n="primary_seed">Primary Seed:</span>
+                        <div class="hex-wrapper theme-seed-hex">
                             <span>#</span>
-                            <input type="text" id="theme-primary-hex" value="624E9A" maxlength="6" style="width: calc(100% - 40px);">
+                            <input type="text" id="theme-primary-hex" value="624E9A" maxlength="6">
                             <input type="color" id="theme-primary-picker" value="#624E9A">
                         </div>
                     </div>
 
                     <!-- Contrast Level Selector -->
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span class="label-medium" style="opacity: 0.8;">Contrast:</span>
+                        <span class="label-medium" style="opacity: 0.8;" data-i18n="contrast_level">Contrast:</span>
                         <div class="segmented-control" id="theme-contrast-toggle">
-                            <button class="segment-btn active" data-contrast="standard">Standard</button>
-                            <button class="segment-btn" data-contrast="medium">Medium</button>
-                            <button class="segment-btn" data-contrast="high">High</button>
+                            <button class="segment-btn active" data-contrast="standard" data-i18n="contrast_standard">Standard</button>
+                            <button class="segment-btn" data-contrast="medium" data-i18n="contrast_medium">Medium</button>
+                            <button class="segment-btn" data-contrast="high" data-i18n="contrast_high">High</button>
                         </div>
                     </div>
 
@@ -61,21 +61,21 @@
                 </div>
 
                 <!-- Secondary & Tertiary Independent Seeds (Expandable) -->
-                <div id="independent-seeds-row" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--md-sys-color-outline-variant); display: none; gap: 20px; flex-wrap: wrap;">
+                <div id="independent-seeds-row" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--md-sys-color-outline-variant); gap: 24px; flex-wrap: wrap; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span class="label-large" style="font-weight: bold; min-width: 90px;" data-i18n="secondary_color">Secondary:</span>
-                        <div class="hex-wrapper" style="width: 140px; margin-top: 0; position: relative;">
+                        <div class="hex-wrapper theme-seed-hex">
                             <span>#</span>
-                            <input type="text" id="theme-secondary-hex" value="605B71" maxlength="6" style="width: calc(100% - 40px);">
+                            <input type="text" id="theme-secondary-hex" value="605B71" maxlength="6">
                             <input type="color" id="theme-secondary-picker" value="#605B71">
                         </div>
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span class="label-large" style="font-weight: bold; min-width: 90px;" data-i18n="tertiary_color">Tertiary:</span>
-                        <div class="hex-wrapper" style="width: 140px; margin-top: 0; position: relative;">
+                        <div class="hex-wrapper theme-seed-hex">
                             <span>#</span>
-                            <input type="text" id="theme-tertiary-hex" value="7D5260" maxlength="6" style="width: calc(100% - 40px);">
+                            <input type="text" id="theme-tertiary-hex" value="7D5260" maxlength="6">
                             <input type="color" id="theme-tertiary-picker" value="#7D5260">
                         </div>
                     </div>

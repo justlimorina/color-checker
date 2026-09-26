@@ -368,9 +368,9 @@ function renderStops() {
 
         row.innerHTML = `
             <input type="color" id="stop-color-${stop.id}" value="#${stop.hex}" style="width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; padding: 0; background: none; flex-shrink: 0;">
-            <div class="hex-wrapper" style="width: 90px; margin-top: 0; height: 32px;">
+            <div class="hex-wrapper" style="width: 100px; margin-top: 0; height: 34px; padding: 0 8px;">
                 <span>#</span>
-                <input type="text" id="stop-hex-${stop.id}" value="${stop.hex}" maxlength="6" style="width: calc(100% - 24px); font-size: 0.85rem;">
+                <input type="text" id="stop-hex-${stop.id}" value="${stop.hex}" maxlength="6" style="width: 68px; font-size: 0.95rem; font-family: 'Roboto Mono', monospace; font-weight: 700;">
             </div>
             <button id="stop-eyedropper-${stop.id}" class="icon-button small-btn" title="Pick Color" style="border: none; background: transparent; cursor: pointer; display: none; width: 28px; height: 28px; align-items: center; justify-content: center; color: var(--md-sys-color-on-surface); flex-shrink: 0;">
                 <span class="material-symbols-rounded" style="font-size: 18px;">colorize</span>

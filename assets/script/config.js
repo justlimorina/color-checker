@@ -210,7 +210,12 @@ export const translations = {
         flow_to_contrast: "Check Contrast",
         copied_markdown: "Copied Markdown table to clipboard!",
         copied_csv: "CSV file downloaded!",
-        view_details: "Inspect Details"
+        view_details: "Inspect Details",
+        primary_seed: "Primary Seed:",
+        contrast_level: "Contrast:",
+        contrast_standard: "Standard",
+        contrast_medium: "Medium",
+        contrast_high: "High"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -423,7 +428,12 @@ export const translations = {
         flow_to_contrast: "Kiểm tra tương phản",
         copied_markdown: "Đã sao chép bảng Markdown!",
         copied_csv: "Đã tải file CSV!",
-        view_details: "Xem chi tiết"
+        view_details: "Xem chi tiết",
+        primary_seed: "Màu chính (Primary):",
+        contrast_level: "Độ tương phản:",
+        contrast_standard: "Tiêu chuẩn",
+        contrast_medium: "Vừa phải",
+        contrast_high: "Cao"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -623,7 +633,12 @@ export const translations = {
         flow_to_contrast: "コントラスト確認",
         copied_markdown: "Markdownテーブルをコピーしました！",
         copied_csv: "CSVファイルをダウンロードしました！",
-        view_details: "詳細を表示"
+        view_details: "詳細を表示",
+        primary_seed: "メイン色 (Primary):",
+        contrast_level: "コントラスト:",
+        contrast_standard: "標準",
+        contrast_medium: "中程度",
+        contrast_high: "高"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -823,6 +838,11 @@ export const translations = {
         flow_to_contrast: "检查对比度",
         copied_markdown: "已复制 Markdown 表格！",
         copied_csv: "已下载 CSV 文件！",
-        view_details: "查看详情"
+        view_details: "查看详情",
+        primary_seed: "主色 (Primary):",
+        contrast_level: "对比度:",
+        contrast_standard: "标准",
+        contrast_medium: "中等",
+        contrast_high: "高"
     }
 };
