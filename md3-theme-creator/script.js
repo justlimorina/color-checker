@@ -228,10 +228,12 @@ function attachEvents() {
 
     // Export Hub Floating Select
     if (dom.exportSelect) {
-        dom.exportSelect.addEventListener('change', () => {
+        const onSelectChange = () => {
             const format = dom.exportSelect.value || 'css';
             switchExportFormat(format);
-        });
+        };
+        dom.exportSelect.addEventListener('change', onSelectChange);
+        dom.exportSelect.addEventListener('input', onSelectChange);
     }
 
     // Export Download Button
@@ -529,6 +531,9 @@ function updateExportContent() {
 
     // Tailwind CSS v4 (@theme)
     let tailwind = `@theme {\n  /* Active Mode: ${modeName} */\n  --color-brand-primary: #${state.hex};\n`;
+    if (state.customSeeds) {
+        tailwind += `  --color-brand-secondary: #${state.secondary};\n  --color-brand-tertiary: #${state.tertiary};\n`;
+    }
     tokenPairs.forEach(t => {
         const cleanKey = t.replace('--md-sys-color-', '');
         tailwind += `  --color-sys-${cleanKey}: ${computed.getPropertyValue(t).trim()};\n`;
@@ -536,15 +541,6 @@ function updateExportContent() {
     tailwind += `}`;
     const twCodeEl = document.getElementById('code-tailwind');
     if (twCodeEl) twCodeEl.textContent = tailwind;
-
-    // Flutter / Dart
-    let flutter = `import 'package:flutter/material.dart';\n\nclass AppTheme {\n  static const Color primarySeed = Color(0xFF${state.hex});\n`;
-    if (state.customSeeds) {
-        flutter += `  static const Color secondarySeed = Color(0xFF${state.secondary});\n  static const Color tertiarySeed = Color(0xFF${state.tertiary});\n`;
-    }
-    flutter += `\n  static final ColorScheme lightColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.light,\n  );\n\n  static final ColorScheme darkColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.dark,\n  );\n}\n`;
-    const flutterCodeEl = document.getElementById('code-flutter');
-    if (flutterCodeEl) flutterCodeEl.textContent = flutter;
 
     // Figma Tokens
     const figmaSys = {};
@@ -569,6 +565,112 @@ function updateExportContent() {
     };
     const figmaCodeEl = document.getElementById('code-figma');
     if (figmaCodeEl) figmaCodeEl.textContent = JSON.stringify(figmaTokens, null, 2);
+
+    // Flutter / Dart
+    let flutter = `import 'package:flutter/material.dart';\n\nclass AppTheme {\n  static const Color primarySeed = Color(0xFF${state.hex});\n`;
+    if (state.customSeeds) {
+        flutter += `  static const Color secondarySeed = Color(0xFF${state.secondary});\n  static const Color tertiarySeed = Color(0xFF${state.tertiary});\n`;
+    }
+    flutter += `\n  static final ColorScheme lightColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.light,\n  );\n\n  static final ColorScheme darkColorScheme = ColorScheme.fromSeed(\n    seedColor: primarySeed,\n    brightness: Brightness.dark,\n  );\n}\n`;
+    const flutterCodeEl = document.getElementById('code-flutter');
+    if (flutterCodeEl) flutterCodeEl.textContent = flutter;
+
+    // SCSS Map & Variables
+    let scss = `// Material Design 3 SCSS Tokens (${modeName} Mode)\n`;
+    scss += `$brand-primary: #${state.hex};\n`;
+    if (state.customSeeds) {
+        scss += `$brand-secondary: #${state.secondary};\n$brand-tertiary: #${state.tertiary};\n`;
+    }
+    scss += `\n$md-sys-color: (\n  "mode": "${modeName.toLowerCase()}",\n`;
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        scss += `  "${cleanKey}": ${computed.getPropertyValue(t).trim()},\n`;
+    });
+    scss += `);\n\n// Helper function to access tokens\n@function md-sys-color($token) {\n  @return map-get($md-sys-color, $token);\n}\n`;
+    const scssCodeEl = document.getElementById('code-scss');
+    if (scssCodeEl) scssCodeEl.textContent = scss;
+
+    // Android (XML & Jetpack Compose)
+    const toPascalCase = (str) => str.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
+    let android = `<!-- res/values/colors.xml (${modeName} Mode) -->\n<resources>\n  <!-- Brand Seeds -->\n  <color name="brand_primary">#FF${state.hex.toUpperCase()}</color>\n`;
+    if (state.customSeeds) {
+        android += `  <color name="brand_secondary">#FF${state.secondary.toUpperCase()}</color>\n  <color name="brand_tertiary">#FF${state.tertiary.toUpperCase()}</color>\n`;
+    }
+    android += `\n  <!-- MD3 System Tokens -->\n`;
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '').replace(/-/g, '_');
+        const val = computed.getPropertyValue(t).trim().replace('#', '').toUpperCase();
+        android += `  <color name="md_theme_${cleanKey}">#FF${val}</color>\n`;
+    });
+    android += `</resources>\n\n// Jetpack Compose Kotlin Colors (${modeName} Mode)\npackage com.example.ui.theme\n\nimport androidx.compose.ui.graphics.Color\n\nobject MD3ThemeColors {\n  val BrandPrimary = Color(0xFF${state.hex.toUpperCase()})\n`;
+    if (state.customSeeds) {
+        android += `  val BrandSecondary = Color(0xFF${state.secondary.toUpperCase()})\n  val BrandTertiary = Color(0xFF${state.tertiary.toUpperCase()})\n`;
+    }
+    android += `\n  // MD3 System Tokens\n`;
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        const pascalKey = toPascalCase(cleanKey);
+        const val = computed.getPropertyValue(t).trim().replace('#', '').toUpperCase();
+        android += `  val ${pascalKey} = Color(0xFF${val})\n`;
+    });
+    android += `}\n`;
+    const androidCodeEl = document.getElementById('code-android');
+    if (androidCodeEl) androidCodeEl.textContent = android;
+
+    // SwiftUI (iOS Extension)
+    const toCamelCase = (str) => str.split('-').map((s, i) => i === 0 ? s : s.charAt(0).toUpperCase() + s.slice(1)).join('');
+    const hexToSwiftColor = (hexStr) => {
+        const rgb = ColorUtils.hexToRgb(hexStr.replace('#', ''));
+        return `Color(red: ${(rgb.r / 255).toFixed(3)}, green: ${(rgb.g / 255).toFixed(3)}, blue: ${(rgb.b / 255).toFixed(3)})`;
+    };
+    let swift = `// SwiftUI Color Extension (${modeName} Mode)\n// Generated from Material Design 3 Theme Builder\nimport SwiftUI\n\nextension Color {\n  // Brand Seeds\n  static let brandPrimary = ${hexToSwiftColor(state.hex)} // #${state.hex}\n`;
+    if (state.customSeeds) {
+        swift += `  static let brandSecondary = ${hexToSwiftColor(state.secondary)} // #${state.secondary}\n  static let brandTertiary = ${hexToSwiftColor(state.tertiary)} // #${state.tertiary}\n`;
+    }
+    swift += `\n  // MD3 System Color Tokens\n  struct MD3 {\n`;
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        const camelKey = toCamelCase(cleanKey);
+        const val = computed.getPropertyValue(t).trim();
+        swift += `    static let ${camelKey} = ${hexToSwiftColor(val)} // ${val}\n`;
+    });
+    swift += `  }\n}\n`;
+    const swiftCodeEl = document.getElementById('code-swiftui');
+    if (swiftCodeEl) swiftCodeEl.textContent = swift;
+
+    // JSON Palette Data
+    const jsonTokens = {
+        theme: "Material Design 3",
+        mode: modeName.toLowerCase(),
+        contrast: state.contrast,
+        seeds: {
+            primary: `#${state.hex}`,
+            secondary: state.customSeeds ? `#${state.secondary}` : 'auto',
+            tertiary: state.customSeeds ? `#${state.tertiary}` : 'auto'
+        },
+        schemes: {},
+        cssTokens: {}
+    };
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '');
+        const camelKey = toCamelCase(cleanKey);
+        const val = computed.getPropertyValue(t).trim();
+        jsonTokens.schemes[camelKey] = val;
+        jsonTokens.cssTokens[t] = val;
+    });
+    const jsonCodeEl = document.getElementById('code-json');
+    if (jsonCodeEl) jsonCodeEl.textContent = JSON.stringify(jsonTokens, null, 2);
+
+    // Python (Material You)
+    let python = `# Code template for materialyoucolor-python (${modeName} Mode)\n# Install: pip install materialyoucolor\n\nfrom materialyoucolor.theme import Theme\nfrom materialyoucolor.rgba import RGBA\n\n# Initialize dynamic theme using primary seed: #${state.hex}\nprimary_seed = RGBA(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b}, 255)\ntheme = Theme(primary_seed)\n\n# Precomputed MD3 System Color Tokens (${modeName} Mode)\nMD3_SYSTEM_COLORS = {\n`;
+    tokenPairs.forEach(t => {
+        const cleanKey = t.replace('--md-sys-color-', '').replace(/-/g, '_');
+        const val = computed.getPropertyValue(t).trim();
+        python += `    "${cleanKey}": "${val}",\n`;
+    });
+    python += `}\n\n# Retrieve dynamic scheme object\nscheme = theme.schemes.${modeName.toLowerCase()}\nprint(f"Primary:           {scheme.primary}")\nprint(f"Primary Container: {scheme.primaryContainer}")\nprint(f"Surface:           {scheme.surface}")\n`;
+    const pythonCodeEl = document.getElementById('code-python');
+    if (pythonCodeEl) pythonCodeEl.textContent = python;
 
     // Refresh active format display
     const activeFormat = dom.exportSelect ? (dom.exportSelect.value || 'css') : 'css';
