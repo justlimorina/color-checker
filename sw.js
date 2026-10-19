@@ -1,4 +1,4 @@
-const CACHE_NAME = 'color-checker-v9';
+const CACHE_NAME = 'color-checker-v10';
 const ASSETS = [
     './',
     'index.html',
@@ -7,6 +7,12 @@ const ASSETS = [
     'assets/images/amelia_logo.svg',
     'assets/images/logo-black.svg',
     'assets/images/logo-white.svg',
+    'assets/images/samples/portrait.jpg',
+    'assets/images/samples/product.jpg',
+    'assets/images/samples/interior.jpg',
+    'assets/images/samples/forest.jpg',
+    'assets/images/samples/sunset.jpg',
+    'assets/images/samples/poster.jpg',
     'assets/script/config.js',
     'assets/script/utils.js',
     'assets/script/colornames.bestof.js',

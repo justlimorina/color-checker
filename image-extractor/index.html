@@ -34,21 +34,37 @@
             <div id="image-drop-zone" class="image-drop-zone">
                 <span class="material-symbols-rounded" style="font-size: 48px;">add_photo_alternate</span>
                 <p class="title-medium mt-s" data-i18n="browse_image">Browse image</p>
-                <p class="body-small mt-xs" style="opacity: 0.7;">(Drag & drop, click to browse, or paste with Ctrl+V)</p>
+                <p class="body-small mt-xs" style="opacity: 0.7;">Drag & drop, click to browse, or paste with Ctrl+V. JPG, PNG and WebP up to 15 MB.</p>
                 <input type="file" id="image-upload" accept="image/*" style="display: none;">
             </div>
 
             <!-- Preset Samples Gallery -->
             <div id="sample-gallery" class="mt-l">
                 <p class="label-large mb-s" data-i18n="or_try_sample" style="text-align: center; opacity: 0.8;">Or try sample images</p>
-                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <button class="sample-img-btn" data-sample="sunset" title="Sunset Horizon" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #FF512F, #DD2476, #4A00E0);">
+                <div class="sample-gallery-grid">
+                    <button class="sample-img-btn" data-sample-src="../assets/images/samples/portrait.jpg" data-sample-name="Portrait" aria-label="Try Portrait sample image">
+                        <img src="../assets/images/samples/portrait.jpg" alt="Warm portrait sample with teal clothing">
+                        <span>Portrait</span>
                     </button>
-                    <button class="sample-img-btn" data-sample="ocean" title="Tropical Ocean" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #00c6ff, #0072ff, #003366);">
+                    <button class="sample-img-btn" data-sample-src="../assets/images/samples/product.jpg" data-sample-name="Product" aria-label="Try Product sample image">
+                        <img src="../assets/images/samples/product.jpg" alt="Ceramic product sample">
+                        <span>Product</span>
                     </button>
-                    <button class="sample-img-btn" data-sample="cyberpunk" title="Cyberpunk Neon" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #f72585, #7209b7, #3a0ca3, #4cc9f0);">
+                    <button class="sample-img-btn" data-sample-src="../assets/images/samples/interior.jpg" data-sample-name="Interior" aria-label="Try Interior sample image">
+                        <img src="../assets/images/samples/interior.jpg" alt="Scandinavian interior sample">
+                        <span>Interior</span>
                     </button>
-                    <button class="sample-img-btn" data-sample="forest" title="Forest Sage" style="border: 2px solid transparent; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer; width: 80px; height: 56px; transition: transform 0.2s, border-color 0.2s; background: linear-gradient(135deg, #134e5e, #71b280, #cbf3d2);">
+                    <button class="sample-img-btn" data-sample-src="../assets/images/samples/forest.jpg" data-sample-name="Forest" aria-label="Try Forest sample image">
+                        <img src="../assets/images/samples/forest.jpg" alt="Forest sample">
+                        <span>Forest</span>
+                    </button>
+                    <button class="sample-img-btn" data-sample-src="../assets/images/samples/sunset.jpg" data-sample-name="Sunset" aria-label="Try Sunset sample image">
+                        <img src="../assets/images/samples/sunset.jpg" alt="Sunset over water sample">
+                        <span>Sunset</span>
+                    </button>
+                    <button class="sample-img-btn" data-sample-src="../assets/images/samples/poster.jpg" data-sample-name="Poster" aria-label="Try Poster sample image">
+                        <img src="../assets/images/samples/poster.jpg" alt="Graphic poster sample">
+                        <span>Poster</span>
                     </button>
                 </div>
             </div>
@@ -118,7 +134,9 @@
 
                 <!-- Right Column: Interactive Image canvas & overlay -->
                 <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: flex-start;">
-                    <div id="image-workspace" style="position: relative;">
+                    <div>
+                        <p id="image-source-name" class="label-small image-source-name" aria-live="polite"></p>
+                        <div id="image-workspace" style="position: relative;">
                         <canvas id="image-canvas"></canvas>
                         <div id="image-pins-overlay"></div>
                         <!-- 5x Magnifier Loupe -->
@@ -126,6 +144,7 @@
                             <canvas id="loupe-canvas" width="100" height="100"></canvas>
                             <div class="magnifier-loupe-crosshair"></div>
                             <div id="loupe-label" class="magnifier-loupe-label">#FFFFFF</div>
+                        </div>
                         </div>
                     </div>
                 </div>

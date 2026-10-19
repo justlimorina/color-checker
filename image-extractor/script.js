@@ -13,7 +13,7 @@ const presetKeys = ['palette_vibrant', 'palette_muted', 'palette_light', 'palett
 const presetNames = ['Vibrant', 'Muted', 'Light', 'Dark', 'Balanced'];
 
 // DOM references
-let dropZone, fileInput, canvas, ctx, workspace, pinsOverlay, paletteContainer, slider, sliderLabelName, btnAddColor, btnRemoveColor, resetBtn, exportBtn, saveProjectBtn, toast, sampleGallery;
+let dropZone, fileInput, canvas, ctx, workspace, pinsOverlay, paletteContainer, slider, sliderLabelName, btnAddColor, btnRemoveColor, resetBtn, exportBtn, saveProjectBtn, toast, sampleGallery, imageSourceName;
 let loupeEl, loupeCanvas, loupeCtx, loupeLabel, proportionBar, flowGradBtn, flowThemeBtn;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveProjectBtn = document.getElementById('save-palette-to-project-btn');
     toast = document.getElementById('toast');
     sampleGallery = document.getElementById('sample-gallery');
+    imageSourceName = document.getElementById('image-source-name');
     
     loupeEl = document.getElementById('magnifier-loupe');
     loupeCanvas = document.getElementById('loupe-canvas');
@@ -93,6 +94,7 @@ function attachEvents() {
             currentImage = null;
             activePins = [];
             presets = [];
+            if (imageSourceName) imageSourceName.textContent = '';
         };
     }
 
@@ -128,8 +130,7 @@ function attachEvents() {
     // Sample Images Gallery clicks
     document.querySelectorAll('.sample-img-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const sampleType = btn.getAttribute('data-sample');
-            loadSampleImage(sampleType);
+            loadSampleImage(btn.dataset.sampleSrc, btn.dataset.sampleName);
         });
     });
 
@@ -258,140 +259,54 @@ function attachEvents() {
 }
 
 function processImage(file) {
-    if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            currentImage = img;
-            dropZone.style.display = 'none';
-            if (sampleGallery) sampleGallery.style.display = 'none';
-            if (workspace) workspace.style.display = 'flex';
-            
-            const MAX_WIDTH = 500;
-            let width = img.width;
-            let height = img.height;
-            if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-            }
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-
-            generatePresets(width, height);
-            
-            if (slider) {
-                slider.value = 4;
-                updateSliderLabel(4);
-            }
-            loadPreset(4);
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!file || !allowedTypes.includes(file.type)) {
+        showToast('Please choose a JPG, PNG, or WebP image.');
+        return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+        showToast('Please choose an image smaller than 15 MB.');
+        return;
+    }
+    const objectUrl = URL.createObjectURL(file);
+    loadImageSource(objectUrl, file.name || 'Uploaded image', () => URL.revokeObjectURL(objectUrl));
 }
 
-function loadSampleImage(type) {
-    const sCanvas = document.createElement('canvas');
-    sCanvas.width = 600;
-    sCanvas.height = 420;
-    const sCtx = sCanvas.getContext('2d');
+function loadSampleImage(src, name) {
+    loadImageSource(src, name);
+}
 
-    if (type === 'sunset') {
-        const grad = sCtx.createLinearGradient(0, 0, 0, 420);
-        grad.addColorStop(0, '#2D114D');
-        grad.addColorStop(0.3, '#7B1E7A');
-        grad.addColorStop(0.55, '#D83A56');
-        grad.addColorStop(0.75, '#FF8A5C');
-        grad.addColorStop(1, '#FFCC70');
-        sCtx.fillStyle = grad;
-        sCtx.fillRect(0, 0, 600, 420);
+function loadImageSource(src, name, cleanup = null) {
+    const img = new Image();
+    img.onload = () => {
+        currentImage = img;
+        dropZone.style.display = 'none';
+        if (sampleGallery) sampleGallery.style.display = 'none';
+        if (workspace) workspace.style.display = 'flex';
+        if (imageSourceName) imageSourceName.textContent = name;
 
-        // Sun
-        sCtx.fillStyle = '#FFF5B7';
-        sCtx.beginPath();
-        sCtx.arc(300, 240, 65, 0, Math.PI * 2);
-        sCtx.fill();
+        const MAX_DIMENSION = 1200;
+        const MAX_PIXELS = 1_800_000;
+        const scale = Math.min(1, MAX_DIMENSION / Math.max(img.naturalWidth, img.naturalHeight), Math.sqrt(MAX_PIXELS / (img.naturalWidth * img.naturalHeight)));
+        const width = Math.max(1, Math.round(img.naturalWidth * scale));
+        const height = Math.max(1, Math.round(img.naturalHeight * scale));
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        cleanup?.();
 
-        // Mountains
-        sCtx.fillStyle = '#1A0826';
-        sCtx.beginPath();
-        sCtx.moveTo(0, 420);
-        sCtx.lineTo(140, 280);
-        sCtx.lineTo(260, 360);
-        sCtx.lineTo(420, 240);
-        sCtx.lineTo(600, 420);
-        sCtx.closePath();
-        sCtx.fill();
-    } else if (type === 'ocean') {
-        const grad = sCtx.createLinearGradient(0, 0, 600, 420);
-        grad.addColorStop(0, '#001F3F');
-        grad.addColorStop(0.3, '#0074D9');
-        grad.addColorStop(0.6, '#39CCCC');
-        grad.addColorStop(0.85, '#7FDBFF');
-        grad.addColorStop(1, '#F6E58D');
-        sCtx.fillStyle = grad;
-        sCtx.fillRect(0, 0, 600, 420);
-
-        // Coral & Islands
-        sCtx.fillStyle = '#FF7675';
-        sCtx.beginPath();
-        sCtx.arc(160, 310, 45, 0, Math.PI * 2);
-        sCtx.fill();
-
-        sCtx.fillStyle = '#55E6C1';
-        sCtx.beginPath();
-        sCtx.arc(420, 180, 70, 0, Math.PI * 2);
-        sCtx.fill();
-    } else if (type === 'cyberpunk') {
-        sCtx.fillStyle = '#0F051D';
-        sCtx.fillRect(0, 0, 600, 420);
-
-        const neonGrad = sCtx.createLinearGradient(0, 0, 600, 420);
-        neonGrad.addColorStop(0, '#F72585');
-        neonGrad.addColorStop(0.4, '#7209B7');
-        neonGrad.addColorStop(0.7, '#3A0CA3');
-        neonGrad.addColorStop(1, '#4CC9F0');
-
-        sCtx.fillStyle = neonGrad;
-        sCtx.beginPath();
-        sCtx.arc(300, 210, 130, 0, Math.PI * 2);
-        sCtx.fill();
-
-        // Geometric neon accents
-        sCtx.strokeStyle = '#4CC9F0';
-        sCtx.lineWidth = 6;
-        sCtx.strokeRect(100, 80, 400, 260);
-
-        sCtx.fillStyle = '#FFE600';
-        sCtx.fillRect(250, 340, 100, 12);
-    } else if (type === 'forest') {
-        const fGrad = sCtx.createLinearGradient(0, 0, 0, 420);
-        fGrad.addColorStop(0, '#CBE3DB');
-        fGrad.addColorStop(0.35, '#8CB99F');
-        fGrad.addColorStop(0.7, '#4B7B5D');
-        fGrad.addColorStop(1, '#1B3B2B');
-        sCtx.fillStyle = fGrad;
-        sCtx.fillRect(0, 0, 600, 420);
-
-        // Stylized trees
-        sCtx.fillStyle = '#102A1E';
-        for (let i = 40; i < 600; i += 70) {
-            sCtx.beginPath();
-            sCtx.moveTo(i, 420);
-            sCtx.lineTo(i + 35, 200 + (i % 60));
-            sCtx.lineTo(i + 70, 420);
-            sCtx.fill();
+        generatePresets(width, height);
+        if (slider) {
+            slider.value = 4;
+            updateSliderLabel(4);
         }
-    }
-
-    sCanvas.toBlob(blob => {
-        if (blob) {
-            blob.name = `${type}-sample.png`;
-            processImage(blob);
-        }
-    }, 'image/png');
+        loadPreset(4);
+    };
+    img.onerror = () => {
+        cleanup?.();
+        showToast('This image could not be loaded. Please try another one.');
+    };
+    img.src = src;
 }
 
 function showToast(msg) {
