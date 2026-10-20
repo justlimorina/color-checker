@@ -27,7 +27,7 @@
 </head>
 <body>
     <main class="md-main">
-        <div class="card card-elevated" style="max-width: 950px; margin: 0 auto;">
+        <div class="card card-elevated" style="max-width: 1000px; margin: 0 auto;">
             <h2 class="headline-medium mb-m" data-i18n="gradient_generator">CSS Gradient Generator</h2>
             
             <div class="gradient-layout">
@@ -103,7 +103,7 @@
                 </div>
                 
                 <div class="gradient-preview-area">
-                    <div id="gradient-preview" style="width: 100%; height: 300px; border-radius: 24px; background: linear-gradient(90deg, #624E9A, #EADDFF); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);"></div>
+                    <div id="gradient-preview" style="width: 100%; height: 240px; border-radius: 20px; background: linear-gradient(90deg, #624E9A, #EADDFF); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);"></div>
                     
                     <!-- Format Tabs -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
@@ -118,7 +118,7 @@
                         </md-text-button>
                     </div>
 
-                    <pre class="mt-s" style="background: var(--md-sys-color-surface-variant); padding: 16px; border-radius: 12px; overflow-x: auto; max-height: 160px;"><code id="gradient-code">background: linear-gradient(90deg, #624E9A 0%, #EADDFF 100%);</code></pre>
+                    <pre class="gradient-code-box"><code id="gradient-code">background: linear-gradient(90deg, #624E9A 0%, #EADDFF 100%);</code></pre>
                     
                     <md-filled-button id="copy-gradient-btn" class="full-width mt-s">
                         <md-icon slot="icon">content_copy</md-icon>

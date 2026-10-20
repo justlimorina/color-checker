@@ -563,9 +563,14 @@ function updateGradient() {
     dom.code.textContent = buildGradientCss(state.format);
 
     if (dom.copyBtnLabel) {
-        if (state.format === 'tailwind') dom.copyBtnLabel.textContent = 'Copy Tailwind Class';
-        else if (state.format === 'svg') dom.copyBtnLabel.textContent = 'Copy SVG Code';
-        else dom.copyBtnLabel.textContent = 'Copy CSS';
+        const lang = layoutState.currentLang || 'en';
+        if (state.format === 'tailwind') {
+            dom.copyBtnLabel.textContent = translations[lang]?.copy_tailwind || (lang === 'vi' ? 'Sao chép Tailwind' : 'Copy Tailwind Class');
+        } else if (state.format === 'svg') {
+            dom.copyBtnLabel.textContent = translations[lang]?.copy_svg || (lang === 'vi' ? 'Sao chép mã SVG' : 'Copy SVG Code');
+        } else {
+            dom.copyBtnLabel.textContent = translations[lang]?.copy_css || 'Copy CSS';
+        }
     }
 
     renderTrack();
@@ -639,3 +644,7 @@ function showToast(msg) {
     dom.toast.classList.add('show');
     setTimeout(() => dom.toast.classList.remove('show'), 2200);
 }
+
+window.addEventListener('langchange', () => {
+    if (typeof updateCode === 'function') updateCode();
+});

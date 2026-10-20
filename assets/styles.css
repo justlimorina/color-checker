@@ -1740,19 +1740,44 @@ body {
 }
 
 .gradient-layout {
-    display: flex;
-    gap: var(--spacing-l);
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
 }
 
 .gradient-controls {
-    flex: 1;
-    min-width: 300px;
+    width: 100%;
+    min-width: 0;
 }
 
 .gradient-preview-area {
-    flex: 2;
-    min-width: 300px;
+    width: 100%;
+    min-width: 0;
+}
+
+.gradient-code-box {
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    padding: 14px 16px;
+    border-radius: 14px;
+    margin-top: 12px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: var(--md-sys-color-on-surface);
+    user-select: all;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 820px) {
+    .gradient-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ==========================================================================
@@ -3602,7 +3627,7 @@ body.dark-theme .md-logo--dark {
 
 .grad-track-pin {
     position: absolute;
-    top: 5px;
+    top: 7px;
     width: 26px;
     height: 26px;
     border-radius: 50%;
