@@ -1,4 +1,4 @@
-const CACHE_NAME = 'color-checker-v10';
+const CACHE_NAME = 'color-checker-v11';
 const ASSETS = [
     './',
     'index.html',

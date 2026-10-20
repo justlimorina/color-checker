@@ -324,14 +324,16 @@ function updateSliderLabel(value) {
 }
 
 function generatePresets(width, height) {
-    const stepX = Math.max(1, Math.floor(width / 25));
-    const stepY = Math.max(1, Math.floor(height / 25));
+    const marginX = Math.max(16, Math.floor(width * 0.04));
+    const marginY = Math.max(16, Math.floor(height * 0.04));
+    const stepX = Math.max(1, Math.floor((width - marginX * 2) / 25));
+    const stepY = Math.max(1, Math.floor((height - marginY * 2) / 25));
     const pool = [];
     
     try {
         const imageData = ctx.getImageData(0, 0, width, height).data;
-        for (let y = 0; y < height; y += stepY) {
-            for (let x = 0; x < width; x += stepX) {
+        for (let y = marginY; y <= height - marginY; y += stepY) {
+            for (let x = marginX; x <= width - marginX; x += stepX) {
                 const idx = (y * width + x) * 4;
                 const r = imageData[idx];
                 const g = imageData[idx + 1];
@@ -392,8 +394,8 @@ function generatePresets(width, height) {
         while (selected.length < 10 && sortedPool.length > 0) {
             const item = sortedPool[selected.length % sortedPool.length];
             selected.push({
-                x: Math.min(width - 1, Math.max(0, Math.floor(item.x + (Math.random() - 0.5) * 40))),
-                y: Math.min(height - 1, Math.max(0, Math.floor(item.y + (Math.random() - 0.5) * 40))),
+                x: Math.min(width - 16, Math.max(16, Math.floor(item.x + (Math.random() - 0.5) * 40))),
+                y: Math.min(height - 16, Math.max(16, Math.floor(item.y + (Math.random() - 0.5) * 40))),
                 r: item.r, g: item.g, b: item.b, h: item.h, s: item.s, l: item.l, hex: item.hex
             });
         }
@@ -513,8 +515,9 @@ function renderWorkspace() {
             let clientXRel = clientX - rect.left;
             let clientYRel = clientY - rect.top;
             
-            clientXRel = Math.max(0, Math.min(rect.width, clientXRel));
-            clientYRel = Math.max(0, Math.min(rect.height, clientYRel));
+            const pinRadius = 12;
+            clientXRel = Math.max(pinRadius, Math.min(rect.width - pinRadius, clientXRel));
+            clientYRel = Math.max(pinRadius, Math.min(rect.height - pinRadius, clientYRel));
             
             const pctX = clientXRel / rect.width;
             const pctY = clientYRel / rect.height;

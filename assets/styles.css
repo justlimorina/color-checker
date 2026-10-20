@@ -2150,6 +2150,7 @@ md-outlined-button > md-icon[slot="icon"] + span {
     gap: var(--spacing-l);
     margin-top: var(--spacing-m);
     flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 #image-workspace {
@@ -2158,6 +2159,15 @@ md-outlined-button > md-icon[slot="icon"] + span {
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     background-color: var(--md-sys-color-surface-container-low);
+    width: 100%;
+    max-width: 100%;
+}
+
+#image-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
 }
 
 #image-pins-overlay {

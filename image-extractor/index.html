@@ -27,7 +27,7 @@
 </head>
 <body>
     <main class="md-main">
-        <div class="card card-elevated" style="max-width: 800px; margin: 0 auto;">
+        <div class="card card-elevated" style="max-width: 1000px; margin: 0 auto;">
             <h2 class="headline-medium mb-m" data-i18n="image_extractor">Image Extractor</h2>
             <p class="body-medium mb-l" style="opacity: 0.8;" data-i18n="image_extractor_desc">Upload an image to extract a color palette from it.</p>
             
@@ -134,7 +134,7 @@
 
                 <!-- Right Column: Interactive Image canvas & overlay -->
                 <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: flex-start;">
-                    <div>
+                    <div style="width: 100%; max-width: 100%;">
                         <p id="image-source-name" class="label-small image-source-name" aria-live="polite"></p>
                         <div id="image-workspace" style="position: relative;">
                         <canvas id="image-canvas"></canvas>
