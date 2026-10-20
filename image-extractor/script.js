@@ -14,7 +14,7 @@ const presetNames = ['Vibrant', 'Muted', 'Light', 'Dark', 'Balanced'];
 
 // DOM references
 let dropZone, fileInput, canvas, ctx, workspace, pinsOverlay, paletteContainer, slider, sliderLabelName, btnAddColor, btnRemoveColor, resetBtn, exportBtn, saveProjectBtn, toast, sampleGallery, imageSourceName;
-let loupeEl, loupeCanvas, loupeCtx, loupeLabel, proportionBar, flowGradBtn, flowThemeBtn;
+let loupeEl, loupeCanvas, loupeCtx, loupeLabel, proportionBar, flowGradBtn, flowThemeBtn, copyAllPinsBtn, sortHueBtn, sortLightBtn, exportPhotoCardBtn, flowContrastBtn, flowMatrixBtn, swatchesGrid, pinsCountBadge;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Layout
@@ -45,6 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
     proportionBar = document.getElementById('color-proportion-bar');
     flowGradBtn = document.getElementById('flow-gradient-btn');
     flowThemeBtn = document.getElementById('flow-theme-btn');
+    copyAllPinsBtn = document.getElementById('copy-all-pins-btn');
+    sortHueBtn = document.getElementById('sort-pins-hue-btn');
+    sortLightBtn = document.getElementById('sort-pins-light-btn');
+    exportPhotoCardBtn = document.getElementById('export-photo-card-btn');
+    flowContrastBtn = document.getElementById('flow-contrast-btn');
+    flowMatrixBtn = document.getElementById('flow-matrix-btn');
+    swatchesGrid = document.getElementById('extracted-swatches-grid');
+    pinsCountBadge = document.getElementById('pins-count-badge');
 
     if (canvas) {
         ctx = canvas.getContext('2d');
@@ -319,8 +327,11 @@ function showToast(msg) {
 function updateSliderLabel(value) {
     if (sliderLabelName) {
         const key = presetKeys[value];
-        sliderLabelName.textContent = translations[layoutState.currentLang][key] || presetNames[value];
+        sliderLabelName.textContent = translations[layoutState.currentLang]?.[key] || presetNames[value];
     }
+    document.querySelectorAll('.mood-preset-chip').forEach(chip => {
+        chip.classList.toggle('active', parseInt(chip.dataset.idx) === value);
+    });
 }
 
 function generatePresets(width, height) {
@@ -439,7 +450,12 @@ function loadPreset(index) {
 function renderWorkspace() {
     if (!paletteContainer || !pinsOverlay) return;
     
-    // 1. Render Palette Swatches
+    // Update count badge
+    if (pinsCountBadge) {
+        pinsCountBadge.textContent = activePins.length === 1 ? '1 color' : `${activePins.length} colors`;
+    }
+
+    // 1. Render Palette Ribbon
     paletteContainer.innerHTML = '';
     const swatches = [];
     
@@ -447,19 +463,14 @@ function renderWorkspace() {
         const swatch = document.createElement('div');
         swatch.className = 'extracted-swatch';
         swatch.style.backgroundColor = `#${pin.hex}`;
-        swatch.title = `#${pin.hex}`;
+        swatch.title = `#${pin.hex} - ${ColorUtils.getColorName(pin.hex)}`;
         if (i === activePinIndex) {
             swatch.classList.add('active');
         }
         
         swatch.onclick = () => {
             activePinIndex = i;
-            document.querySelectorAll('.image-pin').forEach((p, idx) => {
-                p.classList.toggle('active', idx === i);
-            });
-            document.querySelectorAll('.extracted-swatch').forEach((s, idx) => {
-                s.classList.toggle('active', idx === i);
-            });
+            renderWorkspace();
             updateColorState(pin.hex, true);
         };
 
@@ -470,7 +481,68 @@ function renderWorkspace() {
     if (btnAddColor) btnAddColor.disabled = activePins.length >= 10;
     if (btnRemoveColor) btnRemoveColor.disabled = activePins.length <= 2;
 
-    // 2. Render Pins
+    // 2. Render Swatches List (mirrors #grad-stops-list in gradient-generator)
+    if (swatchesGrid) {
+        swatchesGrid.innerHTML = '';
+        activePins.forEach((pin, i) => {
+            const row = document.createElement('div');
+            row.className = `extractor-swatch-row ${i === activePinIndex ? 'active' : ''}`;
+            row.id = `pin-row-${i}`;
+
+            const colorName = ColorUtils.getColorName(pin.hex);
+
+            row.innerHTML = `
+                <div class="swatch-circle-badge" style="background-color: #${pin.hex};">${i + 1}</div>
+                <div class="hex-wrapper" style="width: 86px; height: 30px; margin: 0; padding: 0 6px;">
+                    <span>#</span>
+                    <input type="text" readonly value="${pin.hex}" style="width: 58px; font-size: 0.88rem; font-family: 'Roboto Mono', monospace; font-weight: 700; background: transparent; border: none; color: inherit; cursor: pointer;">
+                </div>
+                <span style="flex: 1; font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 2px;">${colorName}</span>
+                <button type="button" class="icon-button small-btn copy-pin-btn" title="Copy HEX" style="border: none; background: transparent; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--md-sys-color-on-surface-variant);">
+                    <span class="material-symbols-rounded" style="font-size: 16px;">content_copy</span>
+                </button>
+                <button type="button" class="icon-button small-btn del-pin-btn" title="Delete Pin" style="border: none; background: transparent; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: ${activePins.length <= 2 ? 'var(--md-sys-color-outline)' : 'var(--md-sys-color-error)'};" ${activePins.length <= 2 ? 'disabled' : ''}>
+                    <span class="material-symbols-rounded" style="font-size: 16px;">delete</span>
+                </button>
+            `;
+
+            const copyBtn = row.querySelector('.copy-pin-btn');
+            if (copyBtn) {
+                copyBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(`#${pin.hex}`);
+                    showToast(`${translations[layoutState.currentLang]?.copied_hex || 'Copied'} #${pin.hex}`);
+                };
+            }
+
+            const delBtn = row.querySelector('.del-pin-btn');
+            if (delBtn) {
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (activePins.length <= 2) return;
+                    activePins.splice(i, 1);
+                    numColors = activePins.length;
+                    if (activePinIndex >= activePins.length) {
+                        activePinIndex = activePins.length - 1;
+                    }
+                    renderWorkspace();
+                    if (activePins[activePinIndex]) {
+                        updateColorState(activePins[activePinIndex].hex, false);
+                    }
+                };
+            }
+
+            row.onclick = () => {
+                activePinIndex = i;
+                renderWorkspace();
+                updateColorState(pin.hex, true);
+            };
+
+            swatchesGrid.appendChild(row);
+        });
+    }
+
+    // 3. Render Pins with high-contrast numbers
     pinsOverlay.innerHTML = '';
     activePins.forEach((pin, i) => {
         const pinEl = document.createElement('div');
@@ -478,6 +550,7 @@ function renderWorkspace() {
         pinEl.style.left = `${(pin.x / canvas.width) * 100}%`;
         pinEl.style.top = `${(pin.y / canvas.height) * 100}%`;
         pinEl.style.backgroundColor = `#${pin.hex}`;
+        pinEl.innerHTML = `<span class="pin-number">${i + 1}</span>`;
         
         if (i === activePinIndex) {
             pinEl.classList.add('active');
@@ -488,6 +561,7 @@ function renderWorkspace() {
         
         const startDrag = (e) => {
             e.preventDefault();
+            e.stopPropagation();
             isDragging = true;
             activePinIndex = i;
             
@@ -496,6 +570,9 @@ function renderWorkspace() {
             });
             document.querySelectorAll('.extracted-swatch').forEach((s, idx) => {
                 s.classList.toggle('active', idx === i);
+            });
+            document.querySelectorAll('.extractor-swatch-row').forEach((c, idx) => {
+                c.classList.toggle('active', idx === i);
             });
             
             document.addEventListener('mousemove', onDrag);
@@ -515,7 +592,7 @@ function renderWorkspace() {
             let clientXRel = clientX - rect.left;
             let clientYRel = clientY - rect.top;
             
-            const pinRadius = 12;
+            const pinRadius = 13;
             clientXRel = Math.max(pinRadius, Math.min(rect.width - pinRadius, clientXRel));
             clientYRel = Math.max(pinRadius, Math.min(rect.height - pinRadius, clientYRel));
             
@@ -537,9 +614,21 @@ function renderWorkspace() {
                 pinEl.style.top = `${pctY * 100}%`;
                 pinEl.style.backgroundColor = `#${hex}`;
                 
-                swatches[i].style.backgroundColor = `#${hex}`;
-                swatches[i].title = `#${hex}`;
+                if (swatches[i]) {
+                    swatches[i].style.backgroundColor = `#${hex}`;
+                    swatches[i].title = `#${hex} - ${ColorUtils.getColorName(hex)}`;
+                }
                 
+                if (swatchesGrid && swatchesGrid.children[i]) {
+                    const r = swatchesGrid.children[i];
+                    const b = r.querySelector('.swatch-circle-badge');
+                    if (b) b.style.backgroundColor = `#${hex}`;
+                    const inp = r.querySelector('input');
+                    if (inp) inp.value = hex;
+                    const nameEl = r.querySelector('span:nth-of-type(1)');
+                    if (nameEl) nameEl.textContent = ColorUtils.getColorName(hex);
+                }
+
                 updateLoupe(pixelX, pixelY, hex);
                 updateColorState(hex, true);
             } catch (err) {
@@ -551,7 +640,7 @@ function renderWorkspace() {
             if (isDragging) {
                 isDragging = false;
                 hideLoupe();
-                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mousemove', onMove);
                 document.removeEventListener('mouseup', stopDrag);
                 document.removeEventListener('touchmove', onDrag);
                 document.removeEventListener('touchend', stopDrag);
@@ -679,4 +768,93 @@ function updateColorState(hex, skipHistory = false) {
             localStorage.setItem('color_history', JSON.stringify(history));
         }
     }
+}
+
+function sortPins(criterion) {
+    if (!activePins || activePins.length < 2) return;
+    const sortedHexes = ColorUtils.sortHexes(activePins.map(p => p.hex), criterion);
+    activePins.sort((a, b) => sortedHexes.indexOf(a.hex) - sortedHexes.indexOf(b.hex));
+    renderWorkspace();
+    showToast(translations[layoutState.currentLang]?.sorted_success || `Sorted by ${criterion}`);
+}
+
+function exportPhotoPaletteCard() {
+    if (!canvas || !activePins || activePins.length === 0) return;
+
+    const exportW = 1200;
+    const padding = 40;
+    
+    // Calculate photo aspect
+    const photoW = exportW - padding * 2;
+    const aspect = canvas.height / canvas.width;
+    const photoH = Math.min(750, Math.round(photoW * aspect));
+    
+    const swatchH = 110;
+    const footerH = 60;
+    const exportH = padding + photoH + 32 + swatchH + footerH + padding;
+
+    const c = document.createElement('canvas');
+    c.width = exportW;
+    c.height = exportH;
+    const cx = c.getContext('2d');
+
+    const isDark = layoutState.theme === 'dark';
+    cx.fillStyle = isDark ? '#1C1B1F' : '#F4F2F7';
+    cx.fillRect(0, 0, exportW, exportH);
+
+    // Draw photo with rounded corners
+    cx.save();
+    cx.beginPath();
+    cx.roundRect(padding, padding, photoW, photoH, 16);
+    cx.clip();
+    cx.drawImage(canvas, 0, 0, canvas.width, canvas.height, padding, padding, photoW, photoH);
+    cx.restore();
+
+    // Draw swatches
+    const swatchY = padding + photoH + 32;
+    const count = activePins.length;
+    const gap = 14;
+    const swatchW = (photoW - (count - 1) * gap) / count;
+
+    activePins.forEach((pin, i) => {
+        const sx = padding + i * (swatchW + gap);
+
+        // Swatch block
+        cx.fillStyle = `#${pin.hex}`;
+        cx.beginPath();
+        cx.roundRect(sx, swatchY, swatchW, swatchH - 36, 12);
+        cx.fill();
+        cx.strokeStyle = 'rgba(128,128,128,0.2)';
+        cx.lineWidth = 1;
+        cx.stroke();
+
+        // Hex Code
+        cx.fillStyle = isDark ? '#E6E1E5' : '#1C1B1F';
+        cx.font = 'bold 15px "Roboto Mono", monospace';
+        cx.textAlign = 'center';
+        cx.fillText(`#${pin.hex}`, sx + swatchW / 2, swatchY + swatchH - 16);
+
+        // Color Name
+        const name = ColorUtils.getColorName(pin.hex);
+        cx.fillStyle = isDark ? '#CAC4D0' : '#49454F';
+        cx.font = '12px "Roboto", sans-serif';
+        cx.fillText(name.length > 15 ? name.slice(0, 13) + '...' : name, sx + swatchW / 2, swatchY + swatchH + 2);
+    });
+
+    // Branding Footer
+    const footerY = exportH - padding;
+    cx.fillStyle = isDark ? '#938F99' : '#79747E';
+    cx.font = '500 14px "Roboto", sans-serif';
+    cx.textAlign = 'left';
+    cx.fillText('Limorina Color Checker • Photo Palette Card', padding, footerY);
+
+    cx.textAlign = 'right';
+    const seed = activePins[0]?.hex || '624E9A';
+    cx.fillText(`Seed: #${seed}`, exportW - padding, footerY);
+
+    const link = document.createElement('a');
+    link.download = `photo-palette-card-${Date.now()}.png`;
+    link.href = c.toDataURL('image/png');
+    link.click();
+    showToast(translations[layoutState.currentLang]?.download_success || 'Card exported!');
 }

@@ -70,86 +70,149 @@
             </div>
 
             <div id="image-extractor-workspace" style="display: none;">
-                <!-- Left Column: Controls -->
-                <div style="width: 250px; display: flex; flex-direction: column; gap: var(--spacing-m);">
-                    <!-- Picked palettes slider -->
-                    <div class="input-group">
-                        <label class="label-large" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span data-i18n="picked_palettes">Picked palettes</span>
-                            <span id="picked-palette-name" class="label-small" style="font-weight: bold; color: var(--md-sys-color-primary);">Balanced</span>
-                        </label>
-                        <input type="range" id="picked-palettes-slider" min="0" max="4" value="4" class="custom-slider">
-                    </div>
+                <div class="extractor-layout">
+                    <!-- Left Column: Controls (mirrors .gradient-controls) -->
+                    <div class="extractor-controls">
+                        <!-- Mood Presets -->
+                        <div class="input-group mb-m">
+                            <label class="label-large" style="display: block; margin-bottom: 8px;" data-i18n="picked_palettes">Palette Mood</label>
+                            <div class="segmented-control" id="extractor-mood-toggle">
+                                <button type="button" class="segment-btn mood-preset-chip" data-idx="0">
+                                    <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle;">auto_awesome</span>
+                                    <span data-i18n="palette_vibrant">Vibrant</span>
+                                </button>
+                                <button type="button" class="segment-btn mood-preset-chip" data-idx="1">
+                                    <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle;">grain</span>
+                                    <span data-i18n="palette_muted">Muted</span>
+                                </button>
+                                <button type="button" class="segment-btn mood-preset-chip" data-idx="2">
+                                    <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle;">wb_sunny</span>
+                                    <span data-i18n="palette_light">Light</span>
+                                </button>
+                                <button type="button" class="segment-btn mood-preset-chip" data-idx="3">
+                                    <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle;">dark_mode</span>
+                                    <span data-i18n="palette_dark">Dark</span>
+                                </button>
+                                <button type="button" class="segment-btn mood-preset-chip active" data-idx="4">
+                                    <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle;">tune</span>
+                                    <span data-i18n="palette_balanced">Balanced</span>
+                                </button>
+                            </div>
+                            <span id="picked-palette-name" style="display: none;">Balanced</span>
+                            <input type="range" id="picked-palettes-slider" min="0" max="4" value="4" class="custom-slider" style="display: none;">
+                        </div>
 
-                    <!-- Palette with +/- buttons -->
-                    <div class="input-group">
-                        <label class="label-large" data-i18n="palette" style="display: block; margin-bottom: 8px;">Palette</label>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div id="image-extracted-palette"></div>
-                            <div style="display: flex; flex-direction: column; gap: 4px;">
-                                <button id="palette-add-color" class="icon-button small-btn" style="border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: var(--md-sys-color-surface-container-high); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--md-sys-color-on-surface);" title="Add Color">
-                                    <span class="material-symbols-rounded" style="font-size: 18px;">add</span>
-                                </button>
-                                <button id="palette-remove-color" class="icon-button small-btn" style="border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: var(--md-sys-color-surface-container-high); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--md-sys-color-on-surface);" title="Remove Color">
-                                    <span class="material-symbols-rounded" style="font-size: 18px;">remove</span>
-                                </button>
+                        <!-- Extracted Colors & Ribbon (mirrors Colors & Stops in gradient-generator) -->
+                        <div class="input-group mb-m">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label class="label-large" data-i18n="palette">Colors</label>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="copy-all-pins-btn" class="icon-button small-btn" title="Copy All HEX" style="border: 1px solid var(--md-sys-color-outline-variant); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container-high); cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                        <span class="material-symbols-rounded" style="font-size: 18px;">content_copy</span>
+                                    </button>
+                                    <button id="sort-pins-hue-btn" class="icon-button small-btn" title="Sort by Hue" style="border: 1px solid var(--md-sys-color-outline-variant); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container-high); cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                        <span class="material-symbols-rounded" style="font-size: 18px;">palette</span>
+                                    </button>
+                                    <button id="sort-pins-light-btn" class="icon-button small-btn" title="Sort by Lightness" style="border: 1px solid var(--md-sys-color-outline-variant); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container-high); cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                        <span class="material-symbols-rounded" style="font-size: 18px;">brightness_medium</span>
+                                    </button>
+                                    <button id="palette-remove-color" class="icon-button small-btn" title="Remove Color" style="border: 1px solid var(--md-sys-color-outline-variant); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container-high); cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                        <span class="material-symbols-rounded" style="font-size: 18px;">remove</span>
+                                    </button>
+                                    <button id="palette-add-color" class="icon-button small-btn" title="Add Color" style="border: 1px solid var(--md-sys-color-outline-variant); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container-high); cursor: pointer; color: var(--md-sys-color-on-surface);">
+                                        <span class="material-symbols-rounded" style="font-size: 18px;">add</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Continuous Swatch Strip -->
+                            <div id="image-extracted-palette" class="palette-ribbon"></div>
+
+                            <!-- Color Rows List -->
+                            <div id="extracted-swatches-grid" class="extractor-swatch-list mt-s"></div>
+                        </div>
+
+                        <!-- Color Proportion -->
+                        <div class="input-group mb-m">
+                            <label class="label-large" style="display: block; margin-bottom: 6px;" data-i18n="color_distribution">Color Proportion</label>
+                            <div id="color-proportion-bar" class="color-proportion-bar"></div>
+                        </div>
+
+                        <!-- Save & Export Actions -->
+                        <div class="input-group mb-m">
+                            <md-filled-button id="save-palette-to-project-btn" style="width: 100%; margin-bottom: 8px;">
+                                <md-icon slot="icon">bookmark_add</md-icon>
+                                <span data-i18n="save_to_project">Save to Project</span>
+                            </md-filled-button>
+
+                            <div style="display: flex; gap: 8px;">
+                                <md-filled-tonal-button id="export-photo-card-btn" style="flex: 1;">
+                                    <md-icon slot="icon">photo_library</md-icon>
+                                    <span data-i18n="export_photo_card">Photo Card</span>
+                                </md-filled-tonal-button>
+                                <md-outlined-button id="export-extracted-palette-btn" style="flex: 1;">
+                                    <md-icon slot="icon">download</md-icon>
+                                    <span data-i18n="export_palette">Palette PNG</span>
+                                </md-outlined-button>
+                            </div>
+                        </div>
+
+                        <!-- Connected Flows (Matches Project Palettes outlined pill style) -->
+                        <div class="input-group">
+                            <label class="label-large" style="display: block; margin-bottom: 8px;">Send Palette To</label>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <md-outlined-button id="flow-theme-btn">
+                                    <md-icon slot="icon">palette</md-icon>
+                                    <span data-i18n="flow_to_theme">MD3 Theme</span>
+                                </md-outlined-button>
+                                <md-outlined-button id="flow-gradient-btn">
+                                    <md-icon slot="icon">gradient</md-icon>
+                                    <span data-i18n="flow_to_gradient">Gradient</span>
+                                </md-outlined-button>
+                                <md-outlined-button id="flow-contrast-btn">
+                                    <md-icon slot="icon">contrast</md-icon>
+                                    <span data-i18n="flow_to_contrast">Contrast</span>
+                                </md-outlined-button>
+                                <md-outlined-button id="flow-matrix-btn">
+                                    <md-icon slot="icon">grid_on</md-icon>
+                                    <span data-i18n="flow_to_matrix">Matrix</span>
+                                </md-outlined-button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Color Proportion Bar -->
-                    <div class="input-group">
-                        <label class="label-large" data-i18n="color_distribution" style="display: block; margin-bottom: 4px;">Color Proportion</label>
-                        <div id="color-proportion-bar" class="color-proportion-bar"></div>
-                    </div>
-
-                    <!-- Action buttons -->
-                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: var(--spacing-s);">
-                        <md-filled-button id="save-palette-to-project-btn" style="width: 100%;">
-                            <md-icon slot="icon">bookmark_add</md-icon>
-                            <span data-i18n="save_to_project">Save to Project</span>
-                        </md-filled-button>
-                        <md-filled-tonal-button id="export-extracted-palette-btn" style="width: 100%;">
-                            <md-icon slot="icon">download</md-icon>
-                            <span data-i18n="export_palette">Export Palette</span>
-                        </md-filled-tonal-button>
-                        <md-outlined-button id="reset-image-btn" style="width: 100%;">
-                            <md-icon slot="icon">restart_alt</md-icon>
-                            <span data-i18n="upload_another">Upload Another</span>
-                        </md-outlined-button>
-
-                        <!-- Connected Flows (Deep Linking) -->
-                        <div style="display: flex; gap: 8px; margin-top: 4px;">
-                            <md-text-button id="flow-gradient-btn" style="flex: 1;" title="Create Gradient from Palette">
-                                <md-icon slot="icon">gradient</md-icon>
-                                <span data-i18n="flow_to_gradient">Gradient</span>
-                            </md-text-button>
-                            <md-text-button id="flow-theme-btn" style="flex: 1;" title="Generate MD3 Theme">
-                                <md-icon slot="icon">palette</md-icon>
-                                <span data-i18n="flow_to_theme">MD3 Theme</span>
+                    <!-- Right Column: Interactive Image canvas & overlay (mirrors .gradient-preview-area) -->
+                    <div class="extractor-preview-area">
+                        <div class="preview-header-bar mb-s" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="material-symbols-rounded" style="color: var(--md-sys-color-primary);">image</span>
+                                <span id="image-source-name" class="title-small" style="font-weight: 600;"></span>
+                                <span id="pins-count-badge" class="badge" style="background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">5 colors</span>
+                            </div>
+                            <md-text-button id="reset-image-btn">
+                                <md-icon slot="icon">restart_alt</md-icon>
+                                <span data-i18n="upload_another">Change Image</span>
                             </md-text-button>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Right Column: Interactive Image canvas & overlay -->
-                <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: flex-start;">
-                    <div style="width: 100%; max-width: 100%;">
-                        <p id="image-source-name" class="label-small image-source-name" aria-live="polite"></p>
-                        <div id="image-workspace" style="position: relative;">
-                        <canvas id="image-canvas"></canvas>
-                        <div id="image-pins-overlay"></div>
-                        <!-- 5x Magnifier Loupe -->
-                        <div id="magnifier-loupe" class="magnifier-loupe">
-                            <canvas id="loupe-canvas" width="100" height="100"></canvas>
-                            <div class="magnifier-loupe-crosshair"></div>
-                            <div id="loupe-label" class="magnifier-loupe-label">#FFFFFF</div>
+                        <div id="image-workspace" class="image-workspace-box">
+                            <canvas id="image-canvas"></canvas>
+                            <div id="image-pins-overlay"></div>
+                            <!-- 5x Magnifier Loupe -->
+                            <div id="magnifier-loupe" class="magnifier-loupe">
+                                <canvas id="loupe-canvas" width="100" height="100"></canvas>
+                                <div class="magnifier-loupe-crosshair"></div>
+                                <div id="loupe-label" class="magnifier-loupe-label">#FFFFFF</div>
+                            </div>
                         </div>
-                        </div>
+
+                        <p class="body-small mt-s" style="opacity: 0.7; text-align: center;">
+                            <span class="material-symbols-rounded" style="font-size: 14px; vertical-align: middle;">touch_app</span>
+                            <span data-i18n="click_to_pin_hint">Click photo to drop a pin, drag pins to adjust colors.</span>
+                        </p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div></div>
     </main>
 
     <div id="toast" class="toast"></div>

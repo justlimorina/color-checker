@@ -432,6 +432,21 @@ export function applyColorTheme(hex) {
     setProp('--gradient-color-1', hexFromArgb(scheme.primaryContainer));
     setProp('--gradient-color-2', hexFromArgb(scheme.secondaryContainer));
     setProp('--gradient-color-3', hexFromArgb(scheme.tertiaryContainer));
+
+    // Dynamic Browser theme-color & SVG favicon
+    try {
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', `#${hex}`);
+        }
+        const favicon = document.querySelector('link[rel="icon"]');
+        if (favicon) {
+            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#${hex}"/><path d="M16 6 C10.5 6 6 10.5 6 16 C6 21.5 10.5 26 16 26 C17.7 26 19.1 24.6 19.1 22.9 C19.1 22.1 18.8 21.4 18.2 20.8 C17.7 20.3 17.3 19.6 17.3 18.8 C17.3 17.1 18.7 15.7 20.4 15.7 L22.5 15.7 C25.5 15.7 28 13.2 28 10.2 C28 7.9 22.7 6 16 6 Z" fill="#ffffff" opacity="0.9"/></svg>`;
+            favicon.href = `data:image/svg+xml;utf8,${encodeURIComponent(svgIcon)}`;
+        }
+    } catch (e) {
+        console.warn('Could not update dynamic favicon:', e);
+    }
 }
 
 function applyTheme(theme) {

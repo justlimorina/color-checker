@@ -1,3 +1,15 @@
+
+const MOOD_PALETTES = {
+    cyberpunk: ['F72585', '7209B7', '3A0CA3', '4361EE', '4CC9F0'],
+    nordic: ['264653', '2A9D8F', 'E9C46A', 'F4A261', 'E76F51'],
+    autumn: ['6F1D1B', 'BB9457', '43281C', '99582A', 'FFE6A7'],
+    matcha: ['386641', '6A994E', 'A7C957', 'F2E8CF', 'BC4749'],
+    saas: ['0F172A', '2563EB', '38BDF8', 'F8FAFC', '64748B'],
+    sunset: ['FFAAA6', 'FF8B94', 'FFD3B6', 'DCEDC1', 'A8E6CF'],
+    retro: ['FF007F', '7928CA', '00F5D4', 'FEE440', '00BBF9'],
+    oled: ['000000', '1A1A2E', '16213E', '0F3460', 'E94560']
+};
+
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
 import { initLayout, layoutState, applyColorTheme } from '../assets/script/shared/layout.js';
@@ -45,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load Initial Color
     updateColorState(state.activeHex, true);
+    renderColorScaleBlender();
 
     // Initialize Smart Palette Generator tab if needed
     if (!state.generatorColors || state.generatorColors.length === 0) {
@@ -123,6 +136,25 @@ function bindDOM() {
         generatorRuleSelect: document.getElementById('generator-rule-select'),
         generatorGenerateBtn: document.getElementById('generator-generate-btn'),
         generatorSaveBtn: document.getElementById('generator-save-btn'),
+        exportShowcaseBtn: document.getElementById('export-showcase-btn'),
+        generatorShowcaseBtn: document.getElementById('generator-showcase-btn'),
+        openUiSandboxBtn: document.getElementById('open-ui-sandbox-btn'),
+        closeUiSandboxBtn: document.getElementById('close-ui-sandbox-btn'),
+        uiSandboxModal: document.getElementById('ui-sandbox-modal'),
+        sandboxViewport: document.getElementById('sandbox-viewport'),
+        sandboxViewToggle: document.getElementById('sandbox-view-toggle'),
+        sandboxCbSelect: document.getElementById('sandbox-cb-select'),
+        sandboxThemeToggle: document.getElementById('sandbox-theme-toggle'),
+        sandboxThemeIcon: document.getElementById('sandbox-theme-icon'),
+        blendColor1Hex: document.getElementById('blend-color-1-hex'),
+        blendColor1Picker: document.getElementById('blend-color-1-picker'),
+        blendColor2Hex: document.getElementById('blend-color-2-hex'),
+        blendColor2Picker: document.getElementById('blend-color-2-picker'),
+        blendStepsSlider: document.getElementById('blend-steps-slider'),
+        blendStepsLabel: document.getElementById('blend-steps-label'),
+        blendStepsContainer: document.getElementById('blend-steps-container'),
+        saveBlendBtn: document.getElementById('save-blend-to-project'),
+        copyBlendBtn: document.getElementById('copy-blend-steps'),
         generatorSwatches: document.getElementById('generator-swatches'),
 
         // History
@@ -536,6 +568,176 @@ function attachEvents() {
 
     dom.generatorGenerateBtn.addEventListener('click', runPaletteGeneration);
     dom.generatorSaveBtn.addEventListener('click', saveGeneratorPalette);
+
+    // Export Showcase Cards
+    if (dom.exportShowcaseBtn) {
+        dom.exportShowcaseBtn.addEventListener('click', () => {
+            const colors = [state.hex];
+            const harm = ColorUtils.hslToRgb;
+            // Generate full harmony set for showcase
+            const rgb = ColorUtils.hexToRgb(state.hex);
+            const hsl = ColorUtils.rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const compHsl = { h: (hsl.h + 180) % 360, s: hsl.s, l: hsl.l };
+            const compRgb = ColorUtils.hslToRgb(compHsl.h, compHsl.s, compHsl.l);
+            colors.push(ColorUtils.rgbToHex(compRgb.r, compRgb.g, compRgb.b));
+            const analogous1 = ColorUtils.hslToRgb((hsl.h + 30) % 360, hsl.s, hsl.l);
+            colors.push(ColorUtils.rgbToHex(analogous1.r, analogous1.g, analogous1.b));
+            const analogous2 = ColorUtils.hslToRgb((hsl.h + 330) % 360, hsl.s, hsl.l);
+            colors.push(ColorUtils.rgbToHex(analogous2.r, analogous2.g, analogous2.b));
+            const triadic = ColorUtils.hslToRgb((hsl.h + 120) % 360, hsl.s, hsl.l);
+            colors.push(ColorUtils.rgbToHex(triadic.r, triadic.g, triadic.b));
+            exportShowcaseCard(colors, `#${state.hex} Harmony Showcase`);
+        });
+    }
+
+    if (dom.generatorShowcaseBtn) {
+        dom.generatorShowcaseBtn.addEventListener('click', () => {
+            if (state.generatorColors && state.generatorColors.length > 0) {
+                exportShowcaseCard(state.generatorColors, 'Smart Palette Showcase');
+            }
+        });
+    }
+
+    // Mood Presets Chips
+    document.querySelectorAll('.mood-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const mood = chip.getAttribute('data-mood');
+            if (MOOD_PALETTES[mood]) {
+                state.generatorColors = [...MOOD_PALETTES[mood]];
+                state.generatorLocks = [false, false, false, false, false];
+                renderSmartPalette();
+                showToast(`Loaded ${chip.textContent.trim()} palette`);
+            }
+        });
+    });
+
+    // Color Scale Blender events
+    const onBlendChange = () => {
+        let hex1 = dom.blendColor1Hex.value.replace('#', '').toUpperCase();
+        let hex2 = dom.blendColor2Hex.value.replace('#', '').toUpperCase();
+        if (/^[0-9A-F]{6}$/i.test(hex1) && /^[0-9A-F]{6}$/i.test(hex2)) {
+            renderColorScaleBlender();
+        }
+    };
+
+    if (dom.blendColor1Picker) {
+        dom.blendColor1Picker.addEventListener('input', (e) => {
+            dom.blendColor1Hex.value = e.target.value.replace('#', '').toUpperCase();
+            onBlendChange();
+        });
+    }
+    if (dom.blendColor1Hex) {
+        dom.blendColor1Hex.addEventListener('input', (e) => {
+            let val = e.target.value.replace('#', '');
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                dom.blendColor1Picker.value = `#${val}`;
+                onBlendChange();
+            }
+        });
+    }
+    if (dom.blendColor2Picker) {
+        dom.blendColor2Picker.addEventListener('input', (e) => {
+            dom.blendColor2Hex.value = e.target.value.replace('#', '').toUpperCase();
+            onBlendChange();
+        });
+    }
+    if (dom.blendColor2Hex) {
+        dom.blendColor2Hex.addEventListener('input', (e) => {
+            let val = e.target.value.replace('#', '');
+            if (/^[0-9A-F]{6}$/i.test(val)) {
+                dom.blendColor2Picker.value = `#${val}`;
+                onBlendChange();
+            }
+        });
+    }
+    if (dom.blendStepsSlider) {
+        dom.blendStepsSlider.addEventListener('input', (e) => {
+            if (dom.blendStepsLabel) dom.blendStepsLabel.textContent = `${e.target.value} steps`;
+            renderColorScaleBlender();
+        });
+    }
+
+    if (dom.saveBlendBtn) {
+        dom.saveBlendBtn.addEventListener('click', () => {
+            const steps = getCurrentBlendSteps();
+            let count = 0;
+            steps.forEach(h => {
+                if (ProjectManager.addColorToActiveProject(h)) count++;
+            });
+            showToast(`Saved ${count} blend steps to project!`);
+        });
+    }
+
+    if (dom.copyBlendBtn) {
+        dom.copyBlendBtn.addEventListener('click', () => {
+            const steps = getCurrentBlendSteps();
+            navigator.clipboard.writeText(steps.map(h => `#${h}`).join(', ')).then(() => {
+                showToast('Copied blend steps!');
+            });
+        });
+    }
+
+    // Live UI Sandbox Modal events
+    let currentSandboxView = 'saas';
+    let sandboxThemeMode = layoutState.theme || 'light';
+
+    if (dom.openUiSandboxBtn && dom.uiSandboxModal) {
+        dom.openUiSandboxBtn.addEventListener('click', () => {
+            dom.uiSandboxModal.style.display = 'flex';
+            renderSandboxView(currentSandboxView, sandboxThemeMode);
+        });
+    }
+
+    if (dom.closeUiSandboxBtn && dom.uiSandboxModal) {
+        dom.closeUiSandboxBtn.addEventListener('click', () => {
+            dom.uiSandboxModal.style.display = 'none';
+        });
+    }
+
+    if (dom.sandboxViewToggle) {
+        dom.sandboxViewToggle.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                dom.sandboxViewToggle.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentSandboxView = btn.getAttribute('data-view') || 'saas';
+                renderSandboxView(currentSandboxView, sandboxThemeMode);
+            });
+        });
+    }
+
+    if (dom.sandboxCbSelect && dom.sandboxViewport) {
+        dom.sandboxCbSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'none') {
+                dom.sandboxViewport.style.filter = 'none';
+            } else {
+                dom.sandboxViewport.style.filter = `url(#cb-filter-${val})`;
+            }
+        });
+    }
+
+    if (dom.sandboxThemeToggle) {
+        dom.sandboxThemeToggle.addEventListener('click', () => {
+            sandboxThemeMode = sandboxThemeMode === 'dark' ? 'light' : 'dark';
+            if (dom.sandboxThemeIcon) {
+                dom.sandboxThemeIcon.textContent = sandboxThemeMode === 'dark' ? 'light_mode' : 'dark_mode';
+            }
+            renderSandboxView(currentSandboxView, sandboxThemeMode);
+        });
+    }
+
+    // Keyboard shortcut C to copy active color
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'c' || e.key === 'C') {
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable) return;
+            if (e.metaKey || e.ctrlKey || e.altKey) return;
+            navigator.clipboard.writeText(`#${state.hex}`).then(() => {
+                showToast(`Copied #${state.hex}`);
+            });
+        }
+    });
+
 
     // Clear History
     dom.clearHistoryBtn.addEventListener('click', () => {
@@ -1308,4 +1510,382 @@ function saveGeneratorPalette() {
     localStorage.setItem('saved_palette', JSON.stringify(state.palette));
     renderSavedPalette();
     showToast();
+}
+
+// --- Color Scale Blender Helpers ---
+function getCurrentBlendSteps() {
+    const hex1 = dom.blendColor1Hex ? dom.blendColor1Hex.value.replace('#', '').toUpperCase() : '624E9A';
+    const hex2 = dom.blendColor2Hex ? dom.blendColor2Hex.value.replace('#', '').toUpperCase() : 'FF5722';
+    const stepsCount = dom.blendStepsSlider ? parseInt(dom.blendStepsSlider.value, 10) : 5;
+    return ColorUtils.interpolateOklch(hex1, hex2, stepsCount);
+}
+
+function renderColorScaleBlender() {
+    if (!dom.blendStepsContainer) return;
+    const steps = getCurrentBlendSteps();
+    dom.blendStepsContainer.innerHTML = '';
+
+    steps.forEach((hex, i) => {
+        const item = document.createElement('div');
+        item.style.backgroundColor = `#${hex}`;
+        item.style.height = '64px';
+        item.style.borderRadius = '12px';
+        item.style.display = 'flex';
+        item.style.alignItems = 'flex-end';
+        item.style.justifyContent = 'center';
+        item.style.padding = '6px';
+        item.style.cursor = 'pointer';
+        item.style.transition = 'transform 0.15s ease, box-shadow 0.15s ease';
+        item.title = `#${hex} (Click to set as active)`;
+
+        const rgb = ColorUtils.hexToRgb(hex);
+        const whiteRatio = ColorUtils.getContrastRatio(rgb, { r: 255, g: 255, b: 255 });
+        const blackRatio = ColorUtils.getContrastRatio(rgb, { r: 0, g: 0, b: 0 });
+        const textColor = whiteRatio > blackRatio ? '#FFFFFF' : '#000000';
+
+        const span = document.createElement('span');
+        span.style.fontFamily = 'monospace';
+        span.style.fontSize = '10px';
+        span.style.fontWeight = '700';
+        span.style.color = textColor;
+        span.textContent = `#${hex}`;
+
+        item.appendChild(span);
+
+        item.onmouseenter = () => {
+            item.style.transform = 'translateY(-3px) scale(1.04)';
+            item.style.boxShadow = '0 6px 16px rgba(0,0,0,0.2)';
+        };
+        item.onmouseleave = () => {
+            item.style.transform = 'none';
+            item.style.boxShadow = 'none';
+        };
+
+        item.onclick = () => {
+            updateColorState(hex, false);
+            showToast(`Selected #${hex}`);
+        };
+
+        dom.blendStepsContainer.appendChild(item);
+    });
+}
+
+// --- Live UI Sandbox Renderer ---
+function renderSandboxView(view = 'saas', theme = 'light') {
+    if (!dom.sandboxViewport) return;
+    const isDark = theme === 'dark';
+    
+    // Choose colors from active palette or smart palette
+    const p1 = state.hex || '624E9A';
+    const p2 = (state.generatorColors && state.generatorColors[1]) ? state.generatorColors[1] : 'EADDFF';
+    const p3 = (state.generatorColors && state.generatorColors[2]) ? state.generatorColors[2] : '381E72';
+    const p4 = (state.generatorColors && state.generatorColors[3]) ? state.generatorColors[3] : '49454F';
+    const p5 = (state.generatorColors && state.generatorColors[4]) ? state.generatorColors[4] : 'CAC4D0';
+
+    const bg = isDark ? '#121116' : '#FAF8FD';
+    const surface = isDark ? '#1E1B24' : '#FFFFFF';
+    const onSurface = isDark ? '#E6E1E5' : '#1C1B1F';
+    const onSurfaceVariant = isDark ? '#CAC4D0' : '#49454F';
+    const outline = isDark ? '#49454F' : '#E0E0E0';
+
+    if (view === 'saas') {
+        dom.sandboxViewport.innerHTML = `
+            <div style="width: 100%; max-width: 900px; background: ${bg}; border-radius: 20px; border: 1px solid ${outline}; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                <!-- Navbar -->
+                <div style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid ${outline}; background: ${surface};">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 28px; height: 28px; border-radius: 8px; background: #${p1}; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 14px;">L</div>
+                        <span style="font-weight: 700; color: ${onSurface}; font-size: 16px;">Limorina Cloud</span>
+                    </div>
+                    <div style="display: flex; gap: 20px; align-items: center;">
+                        <span style="font-size: 13px; color: ${onSurfaceVariant}; font-weight: 500; cursor: pointer;">Features</span>
+                        <span style="font-size: 13px; color: ${onSurfaceVariant}; font-weight: 500; cursor: pointer;">Pricing</span>
+                        <span style="font-size: 13px; color: ${onSurfaceVariant}; font-weight: 500; cursor: pointer;">Changelog</span>
+                        <button style="padding: 8px 16px; border-radius: 20px; border: none; background: #${p1}; color: #ffffff; font-weight: 600; font-size: 13px; cursor: pointer;">Get Started</button>
+                    </div>
+                </div>
+
+                <!-- Hero Section -->
+                <div style="padding: 60px 40px; text-align: center; position: relative; background: radial-gradient(circle at 50% 20%, #${p2}40 0%, transparent 60%);">
+                    <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 30px; background: #${p2}33; border: 1px solid #${p1}55; color: #${p1}; font-size: 12px; font-weight: 600; margin-bottom: 20px;">
+                        <span class="material-symbols-rounded" style="font-size: 15px;">auto_awesome</span>
+                        <span>Powered by Material You Theme</span>
+                    </div>
+                    <h1 style="font-size: 2.8rem; font-weight: 800; color: ${onSurface}; margin: 0 0 16px; letter-spacing: -0.02em; line-height: 1.15;">
+                        Design Seamless Interfaces with <span style="color: #${p1};">Harmonious Color</span>
+                    </h1>
+                    <p style="font-size: 1.05rem; color: ${onSurfaceVariant}; max-width: 580px; margin: 0 auto 32px; line-height: 1.5;">
+                        Craft accessible, beautiful user experiences in real-time. Perfectly balanced palettes meeting WCAG AAA and modern perceptual standards.
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+                        <button style="padding: 12px 28px; border-radius: 24px; border: none; background: #${p1}; color: #ffffff; font-weight: 600; font-size: 15px; cursor: pointer; box-shadow: 0 4px 14px #${p1}55;">Start Building Now</button>
+                        <button style="padding: 12px 24px; border-radius: 24px; border: 1px solid ${outline}; background: ${surface}; color: ${onSurface}; font-weight: 600; font-size: 15px; cursor: pointer;">Explore Documentation</button>
+                    </div>
+
+                    <!-- Hero Preview Surface Card -->
+                    <div style="margin: 48px auto 0; max-width: 650px; background: ${surface}; border: 1px solid ${outline}; border-radius: 16px; padding: 24px; text-align: left; box-shadow: 0 16px 32px rgba(0,0,0,0.08); display: flex; gap: 20px; align-items: center;">
+                        <div style="width: 54px; height: 54px; border-radius: 14px; background: #${p1}22; border: 1px solid #${p1}44; display: flex; align-items: center; justify-content: center; color: #${p1};">
+                            <span class="material-symbols-rounded" style="font-size: 28px;">bolt</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 4px; color: ${onSurface}; font-size: 16px; font-weight: 600;">Automated Color Accessibility Engine</h4>
+                            <p style="margin: 0; color: ${onSurfaceVariant}; font-size: 13px;">Real-time APCA and WCAG 2.1 compliance checking with sub-millisecond calculation latency.</p>
+                        </div>
+                        <div style="padding: 6px 12px; border-radius: 12px; background: #${p1}; color: #fff; font-size: 12px; font-weight: bold;">99.8%</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (view === 'dashboard') {
+        dom.sandboxViewport.innerHTML = `
+            <div style="width: 100%; max-width: 900px; background: ${bg}; border-radius: 20px; border: 1px solid ${outline}; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.15); padding: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h3 style="margin: 0 0 4px; color: ${onSurface}; font-size: 20px; font-weight: 700;">Performance & Analytics</h3>
+                        <p style="margin: 0; color: ${onSurfaceVariant}; font-size: 13px;">Overview of key performance metrics for the active quarter.</p>
+                    </div>
+                    <button style="padding: 8px 18px; border-radius: 20px; border: none; background: #${p1}; color: #ffffff; font-weight: 600; font-size: 13px; cursor: pointer;">Download Report</button>
+                </div>
+
+                <!-- Stats 3 Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div style="background: ${surface}; border: 1px solid ${outline}; border-radius: 16px; padding: 18px; position: relative;">
+                        <span style="font-size: 12px; color: ${onSurfaceVariant}; font-weight: 600; text-transform: uppercase;">Total Revenue</span>
+                        <div style="font-size: 26px; font-weight: 800; color: ${onSurface}; margin: 8px 0 4px;">$48,290.00</div>
+                        <span style="font-size: 12px; font-weight: 600; color: #10B981; background: #10B98122; padding: 2px 8px; border-radius: 8px;">+14.8% vs last month</span>
+                    </div>
+                    <div style="background: ${surface}; border: 1px solid ${outline}; border-radius: 16px; padding: 18px; position: relative;">
+                        <span style="font-size: 12px; color: ${onSurfaceVariant}; font-weight: 600; text-transform: uppercase;">Active Designers</span>
+                        <div style="font-size: 26px; font-weight: 800; color: #${p1}; margin: 8px 0 4px;">12,840</div>
+                        <span style="font-size: 12px; font-weight: 600; color: #${p1}; background: #${p1}22; padding: 2px 8px; border-radius: 8px;">+28.4% growth</span>
+                    </div>
+                    <div style="background: ${surface}; border: 1px solid ${outline}; border-radius: 16px; padding: 18px; position: relative;">
+                        <span style="font-size: 12px; color: ${onSurfaceVariant}; font-weight: 600; text-transform: uppercase;">Contrast Pass Rate</span>
+                        <div style="font-size: 26px; font-weight: 800; color: ${onSurface}; margin: 8px 0 4px;">98.4%</div>
+                        <span style="font-size: 12px; font-weight: 600; color: #10B981; background: #10B98122; padding: 2px 8px; border-radius: 8px;">WCAG AAA Ready</span>
+                    </div>
+                </div>
+
+                <!-- Chart + Table Row -->
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
+                    <div style="background: ${surface}; border: 1px solid ${outline}; border-radius: 16px; padding: 20px;">
+                        <h4 style="margin: 0 0 16px; color: ${onSurface}; font-size: 15px; font-weight: 600;">Weekly Activity Trends</h4>
+                        <!-- SVG Bar Chart -->
+                        <svg viewBox="0 0 400 160" style="width: 100%; height: auto;">
+                            <rect x="20" y="40" width="30" height="100" rx="6" fill="#${p1}" />
+                            <rect x="75" y="65" width="30" height="75" rx="6" fill="#${p2}" />
+                            <rect x="130" y="25" width="30" height="115" rx="6" fill="#${p1}" />
+                            <rect x="185" y="80" width="30" height="60" rx="6" fill="#${p2}" />
+                            <rect x="240" y="35" width="30" height="105" rx="6" fill="#${p1}" />
+                            <rect x="295" y="50" width="30" height="90" rx="6" fill="#${p2}" />
+                            <rect x="350" y="15" width="30" height="125" rx="6" fill="#${p1}" />
+                        </svg>
+                        <div style="display: flex; justify-content: space-around; margin-top: 8px; font-size: 11px; color: ${onSurfaceVariant};">
+                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                        </div>
+                    </div>
+
+                    <div style="background: ${surface}; border: 1px solid ${outline}; border-radius: 16px; padding: 20px;">
+                        <h4 style="margin: 0 0 14px; color: ${onSurface}; font-size: 15px; font-weight: 600;">Active Design Projects</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid ${outline};">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: ${onSurface};">Mobile Banking App</div>
+                                    <div style="font-size: 11px; color: ${onSurfaceVariant};">Design Tokens System</div>
+                                </div>
+                                <span style="font-size: 11px; font-weight: 700; color: #${p1}; background: #${p1}22; padding: 3px 8px; border-radius: 8px;">Active</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid ${outline};">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: ${onSurface};">E-Commerce Redesign</div>
+                                    <div style="font-size: 11px; color: ${onSurfaceVariant};">Accessible Cart Flow</div>
+                                </div>
+                                <span style="font-size: 11px; font-weight: 700; color: #10B981; background: #10B98122; padding: 3px 8px; border-radius: 8px;">Passed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (view === 'mobile') {
+        dom.sandboxViewport.innerHTML = `
+            <div style="width: 340px; background: ${bg}; border: 8px solid ${isDark ? '#2D2930' : '#E0DDE6'}; border-radius: 40px; box-shadow: 0 20px 48px rgba(0,0,0,0.25); overflow: hidden; position: relative;">
+                <!-- Phone Top Island Notch -->
+                <div style="height: 30px; background: ${surface}; display: flex; justify-content: space-between; align-items: center; padding: 0 16px;">
+                    <span style="font-size: 11px; font-weight: 700; color: ${onSurface};">9:41</span>
+                    <div style="width: 60px; height: 14px; background: ${isDark ? '#000' : '#1C1B1F'}; border-radius: 10px;"></div>
+                    <span style="font-size: 11px; font-weight: 700; color: ${onSurface};">100%</span>
+                </div>
+
+                <!-- Mobile Header -->
+                <div style="padding: 16px; background: ${surface}; border-bottom: 1px solid ${outline}; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #${p1}; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 14px;">L</div>
+                        <div>
+                            <div style="font-size: 13px; font-weight: 700; color: ${onSurface};">Limorina Mobile</div>
+                            <div style="font-size: 10px; color: ${onSurfaceVariant};">Color Explorer Pro</div>
+                        </div>
+                    </div>
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: #${p1}22; display: flex; align-items: center; justify-content: center; color: #${p1};">
+                        <span class="material-symbols-rounded" style="font-size: 16px;">notifications</span>
+                    </div>
+                </div>
+
+                <!-- Mobile Content Feed -->
+                <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+                    <!-- Product Card -->
+                    <div style="background: ${surface}; border: 1px solid ${outline}; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                        <div style="height: 120px; background: linear-gradient(135deg, #${p1}, #${p2}); display: flex; align-items: center; justify-content: center; color: #fff;">
+                            <span class="material-symbols-rounded" style="font-size: 44px;">headphones</span>
+                        </div>
+                        <div style="padding: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h5 style="margin: 0; font-size: 14px; font-weight: 700; color: ${onSurface};">Studio Pro Audio</h5>
+                                <span style="font-size: 13px; font-weight: 800; color: #${p1};">$249</span>
+                            </div>
+                            <p style="margin: 4px 0 10px; font-size: 11px; color: ${onSurfaceVariant};">Active noise cancelling with spatial audio acoustics.</p>
+                            <button style="width: 100%; padding: 8px; border-radius: 12px; border: none; background: #${p1}; color: #ffffff; font-weight: 700; font-size: 12px; cursor: pointer;">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Message bubble -->
+                    <div style="display: flex; gap: 8px; align-items: flex-end;">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: #${p2};"></div>
+                        <div style="background: #${p1}; color: #ffffff; padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 12px; max-width: 200px;">
+                            The contrast ratios look stunning on this theme!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Bottom Nav -->
+                <div style="height: 56px; background: ${surface}; border-top: 1px solid ${outline}; display: flex; justify-content: space-around; align-items: center; padding: 0 10px;">
+                    <div style="color: #${p1}; display: flex; align-items: center;"><span class="material-symbols-rounded" style="font-size: 22px;">home</span></div>
+                    <div style="color: ${onSurfaceVariant}; display: flex; align-items: center;"><span class="material-symbols-rounded" style="font-size: 22px;">palette</span></div>
+                    <div style="color: ${onSurfaceVariant}; display: flex; align-items: center;"><span class="material-symbols-rounded" style="font-size: 22px;">analytics</span></div>
+                    <div style="color: ${onSurfaceVariant}; display: flex; align-items: center;"><span class="material-symbols-rounded" style="font-size: 22px;">settings</span></div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// --- Showcase Card Generator (1200x675 Dribbble/Social format) ---
+function exportShowcaseCard(colors = [], title = 'Palette Showcase') {
+    if (!colors || colors.length === 0) return;
+
+    const exportW = 1200;
+    const exportH = 675; // 16:9 aspect
+    const c = document.createElement('canvas');
+    c.width = exportW;
+    c.height = exportH;
+    const cx = c.getContext('2d');
+
+    const isDark = layoutState.theme === 'dark';
+    cx.fillStyle = isDark ? '#141218' : '#FAF8FD';
+    cx.fillRect(0, 0, exportW, exportH);
+
+    // Ambient radial glows in background
+    const p1 = colors[0];
+    const p2 = colors[1] || p1;
+    const g1 = cx.createRadialGradient(200, 200, 50, 200, 200, 450);
+    g1.addColorStop(0, `#${p1}25`);
+    g1.addColorStop(1, 'transparent');
+    cx.fillStyle = g1;
+    cx.fillRect(0, 0, exportW, exportH);
+
+    const g2 = cx.createRadialGradient(1000, 450, 50, 1000, 450, 450);
+    g2.addColorStop(0, `#${p2}20`);
+    g2.addColorStop(1, 'transparent');
+    cx.fillStyle = g2;
+    cx.fillRect(0, 0, exportW, exportH);
+
+    // Top Header
+    cx.fillStyle = isDark ? '#E6E1E5' : '#1C1B1F';
+    cx.font = 'bold 24px "Roboto", sans-serif';
+    cx.textAlign = 'left';
+    cx.fillText('LIMORINA COLOR CHECKER', 60, 70);
+
+    cx.fillStyle = isDark ? '#CAC4D0' : '#49454F';
+    cx.font = '14px "Roboto Mono", monospace';
+    cx.fillText(title.toUpperCase(), 60, 95);
+
+    // Date / Link top right
+    cx.textAlign = 'right';
+    cx.font = '13px "Roboto", sans-serif';
+    cx.fillText('justlimorina.github.io/color-checker', exportW - 60, 70);
+    cx.fillText(new Date().toLocaleDateString(), exportW - 60, 95);
+
+    // Swatches Layout (cards in the middle)
+    const swatchCount = colors.length;
+    const paddingX = 60;
+    const gap = 16;
+    const totalGap = (swatchCount - 1) * gap;
+    const cardW = (exportW - paddingX * 2 - totalGap) / swatchCount;
+    const cardY = 135;
+    const cardH = 460;
+
+    colors.forEach((hex, i) => {
+        const x = paddingX + i * (cardW + gap);
+        const rgb = ColorUtils.hexToRgb(hex);
+        const oklch = ColorUtils.rgbToOklch(rgb.r, rgb.g, rgb.b);
+        const name = ColorUtils.getColorName(hex);
+        const whiteRatio = ColorUtils.getContrastRatio(rgb, { r: 255, g: 255, b: 255 });
+        const blackRatio = ColorUtils.getContrastRatio(rgb, { r: 0, g: 0, b: 0 });
+        const textChoice = whiteRatio > blackRatio ? '#FFFFFF' : '#000000';
+
+        // Outer card with shadow
+        cx.save();
+        cx.shadowColor = 'rgba(0,0,0,0.12)';
+        cx.shadowBlur = 18;
+        cx.shadowOffsetY = 6;
+        cx.fillStyle = isDark ? '#211F26' : '#FFFFFF';
+        cx.beginPath();
+        cx.roundRect(x, cardY, cardW, cardH, 20);
+        cx.fill();
+        cx.restore();
+
+        // Main color block
+        const colorH = 260;
+        cx.save();
+        cx.beginPath();
+        cx.roundRect(x, cardY, cardW, colorH, [20, 20, 0, 0]);
+        cx.fillStyle = `#${hex}`;
+        cx.fill();
+
+        // Hex overlay inside color block
+        cx.fillStyle = textChoice;
+        cx.font = 'bold 20px "Roboto Mono", monospace';
+        cx.textAlign = 'center';
+        cx.fillText(`#${hex}`, x + cardW / 2, cardY + colorH - 24);
+        cx.restore();
+
+        // Info below color block
+        const textBaseY = cardY + colorH + 34;
+        cx.fillStyle = isDark ? '#E6E1E5' : '#1C1B1F';
+        cx.font = 'bold 16px "Roboto", sans-serif';
+        cx.textAlign = 'center';
+        cx.fillText(name.length > 13 ? name.slice(0, 11) + '..' : name, x + cardW / 2, textBaseY);
+
+        cx.fillStyle = isDark ? '#CAC4D0' : '#49454F';
+        cx.font = '12px "Roboto Mono", monospace';
+        cx.fillText(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`, x + cardW / 2, textBaseY + 28);
+        cx.fillText(`OKLCH(${Math.round(oklch.l)}% ${oklch.c.toFixed(2)})`, x + cardW / 2, textBaseY + 50);
+
+        // Contrast badge pill
+        const bestRatio = Math.max(whiteRatio, blackRatio).toFixed(1);
+        cx.fillStyle = isDark ? '#2B2930' : '#F0EDF5';
+        cx.beginPath();
+        cx.roundRect(x + cardW / 2 - 40, textBaseY + 70, 80, 24, 12);
+        cx.fill();
+
+        cx.fillStyle = isDark ? '#D0BCFF' : '#6750A4';
+        cx.font = 'bold 11px "Roboto", sans-serif';
+        cx.fillText(`${bestRatio}:1 ${bestRatio >= 4.5 ? 'AA' : 'Fail'}`, x + cardW / 2, textBaseY + 86);
+    });
+
+    const link = document.createElement('a');
+    link.download = `showcase-card-${Date.now()}.png`;
+    link.href = c.toDataURL('image/png');
+    link.click();
+    showToast('Showcase Card exported!');
 }

@@ -290,5 +290,55 @@ export const ColorUtils = {
         }
 
         return outputContrast * 100.0;
+    },
+
+    interpolateOklch(hex1, hex2, steps = 5) {
+        const rgb1 = ColorUtils.hexToRgb(hex1.replace('#', ''));
+        const rgb2 = ColorUtils.hexToRgb(hex2.replace('#', ''));
+        const ok1 = ColorUtils.rgbToOklch(rgb1.r, rgb1.g, rgb1.b);
+        const ok2 = ColorUtils.rgbToOklch(rgb2.r, rgb2.g, rgb2.b);
+        
+        let dH = ok2.h - ok1.h;
+        if (dH > 180) dH -= 360;
+        if (dH < -180) dH += 360;
+
+        const result = [];
+        for (let i = 0; i < steps; i++) {
+            const t = steps <= 1 ? 0 : i / (steps - 1);
+            const L = ok1.l + (ok2.l - ok1.l) * t;
+            const C = ok1.c + (ok2.c - ok1.c) * t;
+            let H = (ok1.h + dH * t) % 360;
+            if (H < 0) H += 360;
+            const rgb = ColorUtils.oklchToRgb(L, C, H);
+            result.push(ColorUtils.rgbToHex(rgb.r, rgb.g, rgb.b));
+        }
+        return result;
+    },
+
+    interpolateSrgb(hex1, hex2, steps = 5) {
+        const rgb1 = ColorUtils.hexToRgb(hex1.replace('#', ''));
+        const rgb2 = ColorUtils.hexToRgb(hex2.replace('#', ''));
+        const result = [];
+        for (let i = 0; i < steps; i++) {
+            const t = steps <= 1 ? 0 : i / (steps - 1);
+            const r = Math.round(rgb1.r + (rgb2.r - rgb1.r) * t);
+            const g = Math.round(rgb1.g + (rgb2.g - rgb1.g) * t);
+            const b = Math.round(rgb1.b + (rgb2.b - rgb1.b) * t);
+            result.push(ColorUtils.rgbToHex(r, g, b));
+        }
+        return result;
+    },
+
+    sortHexes(hexList, criterion = 'hue') {
+        return [...hexList].sort((a, b) => {
+            const rgbA = ColorUtils.hexToRgb(a.replace('#', ''));
+            const rgbB = ColorUtils.hexToRgb(b.replace('#', ''));
+            const hslA = ColorUtils.rgbToHsl(rgbA.r, rgbA.g, rgbA.b);
+            const hslB = ColorUtils.rgbToHsl(rgbB.r, rgbB.g, rgbB.b);
+            if (criterion === 'lightness') return hslA.l - hslB.l;
+            if (criterion === 'lightness-desc') return hslB.l - hslA.l;
+            if (criterion === 'saturation') return hslA.s - hslB.s;
+            return hslA.h - hslB.h;
+        });
     }
 };
