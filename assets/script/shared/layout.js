@@ -441,7 +441,7 @@ export function applyColorTheme(hex) {
         }
         const favicon = document.querySelector('link[rel="icon"]');
         if (favicon) {
-            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#${hex}"/><path d="M16 6 C10.5 6 6 10.5 6 16 C6 21.5 10.5 26 16 26 C17.7 26 19.1 24.6 19.1 22.9 C19.1 22.1 18.8 21.4 18.2 20.8 C17.7 20.3 17.3 19.6 17.3 18.8 C17.3 17.1 18.7 15.7 20.4 15.7 L22.5 15.7 C25.5 15.7 28 13.2 28 10.2 C28 7.9 22.7 6 16 6 Z" fill="#ffffff" opacity="0.9"/></svg>`;
+            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path d="M 24 2 C 24 16 34 14 38 10 C 30 18 34 22 46 24 C 34 26 30 30 38 38 C 34 34 24 32 24 46 C 24 32 14 34 10 38 C 18 30 14 26 2 24 C 14 22 18 18 10 10 C 14 14 24 16 24 2 Z" fill="#${hex}"/></svg>`;
             favicon.href = `data:image/svg+xml;utf8,${encodeURIComponent(svgIcon)}`;
         }
     } catch (e) {
