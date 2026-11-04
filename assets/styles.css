@@ -2393,10 +2393,6 @@ a {
     transition: color 150ms ease;
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
 /* ============================================================
    M3 TYPOGRAPHY SCALE
    ============================================================ */
@@ -3234,10 +3230,6 @@ body.dark-theme .md-logo--dark {
     cursor: pointer;
     transition: color 200ms ease;
 }
-.md-rail-item:hover,
-.md-rail-item:focus {
-    text-decoration: none;
-}
 .md-rail-item__icon-container {
     display: inline-flex;
     align-items: center;
@@ -3396,7 +3388,6 @@ body.dark-theme .md-logo--dark {
     background-color: var(--md-sys-color-primary-container);
     color: var(--md-sys-color-on-primary-container);
     transform: scale(1.08);
-    text-decoration: none; /* remove default hover underline */
 }
 
 .md-contact-link:active {
@@ -3460,11 +3451,6 @@ body.dark-theme .md-logo--dark {
     cursor: pointer;
     padding: 4px 0;
     transition: color 200ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.md-bottom-nav__item:hover,
-.md-bottom-nav__item:focus {
-    text-decoration: none;
 }
 
 .md-bottom-nav__icon-container {
