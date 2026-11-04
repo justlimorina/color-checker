@@ -9,7 +9,9 @@ Công cụ phân tích màu sắc và thiết kế chuyên nghiệp, được x�
 ## ✨ Tính năng
 
 ### 🖌️ Nhập & Trộn màu
-- **Nhập mã HEX** kèm bộ chọn màu trực quan
+- **Nhập mã HEX** kèm bộ chọn màu trực quan và tự động chuẩn hóa (hỗ trợ dán `#`, mã viết tắt 3 ký tự)
+- **Công cụ EyeDropper**: Chấm màu trực tiếp từ màn hình (trình duyệt hỗ trợ)
+- **Phím tắt Space**: Nhấn phím cách (Space) để đổi màu ngẫu nhiên bất cứ lúc nào
 - **Nhập RGB** (0–255) đồng bộ theo thời gian thực
 - **Nhập HSL** (H: 0–360, S/L: 0–100%) đồng bộ theo thời gian thực
 - Tất cả định dạng tự động cập nhật lẫn nhau
@@ -29,6 +31,7 @@ Công cụ phân tích màu sắc và thiết kế chuyên nghiệp, được x�
 ### ♿ Độ tương phản WCAG
 - Tỉ lệ tương phản trên nền **Trắng** và **Đen**
 - Huy hiệu đạt/không đạt cho tiêu chuẩn **AA Large, AA Normal và AAA**
+- **Tự động sửa tương phản**: 1-click tự động căn chỉnh độ sáng để đạt chuẩn AA (4.5:1) hoặc AAA (7.0:1)
 - Gợi ý tự động **màu chữ tốt nhất** (Trắng hoặc Đen)
 
 ### 👁️ Trình mô phỏng mù màu
@@ -55,7 +58,10 @@ Công cụ phân tích màu sắc và thiết kế chuyên nghiệp, được x�
 ### 📤 Cổng xuất dữ liệu
 - Xuất dữ liệu màu dưới dạng:
   - **CSS custom properties** (biến `:root`)
+  - **SCSS variables** (`$primary`, `$on-primary`, sắc độ tints/shades)
   - **Tailwind v4** — khối `@theme` dùng giá trị OKLCH
+  - **Flutter** `Color` constants
+  - **Android XML** `<color>` resources
   - **JSON** — đối tượng đầy đủ tất cả các định dạng màu
 
 ### 🌐 Hỗ trợ đa ngôn ngữ

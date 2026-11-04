@@ -9,7 +9,9 @@ A professional-grade color analysis and design tool built with Material Design 3
 ## ✨ Features
 
 ### 🖌️ Color Input & Mixer
-- **HEX input** with live color picker
+- **HEX input** with live color picker and auto-formatting (paste `#` or 3-digit shorthand supported)
+- **EyeDropper tool**: Pick colors directly from anywhere on screen (supported browsers)
+- **Spacebar shortcut**: Press Space anytime to generate a random vibrant color
 - **RGB inputs** (0–255) synchronized in real time
 - **HSL inputs** (H: 0–360, S/L: 0–100%) synchronized in real time
 - All input formats update each other automatically
@@ -29,6 +31,7 @@ A professional-grade color analysis and design tool built with Material Design 3
 ### ♿ WCAG Accessibility
 - Contrast ratios against **White** and **Black** backgrounds
 - **AA Large**, **AA Normal**, and **AAA** pass/fail badges
+- **Smart Auto-Fix**: One-click automatic contrast adjustment to meet AA (4.5:1) or AAA (7.0:1) standards
 - Automatic **Best Text Color** recommendation (White or Black)
 
 ### 👁️ Color Blindness Simulator
@@ -55,7 +58,10 @@ A professional-grade color analysis and design tool built with Material Design 3
 ### 📤 Export Hub
 - Export color data as:
   - **CSS custom properties** (`:root` variables)
+  - **SCSS variables** (`$primary`, `$on-primary`, tints/shades)
   - **Tailwind v4** `@theme` block using OKLCH values
+  - **Flutter** `Color` constants
+  - **Android XML** `<color>` resources
   - **JSON** object with all color formats
 
 ### 🌐 Multi-language Support

@@ -51,7 +51,11 @@ const translations = {
         cb_protanopia: "Protanopia",
         cb_deuteranopia: "Deuteranopia",
         cb_tritanopia: "Tritanopia",
-        cb_achromatopsia: "Achromatopsia"
+        cb_achromatopsia: "Achromatopsia",
+        shortcut_hint: "Space to randomize",
+        eyedropper_title: "Pick color from screen",
+        autofix_aa: "Auto-fix AA",
+        autofix_aaa: "Auto-fix AAA"
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -105,7 +109,11 @@ const translations = {
         cb_protanopia: "Mù đỏ (Protanopia)",
         cb_deuteranopia: "Mù xanh lá (Deuteranopia)",
         cb_tritanopia: "Mù xanh lam (Tritanopia)",
-        cb_achromatopsia: "Mù toàn sắc (Achromatopsia)"
+        cb_achromatopsia: "Mù toàn sắc (Achromatopsia)",
+        shortcut_hint: "Phím Space để đổi màu",
+        eyedropper_title: "Chấm màu từ màn hình",
+        autofix_aa: "Tự sửa đạt chuẩn AA",
+        autofix_aaa: "Tự sửa đạt chuẩn AAA"
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -159,7 +167,11 @@ const translations = {
         cb_protanopia: "赤色覚異常 (Protanopia)",
         cb_deuteranopia: "緑色覚異常 (Deuteranopia)",
         cb_tritanopia: "青色覚異常 (Tritanopia)",
-        cb_achromatopsia: "全色覚異常 (Achromatopsia)"
+        cb_achromatopsia: "全色覚異常 (Achromatopsia)",
+        shortcut_hint: "Spaceキーでランダム色",
+        eyedropper_title: "画面から色を取得",
+        autofix_aa: "AA基準に自動調整",
+        autofix_aaa: "AAA基準に自動調整"
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -213,7 +225,11 @@ const translations = {
         cb_protanopia: "红色盲 (Protanopia)",
         cb_deuteranopia: "绿色盲 (Deuteranopia)",
         cb_tritanopia: "蓝色盲 (Tritanopia)",
-        cb_achromatopsia: "全色盲 (Achromatopsia)"
+        cb_achromatopsia: "全色盲 (Achromatopsia)",
+        shortcut_hint: "空格键随机配色",
+        eyedropper_title: "从屏幕吸取颜色",
+        autofix_aa: "自动修复至AA标准",
+        autofix_aaa: "自动修复至AAA标准"
     }
 };
 
@@ -394,6 +410,10 @@ const dom = {
     saveBtn: document.getElementById('save-to-palette'),
     paletteContainer: document.getElementById('palette-colors'),
     exportImageBtn: document.getElementById('export-image-btn'),
+    eyedropperBtn: document.getElementById('eyedropper-btn'),
+    wcagAutofix: document.getElementById('wcag-autofix'),
+    autofixAaBtn: document.getElementById('autofix-aa-btn'),
+    autofixAaaBtn: document.getElementById('autofix-aaa-btn'),
     mixerInputs: {
         r: document.getElementById('rgb-r'),
         g: document.getElementById('rgb-g'),
@@ -406,6 +426,11 @@ const dom = {
 };
 
 function updateColorState(hex) {
+    if (!hex) return;
+    hex = hex.replace('#', '').trim();
+    if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+    }
     if (!/^[0-9A-F]{6}$/i.test(hex)) return;
     state.activeHex = hex.toUpperCase();
     state.hex = state.activeHex;
@@ -565,6 +590,50 @@ function updateWCAG() {
 
     renderWCAGBadges(dom.wcagWhiteBadges, whiteRatio);
     renderWCAGBadges(dom.wcagBlackBadges, blackRatio);
+
+    if (dom.wcagAutofix) {
+        if (whiteRatio < 4.5) {
+            dom.wcagAutofix.style.display = 'flex';
+            if (dom.autofixAaBtn) dom.autofixAaBtn.style.display = 'inline-flex';
+            if (dom.autofixAaaBtn) dom.autofixAaaBtn.style.display = 'inline-flex';
+        } else if (whiteRatio < 7.0) {
+            dom.wcagAutofix.style.display = 'flex';
+            if (dom.autofixAaBtn) dom.autofixAaBtn.style.display = 'none';
+            if (dom.autofixAaaBtn) dom.autofixAaaBtn.style.display = 'inline-flex';
+        } else {
+            dom.wcagAutofix.style.display = 'none';
+        }
+    }
+}
+
+function calculateAutoFix(targetRatio, bgRgb = { r: 255, g: 255, b: 255 }) {
+    const currentRatio = ColorUtils.getContrastRatio(state.rgb, bgRgb);
+    if (currentRatio >= targetRatio) return state.hex;
+
+    const bgLum = ColorUtils.getLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
+    const shouldDarken = bgLum > 0.5;
+
+    const h = state.hsl.h;
+    const s = state.hsl.s;
+    const l = state.hsl.l;
+
+    if (shouldDarken) {
+        for (let testL = l; testL >= 0; testL -= 0.5) {
+            const testRgb = ColorUtils.hslToRgb(h, s, testL);
+            if (ColorUtils.getContrastRatio(testRgb, bgRgb) >= targetRatio) {
+                return ColorUtils.rgbToHex(testRgb.r, testRgb.g, testRgb.b);
+            }
+        }
+        return "000000";
+    } else {
+        for (let testL = l; testL <= 100; testL += 0.5) {
+            const testRgb = ColorUtils.hslToRgb(h, s, testL);
+            if (ColorUtils.getContrastRatio(testRgb, bgRgb) >= targetRatio) {
+                return ColorUtils.rgbToHex(testRgb.r, testRgb.g, testRgb.b);
+            }
+        }
+        return "FFFFFF";
+    }
 }
 
 function renderWCAGBadges(container, ratio) {
@@ -679,6 +748,9 @@ function setLanguage(lang) {
     });
 
     dom.appTitle.textContent = translations[currentLang].app_title;
+    if (dom.eyedropperBtn && translations[currentLang].eyedropper_title) {
+        dom.eyedropperBtn.title = translations[currentLang].eyedropper_title;
+    }
     
     // Update active state in menu
     document.querySelectorAll('.menu-item').forEach(item => {
@@ -704,13 +776,22 @@ function updateExportContent() {
     const weights = [10, 20, 30, 40, 50, 60, 70, 80, 90];
     const tints = weights.map(w => ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(state.rgb, {r:255,g:255,b:255}, w))));
     const shades = weights.map(w => ColorUtils.rgbToHex(...Object.values(ColorUtils.mixColors(state.rgb, {r:0,g:0,b:0}, w))));
+    const onPrimary = ColorUtils.getContrastRatio(state.rgb, {r:255,g:255,b:255}) > ColorUtils.getContrastRatio(state.rgb, {r:0,g:0,b:0}) ? "FFFFFF" : "000000";
 
     // CSS
-    let css = `:root {\n  --primary: #${state.hex};\n`;
+    let css = `:root {\n  --primary: #${state.hex};\n  --on-primary: #${onPrimary};\n`;
     tints.forEach((h, i) => css += `  --primary-tint-${(i+1)*10}: #${h};\n`);
     shades.forEach((h, i) => css += `  --primary-shade-${(i+1)*10}: #${h};\n`);
     css += `}`;
     document.getElementById('code-css').textContent = css;
+
+    // SCSS
+    let scss = `// SCSS Variables\n$primary: #${state.hex};\n$primary-rgb: rgb(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b});\n$primary-hsl: hsl(${Math.round(state.hsl.h)}, ${Math.round(state.hsl.s)}%, ${Math.round(state.hsl.l)}%);\n$on-primary: #${onPrimary};\n\n`;
+    scss += `// Tints\n`;
+    tints.forEach((h, i) => scss += `$primary-tint-${(i+1)*10}: #${h};\n`);
+    scss += `\n// Shades\n`;
+    shades.forEach((h, i) => scss += `$primary-shade-${(i+1)*10}: #${h};\n`);
+    document.getElementById('code-scss').textContent = scss;
 
     // Tailwind v4
     let tw = `/* Tailwind v4 config (CSS-first) */\n@theme {\n  --color-brand: oklch(${state.oklch.l.toFixed(1)}% ${state.oklch.c.toFixed(3)} ${state.oklch.h.toFixed(1)});\n`;
@@ -724,6 +805,20 @@ function updateExportContent() {
     });
     tw += `}`;
     document.getElementById('code-tailwind').textContent = tw;
+
+    // Flutter
+    let flutter = `import 'package:flutter/material.dart';\n\nclass AppColors {\n  static const Color primary = Color(0xFF${state.hex});\n  static const Color onPrimary = Color(0xFF${onPrimary});\n`;
+    tints.forEach((h, i) => flutter += `  static const Color tint${(i+1)*10} = Color(0xFF${h});\n`);
+    shades.forEach((h, i) => flutter += `  static const Color shade${(i+1)*10} = Color(0xFF${h});\n`);
+    flutter += `}\n`;
+    document.getElementById('code-flutter').textContent = flutter;
+
+    // Android XML
+    let android = `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="primary">#${state.hex}</color>\n    <color name="on_primary">#${onPrimary}</color>\n`;
+    tints.forEach((h, i) => android += `    <color name="primary_tint_${(i+1)*10}">#${h}</color>\n`);
+    shades.forEach((h, i) => android += `    <color name="primary_shade_${(i+1)*10}">#${h}</color>\n`);
+    android += `</resources>`;
+    document.getElementById('code-android').textContent = android;
 
     // JSON
     const data = {
@@ -741,6 +836,47 @@ function updateExportContent() {
 // --- Events ---
 dom.hexInput.oninput = (e) => updateColorState(e.target.value);
 dom.colorPicker.oninput = (e) => updateColorState(e.target.value.substring(1));
+
+// EyeDropper API
+if (dom.eyedropperBtn && window.EyeDropper) {
+    dom.eyedropperBtn.style.display = 'inline-flex';
+    dom.eyedropperBtn.onclick = async () => {
+        try {
+            const eyeDropper = new EyeDropper();
+            const result = await eyeDropper.open();
+            if (result && result.sRGBHex) {
+                updateColorState(result.sRGBHex);
+            }
+        } catch (e) {
+            // Cancelled by user
+        }
+    };
+}
+
+// Auto-fix WCAG buttons
+if (dom.autofixAaBtn) {
+    dom.autofixAaBtn.onclick = () => {
+        const fixedHex = calculateAutoFix(4.5);
+        updateColorState(fixedHex);
+    };
+}
+if (dom.autofixAaaBtn) {
+    dom.autofixAaaBtn.onclick = () => {
+        const fixedHex = calculateAutoFix(7.0);
+        updateColorState(fixedHex);
+    };
+}
+
+// Spacebar shortcut to randomize color
+window.addEventListener('keydown', (e) => {
+    const isEditing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+    const isModalOpen = document.querySelector('.modal-backdrop.show');
+    if (e.code === 'Space' && !isEditing && !isModalOpen) {
+        e.preventDefault();
+        const randomHex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase();
+        updateColorState(randomHex);
+    }
+});
 dom.themeToggle.onclick = () => {
     document.body.classList.toggle('dark-mode');
     dom.themeToggle.children[0].textContent = document.body.classList.contains('dark-mode') ? 'light_mode' : 'dark_mode';

@@ -63,11 +63,19 @@
                 <div class="mixer-section mt-m">
                     <!-- HEX Input -->
                     <div class="input-group">
-                        <label for="hex-input" class="label-large">HEX</label>
-                        <div class="hex-wrapper">
-                            <span>#</span>
-                            <input type="text" id="hex-input" value="6750A4" maxlength="6">
-                            <input type="color" id="color-picker" value="#6750A4">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label for="hex-input" class="label-large">HEX</label>
+                            <span class="label-tiny" style="opacity: 0.6;" data-i18n="shortcut_hint">Space to randomize</span>
+                        </div>
+                        <div class="hex-row">
+                            <div class="hex-wrapper">
+                                <span>#</span>
+                                <input type="text" id="hex-input" value="6750A4" maxlength="7">
+                                <input type="color" id="color-picker" value="#6750A4">
+                            </div>
+                            <button id="eyedropper-btn" class="icon-button" title="Pick color from screen" style="display: none;">
+                                <span class="material-symbols-outlined">colorize</span>
+                            </button>
                         </div>
                     </div>
 
@@ -186,6 +194,16 @@
                         </div>
                     </div>
                 </div>
+                <div id="wcag-autofix" class="autofix-group" style="display: none;">
+                    <button id="autofix-aa-btn" class="autofix-btn" style="display: none;">
+                        <span class="material-symbols-outlined">auto_fix_high</span>
+                        <span data-i18n="autofix_aa">Auto-fix AA</span>
+                    </button>
+                    <button id="autofix-aaa-btn" class="autofix-btn" style="display: none;">
+                        <span class="material-symbols-outlined">auto_fix_normal</span>
+                        <span data-i18n="autofix_aaa">Auto-fix AAA</span>
+                    </button>
+                </div>
                 <div class="best-text-section mt-m">
                     <h3 class="label-large" data-i18n="best_text">Best Text Color</h3>
                     <div id="best-text-color" class="best-text-preview">Aa Bb Cc 123</div>
@@ -265,15 +283,27 @@
             </div>
             <div class="modal-tabs">
                 <button class="tab-btn active" data-tab="css">CSS</button>
+                <button class="tab-btn" data-tab="scss">SCSS</button>
                 <button class="tab-btn" data-tab="tailwind">Tailwind</button>
+                <button class="tab-btn" data-tab="flutter">Flutter</button>
+                <button class="tab-btn" data-tab="android">Android</button>
                 <button class="tab-btn" data-tab="json">JSON</button>
             </div>
             <div class="modal-body">
                 <div id="export-content-css" class="tab-content active">
                     <pre><code id="code-css"></code></pre>
                 </div>
+                <div id="export-content-scss" class="tab-content">
+                    <pre><code id="code-scss"></code></pre>
+                </div>
                 <div id="export-content-tailwind" class="tab-content">
                     <pre><code id="code-tailwind"></code></pre>
+                </div>
+                <div id="export-content-flutter" class="tab-content">
+                    <pre><code id="code-flutter"></code></pre>
+                </div>
+                <div id="export-content-android" class="tab-content">
+                    <pre><code id="code-android"></code></pre>
                 </div>
                 <div id="export-content-json" class="tab-content">
                     <pre><code id="code-json"></code></pre>
