@@ -157,6 +157,13 @@
             gap: 16px;
         }
 
+        .feature-card,
+        .feature-card:hover,
+        .feature-card:focus,
+        .feature-card:active {
+            text-decoration: none;
+        }
+
         .feature-card {
             display: flex;
             flex-direction: row;
@@ -171,7 +178,6 @@
                         background-color 0.28s cubic-bezier(0.2, 0, 0, 1),
                         border-color 0.28s cubic-bezier(0.2, 0, 0, 1);
             cursor: pointer;
-            text-decoration: none;
             color: inherit;
             animation: landingFadeUp 0.6s cubic-bezier(0.2, 0, 0, 1) both;
         }
@@ -188,6 +194,7 @@
             border-color: var(--md-sys-color-outline-variant);
             transform: translateY(-4px);
             box-shadow: 0 10px 24px var(--md-sys-color-shadow);
+            text-decoration: none;
         }
 
         .feature-card:active {
