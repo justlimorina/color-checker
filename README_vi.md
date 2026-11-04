@@ -116,7 +116,7 @@ color-checker/
 ├── app.js            # Toàn bộ logic: state, render, i18n, sự kiện
 ├── styles.css        # Hệ thống thiết kế MD3 & style thành phần
 ├── ntc.js            # Thư viện bên thứ ba: Name That Color
-├── LICENSE           # CC BY 4.0
+├── LICENSE           # Giấy phép MIT
 ├── README.md         # README tiếng Anh
 └── README_vi.md      # Tệp này (tiếng Việt)
 ```
@@ -125,7 +125,7 @@ color-checker/
 
 ## ⚖️ Giấy phép
  
-Dự án này được phát hành theo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.  
+Dự án này được phát hành theo **Giấy phép MIT (MIT License)**.  
 Xem file [LICENSE](LICENSE) để biết toàn văn.
 
 ---

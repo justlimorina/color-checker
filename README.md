@@ -116,7 +116,7 @@ color-checker/
 ├── app.js            # All logic: state, rendering, i18n, events
 ├── styles.css        # MD3 design system & component styles
 ├── ntc.js            # Third-party: Name That Color library
-├── LICENSE           # CC BY 4.0
+├── LICENSE           # MIT License
 ├── README.md         # This file (English)
 └── README_vi.md      # Vietnamese README
 ```
@@ -125,7 +125,7 @@ color-checker/
 
 ## ⚖️ License
 
-This project is released under the **Creative Commons Attribution 4.0 International (CC BY 4.0)**.  
+This project is licensed under the **MIT License**.  
 See [LICENSE](LICENSE) for the full text.
 
 ---
