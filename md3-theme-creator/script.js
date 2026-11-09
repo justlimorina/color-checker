@@ -1,7 +1,7 @@
 import { ColorUtils } from '../assets/script/utils.js';
 import { translations } from '../assets/script/config.js';
 import { initLayout, layoutState } from '../assets/script/shared/layout.js';
-import { themeFromSourceColor, argbFromHex, hexFromArgb, TonalPalette } from 'https://esm.sh/@material/material-color-utilities';
+import { themeFromSourceColor, argbFromHex, hexFromArgb, TonalPalette } from '../assets/vendor/material-color-utilities.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const urlSeed = urlParams.get('seed') || urlParams.get('primary') || urlParams.get('color');

@@ -37,8 +37,8 @@ const ASSETS = [
     'css-gradient-generator/',
     'css-gradient-generator/index.html',
     'css-gradient-generator/script.js',
-    'https://esm.sh/@material/web/all.js',
-    'https://esm.sh/@material/material-color-utilities',
+    'assets/vendor/material-web.js',
+    'assets/vendor/material-color-utilities.js',
     'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap',
     'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
 ];
@@ -78,7 +78,7 @@ self.addEventListener('fetch', event => {
             const fetchPromise = fetch(event.request).then(networkResponse => {
                 if (networkResponse && networkResponse.status === 200) {
                     const isLocal = networkResponse.type === 'basic';
-                    const isCDN = event.request.url.startsWith('https://esm.sh/') || event.request.url.includes('google') || event.request.url.includes('gstatic');
+                    const isCDN = event.request.url.includes('google') || event.request.url.includes('gstatic');
                     
                     if (isLocal || isCDN) {
                         const responseToCache = networkResponse.clone();

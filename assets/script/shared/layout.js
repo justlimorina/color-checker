@@ -1,5 +1,5 @@
 import { translations } from '../config.js';
-import { themeFromSourceColor, argbFromHex, hexFromArgb } from 'https://esm.sh/@material/material-color-utilities';
+import { themeFromSourceColor, argbFromHex, hexFromArgb } from '../../vendor/material-color-utilities.js';
 import { ColorUtils } from '../utils.js';
 import { ProjectManager } from '../projects.js';
 
