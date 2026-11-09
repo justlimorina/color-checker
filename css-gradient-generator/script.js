@@ -526,6 +526,9 @@ function buildGradientCss(formatType) {
         return `bg-[${gradExp}]`;
     } else if (formatType === 'svg') {
         const stopsSvg = sorted.map(s => `    <stop offset="${s.pos}%" stop-color="#${s.hex}" />`).join('\n');
+        if (state.type === 'conic') {
+            return `<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">\n  <foreignObject width="100%" height="100%">\n    <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;background:conic-gradient(from ${state.angle}deg at ${state.position}, ${stopsStr});"></div>\n  </foreignObject>\n</svg>`;
+        }
         if (state.type === 'radial') {
             return `<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">\n  <defs>\n    <radialGradient id="grad" cx="50%" cy="50%" r="50%">\n${stopsSvg}\n    </radialGradient>\n  </defs>\n  <rect width="100%" height="100%" fill="url(#grad)" />\n</svg>`;
         }
@@ -646,5 +649,5 @@ function showToast(msg) {
 }
 
 window.addEventListener('langchange', () => {
-    if (typeof updateCode === 'function') updateCode();
+    updateGradient();
 });

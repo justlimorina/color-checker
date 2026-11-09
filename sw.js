@@ -1,10 +1,11 @@
-const CACHE_NAME = 'color-checker-v12';
+const CACHE_NAME = 'color-checker-v13';
 const ASSETS = [
     './',
     'index.html',
     'manifest.json',
     'assets/styles.css',
     'assets/images/amelia_logo.svg',
+    'assets/images/favicon.svg',
     'assets/images/logo-black.svg',
     'assets/images/logo-white.svg',
     'assets/images/samples/portrait.jpg',
@@ -14,6 +15,7 @@ const ASSETS = [
     'assets/images/samples/sunset.jpg',
     'assets/images/samples/poster.jpg',
     'assets/script/config.js',
+    'assets/script/projects.js',
     'assets/script/utils.js',
     'assets/script/colornames.bestof.js',
     'assets/script/shared/layout.js',
@@ -76,7 +78,7 @@ self.addEventListener('fetch', event => {
             const fetchPromise = fetch(event.request).then(networkResponse => {
                 if (networkResponse && networkResponse.status === 200) {
                     const isLocal = networkResponse.type === 'basic';
-                    const isCDN = event.request.url.startsWith('https://esm.sh/') || event.request.url.includes('google');
+                    const isCDN = event.request.url.startsWith('https://esm.sh/') || event.request.url.includes('google') || event.request.url.includes('gstatic');
                     
                     if (isLocal || isCDN) {
                         const responseToCache = networkResponse.clone();

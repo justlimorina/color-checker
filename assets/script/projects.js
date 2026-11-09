@@ -1,4 +1,5 @@
 // Project and Multi-Palette Manager for Limorina Color Checker
+import { ColorUtils } from './utils.js';
 
 const PROJECTS_KEY = 'color_projects';
 const ACTIVE_PROJECT_KEY = 'active_project_id';
@@ -218,10 +219,13 @@ export const ProjectManager = {
 
             importedProjects.forEach(imp => {
                 if (imp.name && Array.isArray(imp.colors)) {
+                    const validColors = imp.colors
+                        .map(c => String(c).replace('#', '').trim().toUpperCase())
+                        .filter(c => /^[0-9A-F]{6}$/i.test(c));
                     currentProjects.push({
                         id: 'proj-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
                         name: imp.name + ' (Imported)',
-                        colors: imp.colors.map(c => c.replace('#', '').toUpperCase()),
+                        colors: validColors,
                         updatedAt: Date.now()
                     });
                     addedCount++;
@@ -266,8 +270,12 @@ export const ProjectManager = {
 
     parseURLHash() {
         const hash = window.location.hash;
-        if (hash.includes('palette=')) {
-            const hexes = hash.split('palette=')[1].split('-').map(c => c.trim().toUpperCase()).filter(c => /^[0-9A-F]{6}$/i.test(c));
+        const params = new URLSearchParams(window.location.search);
+        const rawPalette = hash.includes('palette=')
+            ? hash.split('palette=')[1]
+            : params.get('palette');
+        if (rawPalette) {
+            const hexes = rawPalette.split(/[-,]/).map(c => c.replace('#', '').trim().toUpperCase()).filter(c => /^[0-9A-F]{6}$/i.test(c));
             if (hexes.length > 0) {
                 const projects = this.getProjects();
                 const sharedProj = {
@@ -279,6 +287,11 @@ export const ProjectManager = {
                 projects.unshift(sharedProj);
                 this.saveProjects(projects);
                 this.setActiveProjectId(sharedProj.id);
+                if (window.history && window.history.replaceState) {
+                    params.delete('palette');
+                    const qs = params.toString();
+                    window.history.replaceState(null, '', window.location.pathname + (qs ? `?${qs}` : ''));
+                }
             }
         }
     }

@@ -150,6 +150,39 @@ function attachEvents() {
         };
     }
 
+    document.querySelectorAll('.mood-preset-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const idx = parseInt(chip.dataset.idx, 10);
+            if (!isNaN(idx)) {
+                if (slider) slider.value = idx;
+                updateSliderLabel(idx);
+                loadPreset(idx);
+            }
+        });
+    });
+
+    if (copyAllPinsBtn) {
+        copyAllPinsBtn.onclick = () => {
+            if (!activePins || activePins.length === 0) return;
+            const list = activePins.map(p => `#${p.hex}`).join(', ');
+            navigator.clipboard.writeText(list).then(() => {
+                showToast(translations[layoutState.currentLang]?.copied || 'Copied!');
+            });
+        };
+    }
+
+    if (sortHueBtn) {
+        sortHueBtn.onclick = () => sortPins('hue');
+    }
+
+    if (sortLightBtn) {
+        sortLightBtn.onclick = () => sortPins('lightness');
+    }
+
+    if (exportPhotoCardBtn) {
+        exportPhotoCardBtn.onclick = exportPhotoPaletteCard;
+    }
+
     if (flowGradBtn) {
         flowGradBtn.onclick = () => {
             if (!activePins || activePins.length === 0) return;
@@ -163,6 +196,49 @@ function attachEvents() {
             const hex = activePins[activePinIndex]?.hex || (activePins[0]?.hex || '624E9A');
             window.location.href = `../md3-theme-creator/?seed=${hex}`;
         };
+    }
+
+    if (flowContrastBtn) {
+        flowContrastBtn.onclick = () => {
+            if (!activePins || activePins.length === 0) return;
+            const bg = activePins[0]?.hex || 'FFFFFF';
+            const fg = activePins[activePinIndex]?.hex !== bg
+                ? activePins[activePinIndex]?.hex
+                : (activePins[1]?.hex || '000000');
+            window.location.href = `../contrast-checker/?bg=${bg}&fg=${fg}`;
+        };
+    }
+
+    if (flowMatrixBtn) {
+        flowMatrixBtn.onclick = () => {
+            if (activePins && activePins.length > 0) {
+                activePins.forEach(pin => ProjectManager.addColorToActiveProject(pin.hex));
+            }
+            window.location.href = '../matrix/';
+        };
+    }
+
+    if (canvas) {
+        canvas.addEventListener('click', (e) => {
+            if (!ctx || !canvas.width || !canvas.height) return;
+            const rect = canvas.getBoundingClientRect();
+            const pctX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            const pctY = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+            const pixelX = Math.min(canvas.width - 1, Math.floor(pctX * canvas.width));
+            const pixelY = Math.min(canvas.height - 1, Math.floor(pctY * canvas.height));
+            const pixel = ctx.getImageData(pixelX, pixelY, 1, 1).data;
+            const hex = ColorUtils.rgbToHex(pixel[0], pixel[1], pixel[2]);
+
+            if (activePins.length < 10) {
+                activePins.push({ x: pixelX, y: pixelY, hex });
+                numColors = activePins.length;
+                activePinIndex = activePins.length - 1;
+            } else if (activePins[activePinIndex]) {
+                activePins[activePinIndex] = { x: pixelX, y: pixelY, hex };
+            }
+            renderWorkspace();
+            updateColorState(hex, false);
+        });
     }
 
     if (btnAddColor) {
@@ -614,9 +690,10 @@ function renderWorkspace() {
                 pinEl.style.top = `${pctY * 100}%`;
                 pinEl.style.backgroundColor = `#${hex}`;
                 
+                const colorName = ColorUtils.getColorName(hex);
                 if (swatches[i]) {
                     swatches[i].style.backgroundColor = `#${hex}`;
-                    swatches[i].title = `#${hex} - ${ColorUtils.getColorName(hex)}`;
+                    swatches[i].title = `#${hex} - ${colorName}`;
                 }
                 
                 if (swatchesGrid && swatchesGrid.children[i]) {
@@ -626,7 +703,7 @@ function renderWorkspace() {
                     const inp = r.querySelector('input');
                     if (inp) inp.value = hex;
                     const nameEl = r.querySelector('span:nth-of-type(1)');
-                    if (nameEl) nameEl.textContent = ColorUtils.getColorName(hex);
+                    if (nameEl) nameEl.textContent = colorName;
                 }
 
                 updateLoupe(pixelX, pixelY, hex);
@@ -640,7 +717,7 @@ function renderWorkspace() {
             if (isDragging) {
                 isDragging = false;
                 hideLoupe();
-                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mousemove', onDrag);
                 document.removeEventListener('mouseup', stopDrag);
                 document.removeEventListener('touchmove', onDrag);
                 document.removeEventListener('touchend', stopDrag);
