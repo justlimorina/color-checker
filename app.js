@@ -1,3 +1,5 @@
+import { argbFromHex, themeFromSourceColor, hexFromArgb } from './vendor/material-color-utilities.js';
+
 const translations = {
     en: {
         app_title: "Limorina Color Checker",
@@ -505,6 +507,62 @@ function updateColorState(hex) {
     renderAll();
 }
 
+function applyColorTheme(hex) {
+    const dark = isDarkMode();
+    const theme = themeFromSourceColor(argbFromHex(`#${hex}`));
+    const scheme = dark ? theme.schemes.dark : theme.schemes.light;
+    const { neutral } = theme.palettes;
+    const setProp = (name, val) => document.documentElement.style.setProperty(name, val);
+
+    setProp('--md-sys-color-primary', hexFromArgb(scheme.primary));
+    setProp('--md-sys-color-on-primary', hexFromArgb(scheme.onPrimary));
+    setProp('--md-sys-color-primary-container', hexFromArgb(scheme.primaryContainer));
+    setProp('--md-sys-color-on-primary-container', hexFromArgb(scheme.onPrimaryContainer));
+
+    setProp('--md-sys-color-secondary', hexFromArgb(scheme.secondary));
+    setProp('--md-sys-color-on-secondary', hexFromArgb(scheme.onSecondary));
+    setProp('--md-sys-color-secondary-container', hexFromArgb(scheme.secondaryContainer));
+    setProp('--md-sys-color-on-secondary-container', hexFromArgb(scheme.onSecondaryContainer));
+
+    setProp('--md-sys-color-tertiary', hexFromArgb(scheme.tertiary));
+    setProp('--md-sys-color-on-tertiary', hexFromArgb(scheme.onTertiary));
+    setProp('--md-sys-color-tertiary-container', hexFromArgb(scheme.tertiaryContainer));
+    setProp('--md-sys-color-on-tertiary-container', hexFromArgb(scheme.onTertiaryContainer));
+
+    setProp('--md-sys-color-background', hexFromArgb(scheme.background));
+    setProp('--md-sys-color-on-background', hexFromArgb(scheme.onBackground));
+    setProp('--md-sys-color-surface', hexFromArgb(scheme.surface));
+    setProp('--md-sys-color-on-surface', hexFromArgb(scheme.onSurface));
+    setProp('--md-sys-color-surface-variant', hexFromArgb(scheme.surfaceVariant));
+    setProp('--md-sys-color-on-surface-variant', hexFromArgb(scheme.onSurfaceVariant));
+
+    setProp('--md-sys-color-outline', hexFromArgb(scheme.outline));
+    setProp('--md-sys-color-outline-variant', hexFromArgb(scheme.outlineVariant));
+    setProp('--md-sys-color-inverse-surface', hexFromArgb(scheme.inverseSurface));
+    setProp('--md-sys-color-inverse-on-surface', hexFromArgb(scheme.inverseOnSurface));
+    setProp('--md-sys-color-inverse-primary', hexFromArgb(scheme.inversePrimary));
+
+    const tones = dark ? [4, 10, 12, 17, 22] : [100, 96, 94, 92, 90];
+    ['lowest', 'low', '', 'high', 'highest'].forEach((suffix, i) => {
+        const key = suffix ? `--md-sys-color-surface-container-${suffix}` : '--md-sys-color-surface-container';
+        setProp(key, hexFromArgb(neutral.tone(tones[i])));
+    });
+
+    // Dynamic Material You Ambient Aura Gradients
+    setProp('--gradient-color-1', hexFromArgb(scheme.primaryContainer));
+    setProp('--gradient-color-2', hexFromArgb(scheme.secondaryContainer));
+    setProp('--gradient-color-3', hexFromArgb(scheme.tertiaryContainer));
+
+    // Dynamic browser theme-color & SVG favicon
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', `#${hex}`);
+    const favicon = document.querySelector('link[rel="icon"]');
+    if (favicon) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path d="M 24 2 C 24 16 34 14 38 10 C 30 18 34 22 46 24 C 34 26 30 30 38 38 C 34 34 24 32 24 46 C 24 32 14 34 10 38 C 18 30 14 26 2 24 C 14 22 18 18 10 10 C 14 14 24 16 24 2 Z" fill="#${hex}"/></svg>`;
+        favicon.href = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    }
+}
+
 function renderAll() {
     // 1. Update Columns 1
     dom.preview.style.backgroundColor = `#${state.hex}`;
@@ -521,14 +579,13 @@ function renderAll() {
     // Update Mixer Inputs
     updateMixerInputs();
 
-    // Update dynamic theme color with contrast-safe on-primary
+    // Update full Material You theme + Ambient Aura
+    applyColorTheme(state.hex);
+
+    // Update UI Samples with exact input color
     const whiteRatio = ColorUtils.getContrastRatio(state.rgb, { r: 255, g: 255, b: 255 });
     const blackRatio = ColorUtils.getContrastRatio(state.rgb, { r: 0, g: 0, b: 0 });
     const onPrimary = whiteRatio >= blackRatio ? '#FFFFFF' : '#000000';
-    document.documentElement.style.setProperty('--md-sys-color-primary', `#${state.hex}`);
-    document.documentElement.style.setProperty('--md-sys-color-on-primary', onPrimary);
-
-    // Update UI Samples
     updateUISamples(onPrimary);
 
     // 2. Column 2: Variations
@@ -559,14 +616,8 @@ function updateMixerInputs() {
 }
 
 function updateUISamples(onPrimary) {
-    document.querySelectorAll('.sample-btn-primary').forEach(el => {
-        el.style.backgroundColor = `#${state.hex}`;
-        el.style.color = onPrimary;
-    });
-    document.querySelectorAll('.sample-btn-outline').forEach(el => {
-        el.style.borderColor = `#${state.hex}`;
-        el.style.color = `#${state.hex}`;
-    });
+    document.documentElement.style.setProperty('--preview-color', `#${state.hex}`);
+    document.documentElement.style.setProperty('--preview-on-color', onPrimary);
     document.querySelectorAll('.sample-dot').forEach(el => el.style.backgroundColor = `#${state.hex}`);
     document.querySelectorAll('.sample-text, .sample-icons').forEach(el => el.style.color = `#${state.hex}`);
     document.querySelectorAll('.sample-input-box').forEach(el => {
@@ -998,6 +1049,7 @@ dom.themeToggle.onclick = () => {
     const nextDark = !isDarkMode();
     applyTheme(nextDark);
     localStorage.setItem('theme_mode', nextDark ? 'dark' : 'light');
+    applyColorTheme(state.hex);
     updateWCAG();
 };
 dom.langBtn.onclick = (e) => {

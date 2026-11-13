@@ -77,6 +77,10 @@ html, body {
     max-width: 100vw;
 }
 
+md-icon {
+    font-family: 'Material Symbols Outlined';
+}
+
 body {
     background-color: var(--md-sys-color-surface);
     color: var(--md-sys-color-on-surface);
@@ -84,6 +88,21 @@ body {
     line-height: 1.5;
     transition: background-color var(--transition-standard), color var(--transition-standard);
     min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(circle at 50% 0%, var(--gradient-color-1, transparent) 0%, transparent 60%),
+        radial-gradient(circle at 0% 100%, var(--gradient-color-2, transparent) 0%, transparent 70%),
+        radial-gradient(circle at 100% 100%, var(--gradient-color-3, transparent) 0%, transparent 70%);
+    opacity: 0.28;
+    transition: background 0.8s ease-out;
+    pointer-events: none;
 }
 
 /* Typography */
@@ -106,13 +125,16 @@ body {
 /* Top App Bar */
 .top-app-bar {
     height: 64px;
-    background-color: var(--md-sys-color-surface);
+    background-color: color-mix(in srgb, var(--md-sys-color-surface) 80%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     position: sticky;
     top: 0;
     z-index: 100;
     display: flex;
     align-items: center;
     padding: 0 var(--spacing-m);
+    transition: background-color var(--transition-standard);
 }
 
 .header-content {
@@ -241,7 +263,7 @@ body {
     border-radius: var(--md-sys-shape-corner-extra-large);
     padding: var(--spacing-l);
     height: fit-content;
-    transition: transform var(--transition-standard), box-shadow var(--transition-standard);
+    transition: transform var(--transition-standard), box-shadow var(--transition-standard), background-color 250ms ease, color 250ms ease, border-color 250ms ease;
 }
 
 .card-filled {
@@ -419,21 +441,13 @@ body {
 }
 
 .sample-btn-primary {
-    background-color: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
-    border: none;
-    padding: 10px;
-    border-radius: 20px;
-    font-weight: 500;
+    --md-filled-button-container-color: var(--preview-color, var(--md-sys-color-primary));
+    --md-filled-button-label-text-color: var(--preview-on-color, var(--md-sys-color-on-primary));
 }
 
 .sample-btn-outline {
-    background-color: transparent;
-    color: var(--md-sys-color-primary);
-    border: 1px solid var(--md-sys-color-primary);
-    padding: 10px;
-    border-radius: 20px;
-    font-weight: 500;
+    --md-outlined-button-label-text-color: var(--preview-color, var(--md-sys-color-primary));
+    --md-outlined-button-outline-color: var(--preview-color, var(--md-sys-color-outline));
 }
 
 .sample-card {
@@ -641,6 +655,7 @@ code {
     background: var(--md-sys-color-surface-variant);
     padding: var(--spacing-m);
     border-radius: var(--md-sys-shape-corner-medium);
+    transition: background-color 250ms ease;
 }
 
 .harmony-header {
@@ -711,32 +726,6 @@ code {
     gap: var(--spacing-s);
     flex-wrap: wrap;
     margin-top: var(--spacing-m);
-}
-
-.autofix-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-family: inherit;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: var(--md-sys-shape-corner-small);
-    background: var(--md-sys-color-surface-container-high);
-    border: 1px solid var(--md-sys-color-outline);
-    color: var(--md-sys-color-primary);
-    cursor: pointer;
-    transition: all var(--transition-standard);
-}
-
-.autofix-btn:hover {
-    background: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
-    border-color: var(--md-sys-color-primary);
-}
-
-.autofix-btn .material-symbols-outlined {
-    font-size: 16px;
 }
 
 /* Modal */
@@ -835,38 +824,6 @@ pre {
     padding-top: var(--spacing-m);
     display: flex;
     justify-content: flex-end;
-}
-
-.button-filled {
-    background: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
-    border: none;
-    padding: var(--spacing-s) var(--spacing-l);
-    border-radius: var(--md-sys-shape-corner-full);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-s);
-    cursor: pointer;
-    font-weight: 500;
-}
-
-.button-tonal {
-    background: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-on-secondary-container);
-    border: none;
-    padding: var(--spacing-s) var(--spacing-l);
-    border-radius: var(--md-sys-shape-corner-full);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-s);
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color var(--transition-standard);
-}
-
-.button-tonal:hover {
-    background-color: rgba(103, 80, 164, 0.12);
 }
 
 .full-width { width: 100%; }

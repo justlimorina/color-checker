@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Limorina Color Checker</title>
+    <link rel="icon" type="image/svg+xml" href="">
+    <meta name="theme-color" content="#6750A4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -29,13 +31,13 @@
                 <h1 class="headline-medium" id="app-title">Limorina Color Checker</h1>
             </div>
             <div class="app-bar-actions">
-                <button id="help-btn" class="icon-button" title="User Guide">
-                    <span class="material-symbols-outlined">help</span>
-                </button>
+                <md-icon-button id="help-btn" title="User Guide">
+                    <md-icon>help</md-icon>
+                </md-icon-button>
                 <div class="dropdown">
-                    <button id="lang-btn" class="icon-button" title="Switch Language">
-                        <span class="material-symbols-outlined">language</span>
-                    </button>
+                    <md-icon-button id="lang-btn" title="Switch Language">
+                        <md-icon>language</md-icon>
+                    </md-icon-button>
                     <div id="lang-menu" class="dropdown-menu">
                         <button class="menu-item" data-lang="en">English</button>
                         <button class="menu-item" data-lang="vi">Tiếng Việt</button>
@@ -43,12 +45,12 @@
                         <button class="menu-item" data-lang="zh">简体中文</button>
                     </div>
                 </div>
-                <button id="export-hub-btn" class="icon-button" title="Export Palette">
-                    <span class="material-symbols-outlined">ios_share</span>
-                </button>
-                <button id="theme-toggle" class="icon-button" title="Toggle Dark/Light Mode">
-                    <span class="material-symbols-outlined">dark_mode</span>
-                </button>
+                <md-icon-button id="export-hub-btn" title="Export Palette">
+                    <md-icon>ios_share</md-icon>
+                </md-icon-button>
+                <md-icon-button id="theme-toggle" title="Toggle Dark/Light Mode">
+                    <md-icon>dark_mode</md-icon>
+                </md-icon-button>
             </div>
         </div>
     </header>
@@ -82,9 +84,9 @@
                                 <input type="text" id="hex-input" value="6750A4" maxlength="7">
                                 <input type="color" id="color-picker" value="#6750A4">
                             </div>
-                            <button id="eyedropper-btn" class="icon-button" title="Pick color from screen" style="display: none;">
-                                <span class="material-symbols-outlined">colorize</span>
-                            </button>
+                            <md-icon-button id="eyedropper-btn" title="Pick color from screen" style="display: none;">
+                                <md-icon>colorize</md-icon>
+                            </md-icon-button>
                         </div>
                     </div>
 
@@ -120,14 +122,14 @@
                         </div>
                     </div>
 
-                    <button id="save-to-palette" class="button-filled full-width mt-m">
-                        <span class="material-symbols-outlined">bookmark_add</span>
+                    <md-filled-button id="save-to-palette" class="full-width mt-m">
+                        <md-icon slot="icon">bookmark_add</md-icon>
                         <span data-i18n="save_btn">Save to Palette</span>
-                    </button>
-                    <button id="export-image-btn" class="button-tonal full-width mt-s">
-                        <span class="material-symbols-outlined">image</span>
+                    </md-filled-button>
+                    <md-filled-tonal-button id="export-image-btn" class="full-width mt-s">
+                        <md-icon slot="icon">image</md-icon>
                         <span data-i18n="export_btn_image">Export Palette Image</span>
-                    </button>
+                    </md-filled-tonal-button>
                 </div>
             </div>
 
@@ -146,36 +148,36 @@
                         <span class="label-small">RGB</span>
                         <div class="code-row">
                             <code id="rgb-output">rgb(103, 80, 164)</code>
-                            <button class="icon-button small-btn copy-btn" data-target="rgb-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
+                            <md-icon-button class="copy-btn" data-target="rgb-output" title="Copy RGB">
+                                <md-icon>content_copy</md-icon>
+                            </md-icon-button>
                         </div>
                     </div>
                     <div class="code-card">
                         <span class="label-small">HSL</span>
                         <div class="code-row">
                             <code id="hsl-output">256°, 34%, 48%</code>
-                            <button class="icon-button small-btn copy-btn" data-target="hsl-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
+                            <md-icon-button class="copy-btn" data-target="hsl-output" title="Copy HSL">
+                                <md-icon>content_copy</md-icon>
+                            </md-icon-button>
                         </div>
                     </div>
                     <div class="code-card">
                         <span class="label-small">OKLCH</span>
                         <div class="code-row">
                             <code id="oklch-output">48%, 0.15, 256</code>
-                            <button class="icon-button small-btn copy-btn" data-target="oklch-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
+                            <md-icon-button class="copy-btn" data-target="oklch-output" title="Copy OKLCH">
+                                <md-icon>content_copy</md-icon>
+                            </md-icon-button>
                         </div>
                     </div>
                     <div class="code-card">
                         <span class="label-small">CMYK</span>
                         <div class="code-row">
                             <code id="cmyk-output">37, 51, 0, 36</code>
-                            <button class="icon-button small-btn copy-btn" data-target="cmyk-output">
-                                <span class="material-symbols-outlined">content_copy</span>
-                            </button>
+                            <md-icon-button class="copy-btn" data-target="cmyk-output" title="Copy CMYK">
+                                <md-icon>content_copy</md-icon>
+                            </md-icon-button>
                         </div>
                     </div>
                 </div>
@@ -204,14 +206,14 @@
                     </div>
                 </div>
                 <div id="wcag-autofix" class="autofix-group" style="display: none;">
-                    <button id="autofix-aa-btn" class="autofix-btn" style="display: none;">
-                        <span class="material-symbols-outlined">auto_fix_high</span>
+                    <md-filled-tonal-button id="autofix-aa-btn" style="display: none;">
+                        <md-icon slot="icon">auto_fix_high</md-icon>
                         <span data-i18n="autofix_aa">Auto-fix AA</span>
-                    </button>
-                    <button id="autofix-aaa-btn" class="autofix-btn" style="display: none;">
-                        <span class="material-symbols-outlined">auto_fix_normal</span>
+                    </md-filled-tonal-button>
+                    <md-filled-button id="autofix-aaa-btn" style="display: none;">
+                        <md-icon slot="icon">auto_fix_normal</md-icon>
                         <span data-i18n="autofix_aaa">Auto-fix AAA</span>
-                    </button>
+                    </md-filled-button>
                 </div>
                 <div class="best-text-section mt-m">
                     <h3 class="label-large" data-i18n="best_text">Best Text Color</h3>
@@ -224,10 +226,10 @@
                 <h2 class="title-medium" data-i18n="ui_prototype">UI Prototype Preview</h2>
                 <div class="ui-samples-grid">
                     <div class="ui-sample-item">
-                        <button class="sample-btn-primary" data-i18n-target="btn_solid">Solid Button</button>
+                        <md-filled-button class="sample-btn-primary" data-i18n-target="btn_solid">Solid Button</md-filled-button>
                     </div>
                     <div class="ui-sample-item">
-                        <button class="sample-btn-outline" data-i18n-target="btn_outline">Outline Button</button>
+                        <md-outlined-button class="sample-btn-outline" data-i18n-target="btn_outline">Outline Button</md-outlined-button>
                     </div>
                     <div class="ui-sample-item">
                         <div class="sample-card">
@@ -298,9 +300,9 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h2 class="headline-small" data-i18n="export_hub">Export Hub</h2>
-                <button id="close-modal" class="icon-button small-btn">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
+                <md-icon-button id="close-modal">
+                    <md-icon>close</md-icon>
+                </md-icon-button>
             </div>
             <div class="modal-tabs">
                 <button class="tab-btn active" data-tab="css">CSS</button>
@@ -331,10 +333,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="copy-export" class="button-filled">
-                    <span class="material-symbols-outlined">content_copy</span>
+                <md-filled-button id="copy-export">
+                    <md-icon slot="icon">content_copy</md-icon>
                     <span data-i18n="copy_all">Copy All</span>
-                </button>
+                </md-filled-button>
             </div>
         </div>
     </div>
@@ -344,9 +346,9 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h2 class="headline-small" data-i18n="help_title">User Guide</h2>
-                <button id="close-help" class="icon-button small-btn">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
+                <md-icon-button id="close-help">
+                    <md-icon>close</md-icon>
+                </md-icon-button>
             </div>
             <div class="modal-body guide-body">
                 <section class="guide-section">
@@ -376,15 +378,16 @@
                 </section>
             </div>
             <div class="modal-footer">
-                <button id="close-help-confirm" class="button-filled">
+                <md-filled-button id="close-help-confirm">
                     <span data-i18n="got_it">Got it!</span>
-                </button>
+                </md-filled-button>
             </div>
         </div>
     </div>
 
+    <script type="module" src="vendor/material-web.js"></script>
     <script src="ntc.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 
 </html>
