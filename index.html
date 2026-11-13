@@ -15,6 +15,11 @@
     <link rel="stylesheet" href="styles.css">
     <meta name="description"
         content="Advanced Material Design 3 color analysis tool. Featuring OKLCH, color blindness simulation, and UI prototyping.">
+    <script>
+        if (localStorage.getItem('theme_mode') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
 </head>
 
 <body class="light-mode">
@@ -55,8 +60,12 @@
                 <h2 class="title-medium" data-i18n="input_color">Input Color</h2>
 
                 <div class="main-preview-container">
-                    <div id="color-preview" class="main-preview">
+                    <div id="color-preview" class="main-preview" role="button" tabindex="0" title="Click to copy HEX">
                         <div id="color-name-display" class="color-name-overlay"></div>
+                        <div class="copy-overlay">
+                            <span class="material-symbols-outlined">content_copy</span>
+                            <span data-i18n="copy_hex">Copy HEX</span>
+                        </div>
                     </div>
                 </div>
 
@@ -229,6 +238,18 @@
                     <div class="ui-sample-item">
                         <div class="sample-text" data-i18n="sample_text_heading">Sample Text Heading</div>
                         <p class="label-small" data-i18n="sample_text_secondary">Secondary description text</p>
+                    </div>
+                    <div class="ui-sample-item ui-sample-wide">
+                        <div class="sample-input-row">
+                            <div class="sample-input-box">
+                                <span class="material-symbols-outlined">search</span>
+                                <span data-i18n="sample_input">Search or input...</span>
+                            </div>
+                            <div class="sample-icons">
+                                <span class="material-symbols-outlined sample-icon">verified_user</span>
+                                <span class="material-symbols-outlined sample-icon">palette</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

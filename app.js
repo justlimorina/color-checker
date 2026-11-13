@@ -55,7 +55,9 @@ const translations = {
         shortcut_hint: "Space to randomize",
         eyedropper_title: "Pick color from screen",
         autofix_aa: "Auto-fix AA",
-        autofix_aaa: "Auto-fix AAA"
+        autofix_aaa: "Auto-fix AAA",
+        copy_hex: "Copy HEX",
+        sample_input: "Search or input..."
     },
     vi: {
         app_title: "Limorina Color Checker",
@@ -113,7 +115,9 @@ const translations = {
         shortcut_hint: "Phím Space để đổi màu",
         eyedropper_title: "Chấm màu từ màn hình",
         autofix_aa: "Tự sửa đạt chuẩn AA",
-        autofix_aaa: "Tự sửa đạt chuẩn AAA"
+        autofix_aaa: "Tự sửa đạt chuẩn AAA",
+        copy_hex: "Chép HEX",
+        sample_input: "Tìm kiếm hoặc nhập..."
     },
     ja: {
         app_title: "Limorina カラーチェッカー",
@@ -171,7 +175,9 @@ const translations = {
         shortcut_hint: "Spaceキーでランダム色",
         eyedropper_title: "画面から色を取得",
         autofix_aa: "AA基準に自動調整",
-        autofix_aaa: "AAA基準に自動調整"
+        autofix_aaa: "AAA基準に自動調整",
+        copy_hex: "HEXをコピー",
+        sample_input: "検索または入力..."
     },
     zh: {
         app_title: "Limorina 色彩检查器",
@@ -229,7 +235,9 @@ const translations = {
         shortcut_hint: "空格键随机配色",
         eyedropper_title: "从屏幕吸取颜色",
         autofix_aa: "自动修复至AA标准",
-        autofix_aaa: "自动修复至AAA标准"
+        autofix_aaa: "自动修复至AAA标准",
+        copy_hex: "复制 HEX",
+        sample_input: "搜索或输入..."
     }
 };
 
@@ -245,7 +253,8 @@ const ColorUtils = {
     },
 
     rgbToHex(r, g, b) {
-        return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        const clamp = v => Math.max(0, Math.min(255, Math.round(Number(v) || 0)));
+        return ((1 << 24) + (clamp(r) << 16) + (clamp(g) << 8) + clamp(b)).toString(16).slice(1).toUpperCase();
     },
 
     rgbToHsl(r, g, b) {
@@ -346,6 +355,36 @@ const ColorUtils = {
         return { l: L * 100, c: C, h: h };
     },
 
+    oklchToRgb(lPct, c, hDeg) {
+        const L = lPct / 100;
+        const hRad = hDeg * Math.PI / 180;
+        const a = c * Math.cos(hRad);
+        const b = c * Math.sin(hRad);
+
+        const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+        const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+        const s_ = L - 0.0894841775 * a - 1.2914855480 * b;
+
+        const l = l_ * l_ * l_;
+        const m = m_ * m_ * m_;
+        const s = s_ * s_ * s_;
+
+        const linR = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+        const linG = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+        const linB = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+
+        const gamma = x => {
+            const clamped = Math.max(0, Math.min(1, x));
+            return clamped >= 0.0031308 ? 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055 : 12.92 * clamped;
+        };
+
+        return {
+            r: Math.round(gamma(linR) * 255),
+            g: Math.round(gamma(linG) * 255),
+            b: Math.round(gamma(linB) * 255)
+        };
+    },
+
     getColorName(hex) {
         if (!window.ntc) return "Unknown";
         const result = ntc.name("#" + hex);
@@ -369,11 +408,29 @@ const ColorUtils = {
 };
 
 // --- App State & UI ---
+function loadSavedPalette() {
+    try {
+        const parsed = JSON.parse(localStorage.getItem('saved_palette') || '[]');
+        return Array.isArray(parsed) ? parsed.filter(h => typeof h === 'string' && /^[0-9A-F]{6}$/i.test(h)) : [];
+    } catch {
+        return [];
+    }
+}
+
+function getInitialHex() {
+    try {
+        const urlHex = new URLSearchParams(window.location.search).get('color');
+        if (urlHex && /^[0-9A-F]{6}$/i.test(urlHex)) return urlHex.toUpperCase();
+    } catch {}
+    const saved = localStorage.getItem('active_hex');
+    return (saved && /^[0-9A-F]{6}$/i.test(saved)) ? saved.toUpperCase() : "6750A4";
+}
+
 const state = {
     cmyk: { c: 37, m: 51, y: 0, k: 36 },
     oklch: { l: 48, c: 0.15, h: 256 },
-    palette: JSON.parse(localStorage.getItem('saved_palette') || '[]'),
-    activeHex: localStorage.getItem('active_hex') || "6750A4"
+    palette: loadSavedPalette(),
+    activeHex: getInitialHex()
 };
 
 const dom = {
@@ -440,13 +497,18 @@ function updateColorState(hex) {
     state.oklch = ColorUtils.rgbToOklch(state.rgb.r, state.rgb.g, state.rgb.b);
     
     localStorage.setItem('active_hex', state.hex);
+    try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('color', state.hex);
+        window.history.replaceState(null, '', url.toString());
+    } catch {}
     renderAll();
 }
 
 function renderAll() {
     // 1. Update Columns 1
     dom.preview.style.backgroundColor = `#${state.hex}`;
-    dom.hexInput.value = state.hex;
+    if (document.activeElement !== dom.hexInput) dom.hexInput.value = state.hex;
     dom.colorPicker.value = `#${state.hex}`;
     dom.rgbOutput.textContent = `rgb(${state.rgb.r}, ${state.rgb.g}, ${state.rgb.b})`;
     dom.hslOutput.textContent = `${Math.round(state.hsl.h)}°, ${Math.round(state.hsl.s)}%, ${Math.round(state.hsl.l)}%`;
@@ -454,20 +516,20 @@ function renderAll() {
     dom.oklchOutput.textContent = `${Math.round(state.oklch.l)}%, ${state.oklch.c.toFixed(2)}, ${Math.round(state.oklch.h)}`;
 
     // Update Color Name
-    const colorName = ColorUtils.getColorName(state.hex);
-    dom.colorNameDisplay.textContent = colorName;
-    const isDark = ColorUtils.getLuminance(state.rgb.r, state.rgb.g, state.rgb.b) < 0.5;
-    dom.colorNameDisplay.style.color = isDark ? 'white' : 'black';
-    dom.colorNameDisplay.style.textShadow = isDark ? '0 2px 4px rgba(0,0,0,0.5)' : 'none';
+    dom.colorNameDisplay.textContent = ColorUtils.getColorName(state.hex);
 
     // Update Mixer Inputs
     updateMixerInputs();
 
-    // Update dynamic theme color
+    // Update dynamic theme color with contrast-safe on-primary
+    const whiteRatio = ColorUtils.getContrastRatio(state.rgb, { r: 255, g: 255, b: 255 });
+    const blackRatio = ColorUtils.getContrastRatio(state.rgb, { r: 0, g: 0, b: 0 });
+    const onPrimary = whiteRatio >= blackRatio ? '#FFFFFF' : '#000000';
     document.documentElement.style.setProperty('--md-sys-color-primary', `#${state.hex}`);
+    document.documentElement.style.setProperty('--md-sys-color-on-primary', onPrimary);
 
     // Update UI Samples
-    updateUISamples();
+    updateUISamples(onPrimary);
 
     // 2. Column 2: Variations
     renderVariations();
@@ -487,22 +549,30 @@ function renderAll() {
 }
 
 function updateMixerInputs() {
-    dom.mixerInputs.r.value = state.rgb.r;
-    dom.mixerInputs.g.value = state.rgb.g;
-    dom.mixerInputs.b.value = state.rgb.b;
-    dom.mixerInputs.h.value = Math.round(state.hsl.h);
-    dom.mixerInputs.s.value = Math.round(state.hsl.s);
-    dom.mixerInputs.l.value = Math.round(state.hsl.l);
+    const active = document.activeElement;
+    if (active !== dom.mixerInputs.r) dom.mixerInputs.r.value = state.rgb.r;
+    if (active !== dom.mixerInputs.g) dom.mixerInputs.g.value = state.rgb.g;
+    if (active !== dom.mixerInputs.b) dom.mixerInputs.b.value = state.rgb.b;
+    if (active !== dom.mixerInputs.h) dom.mixerInputs.h.value = Math.round(state.hsl.h);
+    if (active !== dom.mixerInputs.s) dom.mixerInputs.s.value = Math.round(state.hsl.s);
+    if (active !== dom.mixerInputs.l) dom.mixerInputs.l.value = Math.round(state.hsl.l);
 }
 
-function updateUISamples() {
-    document.querySelectorAll('.sample-btn-primary').forEach(el => el.style.backgroundColor = `#${state.hex}`);
+function updateUISamples(onPrimary) {
+    document.querySelectorAll('.sample-btn-primary').forEach(el => {
+        el.style.backgroundColor = `#${state.hex}`;
+        el.style.color = onPrimary;
+    });
     document.querySelectorAll('.sample-btn-outline').forEach(el => {
         el.style.borderColor = `#${state.hex}`;
         el.style.color = `#${state.hex}`;
     });
     document.querySelectorAll('.sample-dot').forEach(el => el.style.backgroundColor = `#${state.hex}`);
-    document.querySelectorAll('.sample-text').forEach(el => el.style.color = `#${state.hex}`);
+    document.querySelectorAll('.sample-text, .sample-icons').forEach(el => el.style.color = `#${state.hex}`);
+    document.querySelectorAll('.sample-input-box').forEach(el => {
+        el.style.borderColor = `#${state.hex}`;
+        el.style.color = `#${state.hex}`;
+    });
 }
 
 function renderColorBlindness() {
@@ -578,6 +648,10 @@ function removeFromPalette(index) {
     renderSavedPalette();
 }
 
+function isDarkMode() {
+    return document.documentElement.classList.contains('dark-mode') || document.body.classList.contains('dark-mode');
+}
+
 function updateWCAG() {
     const white = { r: 255, g: 255, b: 255 };
     const black = { r: 0, g: 0, b: 0 };
@@ -591,12 +665,13 @@ function updateWCAG() {
     renderWCAGBadges(dom.wcagWhiteBadges, whiteRatio);
     renderWCAGBadges(dom.wcagBlackBadges, blackRatio);
 
+    const activeRatio = isDarkMode() ? blackRatio : whiteRatio;
     if (dom.wcagAutofix) {
-        if (whiteRatio < 4.5) {
+        if (activeRatio < 4.5) {
             dom.wcagAutofix.style.display = 'flex';
             if (dom.autofixAaBtn) dom.autofixAaBtn.style.display = 'inline-flex';
             if (dom.autofixAaaBtn) dom.autofixAaaBtn.style.display = 'inline-flex';
-        } else if (whiteRatio < 7.0) {
+        } else if (activeRatio < 7.0) {
             dom.wcagAutofix.style.display = 'flex';
             if (dom.autofixAaBtn) dom.autofixAaBtn.style.display = 'none';
             if (dom.autofixAaaBtn) dom.autofixAaaBtn.style.display = 'inline-flex';
@@ -606,28 +681,26 @@ function updateWCAG() {
     }
 }
 
-function calculateAutoFix(targetRatio, bgRgb = { r: 255, g: 255, b: 255 }) {
+function calculateAutoFix(targetRatio, bgRgb = isDarkMode() ? { r: 0, g: 0, b: 0 } : { r: 255, g: 255, b: 255 }) {
     const currentRatio = ColorUtils.getContrastRatio(state.rgb, bgRgb);
     if (currentRatio >= targetRatio) return state.hex;
 
     const bgLum = ColorUtils.getLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
-    const shouldDarken = bgLum > 0.5;
-
-    const h = state.hsl.h;
-    const s = state.hsl.s;
-    const l = state.hsl.l;
+    const shouldDarken = bgLum > 0.4;
+    const { l, c, h } = state.oklch;
+    const startL = Math.round(l * 2) / 2;
 
     if (shouldDarken) {
-        for (let testL = l; testL >= 0; testL -= 0.5) {
-            const testRgb = ColorUtils.hslToRgb(h, s, testL);
+        for (let testL = startL; testL >= 0; testL -= 0.5) {
+            const testRgb = ColorUtils.oklchToRgb(testL, c * Math.min(1, testL / 25), h);
             if (ColorUtils.getContrastRatio(testRgb, bgRgb) >= targetRatio) {
                 return ColorUtils.rgbToHex(testRgb.r, testRgb.g, testRgb.b);
             }
         }
         return "000000";
     } else {
-        for (let testL = l; testL <= 100; testL += 0.5) {
-            const testRgb = ColorUtils.hslToRgb(h, s, testL);
+        for (let testL = startL; testL <= 100; testL += 0.5) {
+            const testRgb = ColorUtils.oklchToRgb(testL, c * Math.min(1, (100 - testL) / 25), h);
             if (ColorUtils.getContrastRatio(testRgb, bgRgb) >= targetRatio) {
                 return ColorUtils.rgbToHex(testRgb.r, testRgb.g, testRgb.b);
             }
@@ -765,10 +838,35 @@ function setLanguage(lang) {
 }
 
 // --- Clipboard ---
-function showToast() {
-    dom.toast.textContent = translations[currentLang].copied;
+let toastTimer;
+function showToast(message) {
+    dom.toast.textContent = message || translations[currentLang].copied;
     dom.toast.classList.add('show');
-    setTimeout(() => dom.toast.classList.remove('show'), 2000);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => dom.toast.classList.remove('show'), 2000);
+}
+
+function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast()).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+        document.execCommand('copy');
+        showToast();
+    } finally {
+        document.body.removeChild(ta);
+    }
 }
 
 // --- Export Hub ---
@@ -836,6 +934,13 @@ function updateExportContent() {
 // --- Events ---
 dom.hexInput.oninput = (e) => updateColorState(e.target.value);
 dom.colorPicker.oninput = (e) => updateColorState(e.target.value.substring(1));
+dom.preview.onclick = () => copyText(`#${state.hex}`);
+dom.preview.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        copyText(`#${state.hex}`);
+    }
+};
 
 // EyeDropper API
 if (dom.eyedropperBtn && window.EyeDropper) {
@@ -867,19 +972,33 @@ if (dom.autofixAaaBtn) {
     };
 }
 
-// Spacebar shortcut to randomize color
+// Keyboard shortcuts (Space to randomize, Escape to close modals)
 window.addEventListener('keydown', (e) => {
+    const openModal = document.querySelector('.modal-backdrop.show');
+    if (e.key === 'Escape' && openModal) {
+        openModal.classList.remove('show');
+        return;
+    }
     const isEditing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
-    const isModalOpen = document.querySelector('.modal-backdrop.show');
-    if (e.code === 'Space' && !isEditing && !isModalOpen) {
+    if (e.code === 'Space' && !isEditing && !openModal && document.activeElement !== dom.preview) {
         e.preventDefault();
         const randomHex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase();
         updateColorState(randomHex);
     }
 });
+
+function applyTheme(dark) {
+    document.documentElement.classList.toggle('dark-mode', dark);
+    document.body.classList.toggle('dark-mode', dark);
+    document.body.classList.toggle('light-mode', !dark);
+    dom.themeToggle.children[0].textContent = dark ? 'light_mode' : 'dark_mode';
+}
+
 dom.themeToggle.onclick = () => {
-    document.body.classList.toggle('dark-mode');
-    dom.themeToggle.children[0].textContent = document.body.classList.contains('dark-mode') ? 'light_mode' : 'dark_mode';
+    const nextDark = !isDarkMode();
+    applyTheme(nextDark);
+    localStorage.setItem('theme_mode', nextDark ? 'dark' : 'light');
+    updateWCAG();
 };
 dom.langBtn.onclick = (e) => {
     e.stopPropagation();
@@ -900,26 +1019,25 @@ dom.saveBtn.onclick = saveToPalette;
 dom.exportImageBtn.onclick = exportPaletteImage;
 
 // Mixer Input Listeners
+const clampNum = (val, min, max) => Math.max(min, Math.min(max, parseInt(val, 10) || 0));
 Object.keys(dom.mixerInputs).forEach(key => {
     dom.mixerInputs[key].oninput = () => {
         let hex;
         if (['r', 'g', 'b'].includes(key)) {
             hex = ColorUtils.rgbToHex(
-                parseInt(dom.mixerInputs.r.value) || 0,
-                parseInt(dom.mixerInputs.g.value) || 0,
-                parseInt(dom.mixerInputs.b.value) || 0
+                clampNum(dom.mixerInputs.r.value, 0, 255),
+                clampNum(dom.mixerInputs.g.value, 0, 255),
+                clampNum(dom.mixerInputs.b.value, 0, 255)
             );
         } else {
             const rgb = ColorUtils.hslToRgb(
-                parseInt(dom.mixerInputs.h.value) || 0,
-                parseInt(dom.mixerInputs.s.value) || 0,
-                parseInt(dom.mixerInputs.l.value) || 0
+                clampNum(dom.mixerInputs.h.value, 0, 360),
+                clampNum(dom.mixerInputs.s.value, 0, 100),
+                clampNum(dom.mixerInputs.l.value, 0, 100)
             );
             hex = ColorUtils.rgbToHex(rgb.r, rgb.g, rgb.b);
         }
         updateColorState(hex);
-        dom.hexInput.value = hex;
-        dom.colorPicker.value = `#${hex}`;
     };
 });
 
@@ -972,6 +1090,12 @@ dom.closeModal.onclick = () => dom.exportModal.classList.remove('show');
 dom.helpBtn.onclick = () => dom.helpModal.classList.add('show');
 dom.closeHelp.onclick = dom.closeHelpConfirm.onclick = () => dom.helpModal.classList.remove('show');
 
+[dom.exportModal, dom.helpModal].forEach(modal => {
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.classList.remove('show');
+    };
+});
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.onclick = () => {
         document.querySelectorAll('.tab-btn, .tab-content').forEach(el => el.classList.remove('active'));
@@ -983,18 +1107,19 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 dom.copyExportBtn.onclick = () => {
     const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
     const text = document.getElementById(`code-${activeTab}`).textContent;
-    navigator.clipboard.writeText(text).then(showToast);
+    copyText(text);
 };
 
 document.querySelectorAll('.copy-btn').forEach(btn => {
     btn.onclick = () => {
         const targetId = btn.getAttribute('data-target');
         const text = document.getElementById(targetId).textContent;
-        navigator.clipboard.writeText(text).then(showToast);
+        copyText(text);
     };
 });
 
 // Init
+applyTheme(localStorage.getItem('theme_mode') === 'dark');
 updateColorState(state.activeHex);
 setLanguage(currentLang);
 dom.hexInput.value = state.activeHex;
