@@ -97,6 +97,7 @@ function bindDOM() {
         tabConic: document.getElementById('grad-conic'),
         angleGroup: document.getElementById('grad-angle-group'),
         angleSlider: document.getElementById('grad-angle'),
+        angleInput: document.getElementById('grad-angle-input'),
         angleVal: document.getElementById('grad-angle-val'),
         posGroup: document.getElementById('grad-pos-group'),
         posSelect: document.getElementById('grad-position-select'),
@@ -142,9 +143,25 @@ function attachEvents() {
 
     if (dom.angleSlider) {
         dom.angleSlider.addEventListener('input', (e) => {
-            state.angle = parseInt(e.target.value);
-            dom.angleVal.textContent = state.angle;
+            state.angle = parseInt(e.target.value, 10);
+            if (dom.angleVal) dom.angleVal.textContent = state.angle;
+            if (dom.angleInput) dom.angleInput.value = state.angle;
             updateGradient();
+        });
+    }
+
+    if (dom.angleInput) {
+        dom.angleInput.addEventListener('input', (e) => {
+            const raw = parseInt(e.target.value, 10);
+            if (isNaN(raw)) return;
+            const clamped = Math.max(0, Math.min(360, raw));
+            state.angle = clamped;
+            if (dom.angleVal) dom.angleVal.textContent = clamped;
+            if (dom.angleSlider) dom.angleSlider.value = clamped;
+            updateGradient();
+        });
+        dom.angleInput.addEventListener('blur', () => {
+            dom.angleInput.value = state.angle;
         });
     }
 

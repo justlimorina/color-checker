@@ -42,8 +42,14 @@
                      </div>
                      
                      <div class="input-group mb-m" id="grad-angle-group">
-                         <label class="label-large" style="display:block; margin-bottom: 8px;"><span data-i18n="gradient_angle">Angle</span> (<span id="grad-angle-val">90</span>°)</label>
-                         <md-slider id="grad-angle" min="0" max="360" value="90" labeled></md-slider>
+                         <label class="label-large" for="grad-angle-input" style="display:block; margin-bottom: 8px;"><span data-i18n="gradient_angle">Angle</span> (<span id="grad-angle-val">90</span>°)</label>
+                         <div style="display: flex; align-items: center; gap: 10px;">
+                             <md-slider id="grad-angle" min="0" max="360" value="90" labeled style="flex: 1; min-width: 0;"></md-slider>
+                             <div style="display: flex; align-items: center; gap: 2px; flex-shrink: 0;">
+                                 <input type="number" id="grad-angle-input" class="grad-stop-pos" min="0" max="360" value="90" aria-label="Angle in degrees">
+                                 <span class="label-small">°</span>
+                             </div>
+                         </div>
                      </div>
 
                      <div class="input-group mb-m" id="grad-pos-group" style="display: none;">
